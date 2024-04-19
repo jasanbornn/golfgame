@@ -1,0 +1,2 @@
+ThreeJS CDN include: https://cdn.skypack.dev/three@0.132.2
+cannon-es CDN include: https://cdn.skypack.dev/cannon-es@0.20.0
