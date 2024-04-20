@@ -21,6 +21,14 @@ h1 {
     z-index: 1;
 }
 
+#debug-text {
+    position: absolute;
+    width: 0%;
+    left: 10px;
+    color: black;
+    z-index: 1;
+}
+
 #scene-container {
     /* tell our scene container to take up the full page */
     position: absolute;

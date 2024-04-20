@@ -8,11 +8,8 @@ const baseTarget = {
 
 function createControls(camera, canvas) {
     const controls = new OrbitControls(camera, canvas);
-
     controls.enablePan = false;
-
     controls.targetObj = baseTarget;
-
     controls.minPolarAngle = Math.PI / 4;
     controls.maxPolarAngle = Math.PI / 2;
 

@@ -9,6 +9,7 @@ import { createScene } from './components/scene.js';
 import { createLights } from './components/lights.js';
 import { createPhysWorld } from './components/physWorld.js';
 
+import { createDebugScreen } from './systems/debugScreen.js';
 import { createControls } from './systems/controls.js';
 import { createRenderer } from './systems/renderer.js';
 import { Resizer } from './systems/Resizer.js';
@@ -34,6 +35,7 @@ class World {
         container.append(renderer.domElement);
 
         const resizer = new Resizer(container, camera, renderer);
+        const debugScreen = createDebugScreen();
 
         const controls = createControls(camera, renderer.domElement);
         const sphere = createSphere();
@@ -88,8 +90,14 @@ class World {
         loop.updatables.push(sphere);
         loop.updatables.push(camera);
         loop.updatables.push(controls);
+        loop.updatables.push(debugScreen);
 
         scene.add(hole.mesh, sphere.mesh, planeClip.mesh, light);
+
+
+        debugScreen.addEntry("Ball speed: ", () => {
+            return sphere.body.velocity.length().toFixed(2);
+        });
 
         document.addEventListener("keydown", (event) => {
             let keyCode = event.which;
@@ -104,6 +112,12 @@ class World {
             if (keyCode == 40) {
                 sphere.body.velocity = new Vec3(0, 0, 0);
             }
+
+            //if the 'I' key is pressed
+            if (keyCode == 73) {
+                debugScreen.toggleVisibility();
+            }
+
         }, false);
     }
 
