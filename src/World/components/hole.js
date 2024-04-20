@@ -1,4 +1,4 @@
-import { BoxBufferGeometry, Mesh, MeshStandardMaterial, Vector3} from 'https://cdn.skypack.dev/three@0.132.2';
+import * as THREE from '../../../vendor/three/build/three.module.js';
 import { Body, Box, Plane, Vec3 } from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 
 function createHole(numSides) {
@@ -16,9 +16,9 @@ function createHole(numSides) {
     const baseHeight = 0.1;
     const baseDepth = radius*4;
 
-    const parentGeometry = new BoxBufferGeometry(baseWidth, baseHeight, baseDepth);
-    const parentMaterial = new MeshStandardMaterial(materialSpec);
-    let parentMesh = new Mesh(parentGeometry, parentMaterial);
+    const parentGeometry = new THREE.BoxGeometry(baseWidth, baseHeight, baseDepth);
+    const parentMaterial = new THREE.MeshStandardMaterial(materialSpec);
+    let parentMesh = new THREE.Mesh(parentGeometry, parentMaterial);
 
     let body = new Body({
         type: Body.STATIC,
@@ -42,12 +42,12 @@ function createHole(numSides) {
 
 
         //generate mesh for rendering bound box
-        const geometry = new BoxBufferGeometry(boxWidth, holeDepth, boxDepth);
-        const material = new MeshStandardMaterial(materialSpec);
-        const childMesh = new Mesh(geometry, material);
+        const geometry = new THREE.BoxGeometry(boxWidth, holeDepth, boxDepth);
+        const material = new THREE.MeshStandardMaterial(materialSpec);
+        const childMesh = new THREE.Mesh(geometry, material);
         childMesh.translateX(xOffset);
         childMesh.translateZ(zOffset);
-        childMesh.lookAt(new Vector3(0, 0, 0));
+        childMesh.lookAt(new THREE.Vector3(0, 0, 0));
         childMesh.translateY(yOffset);
         parentMesh.add(childMesh);
 

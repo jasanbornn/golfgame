@@ -1,6 +1,5 @@
-import { Clock } from 'https://cdn.skypack.dev/three@0.132.2';
-
-const clock = new Clock();
+import * as THREE from '../../../vendor/three/build/three.module.js';
+const clock = new THREE.Clock();
 
 class Loop {
     constructor(camera, scene, renderer) {

@@ -14,17 +14,9 @@ import { createRenderer } from './systems/renderer.js';
 import { Resizer } from './systems/Resizer.js';
 import { Loop } from './systems/Loop.js';
 
-import { CSG } from '../../vendor/three-csg/three-csg.js';
-
-
-import { 
-    CylinderGeometry,
-    SphereGeometry,
-    Mesh,
-    MeshStandardMaterial,
-    Vector3
-} from 'https://cdn.skypack.dev/three@0.132.2';
+import * as THREE from '../../vendor/three/build/three.module.js';
 import { Body, ContactMaterial, Material, Sphere, Vec3 } from 'https://cdn.skypack.dev/cannon-es@0.20.0';
+import { CSG } from '../../vendor/three-csg/three-csg.js';
 
 let camera;
 let renderer;
@@ -103,7 +95,7 @@ class World {
             let keyCode = event.which;
             //if up arrow pressed
             if (keyCode == 38) {
-                let cameraDirection = new Vector3(0, 0, 0);
+                let cameraDirection = new THREE.Vector3(0, 0, 0);
                 camera.getWorldDirection(cameraDirection);
                 sphere.strike(cameraDirection);
             }

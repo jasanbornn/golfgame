@@ -1,20 +1,13 @@
-import { 
-    PlaneGeometry,
-    MathUtils, 
-    Mesh, 
-    MeshStandardMaterial,
-    TextureLoader
-} from 'https://cdn.skypack.dev/three@0.132.2';
-
+import * as THREE from '../../../vendor/three/build/three.module.js';
 import { Body, Plane, Vec3 } from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 
 
 function createPlane() {
 
-    const geometry = new PlaneGeometry(32, 32);
+    const geometry = new THREE.PlaneGeometry(32, 32);
     const material = createMaterial();
     const plane = {
-        mesh: new Mesh(geometry, material),
+        mesh: new THREE.Mesh(geometry, material),
         body: new Body({
             type: Body.STATIC,
             shape: new Plane(),
@@ -36,13 +29,13 @@ function createMaterial() {
 //        color: 'darkgreen',
 //    });
 
-    const textureLoader = new TextureLoader();
+    const textureLoader = new THREE.TextureLoader();
 
     const texture = textureLoader.load(
         '../../assets/dev-texture.png',
     );
 
-    const material = new MeshStandardMaterial({
+    const material = new THREE.MeshStandardMaterial({
         map: texture,
     });
 

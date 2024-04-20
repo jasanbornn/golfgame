@@ -1,8 +1,7 @@
-import { DirectionalLight } from 'https://cdn.skypack.dev/three@0.132.2';
-
+import * as THREE from '../../../vendor/three/build/three.module.js';
 function createLights() {
     // create a directional light
-    const light = new DirectionalLight(
+    const light = new THREE.DirectionalLight(
         'white', //color
         8 //intensity
     );

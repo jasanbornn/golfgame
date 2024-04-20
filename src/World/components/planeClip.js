@@ -1,18 +1,12 @@
-import { 
-    SphereGeometry, 
-    Mesh, 
-    MeshStandardMaterial,
-    Vector3
-} from 'https://cdn.skypack.dev/three@0.132.2';
-
+import * as THREE from '../../../vendor/three/build/three.module.js';
 import { CSG } from '../../../vendor/three-csg/three-csg.js';
 
 function createPlaneClip(targetPlane, targetHole) {
-    const planeClipGeometry = new SphereGeometry(0.6, 32, 16);
-    const planeClipMaterial = new MeshStandardMaterial({
+    const planeClipGeometry = new THREE.SphereGeometry(0.6, 32, 16);
+    const planeClipMaterial = new THREE.MeshStandardMaterial({
         color: 'red',
     });
-    const planeClipMesh = new Mesh(planeClipGeometry, planeClipMaterial);
+    const planeClipMesh = new THREE.Mesh(planeClipGeometry, planeClipMaterial);
     planeClipMesh.position.copy(targetHole.mesh.position);
     planeClipMesh.position.y = targetPlane.mesh.position.y;
 

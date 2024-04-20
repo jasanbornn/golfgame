@@ -1,12 +1,4 @@
-import { 
-    Euler,
-    SphereGeometry, 
-    MathUtils, 
-    Mesh, 
-    MeshStandardMaterial,
-    Vector3
-} from 'https://cdn.skypack.dev/three@0.132.2';
-
+import * as THREE from '../../../vendor/three/build/three.module.js';
 import { Body, Sphere, Vec3 } from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 
 function createSphere() {
@@ -17,11 +9,11 @@ function createSphere() {
     const radius = 0.042; //meters
     const widthSegments = 32;
     const heightSegments = 16;
-    const geometry = new SphereGeometry(radius, widthSegments, heightSegments);
-    const material = new MeshStandardMaterial(materialSpec);
+    const geometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments);
+    const material = new THREE.MeshStandardMaterial(materialSpec);
 
     const sphere = {
-        mesh: new Mesh(geometry, material),
+        mesh: new THREE.Mesh(geometry, material),
         body: new Body({
             mass: 5, //kg
             shape: new Sphere(radius),
@@ -41,7 +33,11 @@ function createSphere() {
     };
 
     sphere.strike = (cameraDirection) => {
-        sphere.body.applyForce(cameraDirection.multiplyScalar(1000));
+        const scale = 1000;
+        let strikeForce = new THREE.Vector3();
+        strikeForce.x = scale * cameraDirection.x; 
+        strikeForce.z = scale * cameraDirection.z; 
+        sphere.body.applyForce(strikeForce);
     };
 
     return sphere;

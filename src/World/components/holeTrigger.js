@@ -1,10 +1,4 @@
-import { 
-    SphereGeometry, 
-    Mesh, 
-    MeshStandardMaterial,
-    Vector3
-} from 'https://cdn.skypack.dev/three@0.132.2';
-
+import * as THREE from '../../../vendor/three/build/three.module.js';
 import { Body, Sphere } from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 
 import { CSG } from '../../../vendor/three-csg/three-csg.js';
@@ -13,11 +7,11 @@ import { CSG } from '../../../vendor/three-csg/three-csg.js';
 function createHoleTrigger(targetHole) {
     //trigger
     const triggerRadius = 0.3;
-    const holeTriggerGeometry = new SphereGeometry(triggerRadius, 32, 16);
-    const holeTriggerMaterial = new MeshStandardMaterial({
+    const holeTriggerGeometry = new THREE.SphereGeometry(triggerRadius, 32, 16);
+    const holeTriggerMaterial = new THREE.MeshStandardMaterial({
         color: 'red',
     });
-    const holeTriggerMesh = new Mesh(holeTriggerGeometry, holeTriggerMaterial);
+    const holeTriggerMesh = new THREE.Mesh(holeTriggerGeometry, holeTriggerMaterial);
     holeTriggerMesh.position.copy(targetHole.mesh.position);
     holeTriggerMesh.position.y = 
         targetHole.mesh.position.y - 
