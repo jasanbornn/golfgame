@@ -1,0 +1,72 @@
+// pointer to help aim golf ball
+
+import * as THREE from '../../../vendor/three/build/three.module.js';
+
+function createPointer(camera) {
+
+    //pointer dimensions (meters)
+    const ARROW_TAIL_WIDTH = 0.05;
+    const ARROW_TAIL_LENGTH = 1.5;
+    const ARROW_HEAD_WIDTH = 0.125;
+    const ARROW_HEAD_LENGTH = 0.2;
+    const ARROW_LENGTH = ARROW_TAIL_LENGTH + ARROW_HEAD_LENGTH;
+
+
+    //pointer shape
+    const arrowShape = new THREE.Shape();
+    arrowShape.moveTo(0,0);
+    arrowShape.lineTo(ARROW_TAIL_WIDTH / 2, 0);
+    arrowShape.lineTo(ARROW_TAIL_WIDTH / 2, ARROW_TAIL_LENGTH);
+    arrowShape.lineTo(ARROW_HEAD_WIDTH / 2, ARROW_TAIL_LENGTH);
+    arrowShape.lineTo(0, ARROW_LENGTH);
+    arrowShape.lineTo(-ARROW_HEAD_WIDTH / 2, ARROW_TAIL_LENGTH);
+    arrowShape.lineTo(-ARROW_TAIL_WIDTH / 2, ARROW_TAIL_LENGTH);
+    arrowShape.lineTo(-ARROW_TAIL_WIDTH / 2, 0);
+    arrowShape.lineTo(0,0);
+
+    const extrudeSettings = {
+        depth: 0.02,
+        bevelEnabled: false,
+    };
+
+    const geometry = new THREE.ExtrudeGeometry(arrowShape, extrudeSettings);
+    //rotate so pointer points towards positive z axis
+    geometry.rotateX(Math.PI / 2);
+    const material = new THREE.MeshStandardMaterial({
+        color: 'blue',
+    });
+
+    const pointer = {
+        mesh: new THREE.Mesh( geometry, material),
+    };
+
+    //position pointer slightly above the ground
+    pointer.mesh.position.y += 0.05;
+    pointer.tick = () => {
+
+        //copy camera quaternion into pointer's quaternion
+        //pointer will point at camera
+        pointer.mesh.quaternion.copy(camera.quaternion);
+
+        //rotate 180 degrees 
+        //to point in same direction as camera
+        pointer.mesh.rotateY(Math.PI);
+
+        //rotate to vertical plane
+        //(get rid of up-down rotation)
+        pointer.mesh.quaternion.x = 0.0;
+        pointer.mesh.quaternion.z = 0.0;
+        pointer.mesh.quaternion.normalize();
+
+        //position the pointer at the golf ball
+        pointer.mesh.position.copy(camera.targetObj.position);
+        
+        //push the arrow forward 0.4 meters
+        pointer.mesh.translateZ(0.4);
+
+    };
+
+    return pointer;
+}
+
+export { createPointer };

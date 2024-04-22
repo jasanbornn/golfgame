@@ -23,7 +23,8 @@ h1 {
 
 #debug-text {
     position: absolute;
-    width: 0%;
+    text-align: left;
+    width: 100%;
     left: 10px;
     color: black;
     z-index: 1;

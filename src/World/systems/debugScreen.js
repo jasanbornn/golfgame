@@ -1,6 +1,6 @@
 function createDebugScreen() {
     const debugScreen = {
-        visible: false,
+        visible: true,
         entries: [],
         textContent: "",
         textElement: document.getElementById("debug-text"),
@@ -11,7 +11,8 @@ function createDebugScreen() {
 
         debugScreen.textContent = "";
         for(let entry of debugScreen.entries) {
-            debugScreen.textContent += entry.label + (entry.textFunc()) + "\n";
+            debugScreen.textContent += 
+                entry.label + (entry.textFunc()) +"<BR>";
         }
         debugScreen.textElement.innerHTML = debugScreen.textContent;
     }

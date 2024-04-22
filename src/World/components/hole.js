@@ -25,7 +25,7 @@ function createHole(numSides) {
         shape: new Box(new Vec3(baseWidth / 2, baseHeight / 2, baseDepth / 2)),
     });
 
-    body.position.set(1, GROUND_OFFSET, -3);
+    body.position.set(3, GROUND_OFFSET, 1);
     //body.position.set(1, 1, -5);
     parentMesh.position.copy(body.position);
 

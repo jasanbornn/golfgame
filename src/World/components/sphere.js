@@ -1,6 +1,7 @@
 import * as THREE from '../../../vendor/three/build/three.module.js';
 import { Body, Sphere, Vec3 } from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 
+
 function createSphere() {
     const materialSpec = {
         color: 'purple',
@@ -15,9 +16,9 @@ function createSphere() {
     const sphere = {
         mesh: new THREE.Mesh(geometry, material),
         body: new Body({
-            mass: 5, //kg
+            mass: 0.045, //kg
             shape: new Sphere(radius),
-            angularDamping: 0.8,
+            angularDamping: 0.70,
         }),
     };
 
@@ -30,13 +31,21 @@ function createSphere() {
     sphere.tick = (delta) => {
         sphere.mesh.position.copy(sphere.body.position);
         sphere.mesh.quaternion.copy(sphere.body.quaternion);
+
+        if(
+            sphere.body.velocity.length() < 0.05
+        ) {
+            sphere.angularDamping = 0.99; 
+        } else
+        {
+            sphere.angularDamping = 0.70;
+        }
     };
 
-    sphere.strike = (cameraDirection) => {
-        const scale = 1000;
+    sphere.strike = (cameraDirection, strikePower) => {
         let strikeForce = new THREE.Vector3();
-        strikeForce.x = scale * cameraDirection.x; 
-        strikeForce.z = scale * cameraDirection.z; 
+        strikeForce.x = strikePower * cameraDirection.x; 
+        strikeForce.z = strikePower * cameraDirection.z; 
         sphere.body.applyForce(strikeForce);
     };
 
