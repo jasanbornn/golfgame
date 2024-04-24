@@ -1,10 +1,10 @@
 import * as THREE from '../../../vendor/three/build/three.module.js';
-import { Body, Sphere, Vec3 } from 'https://cdn.skypack.dev/cannon-es@0.20.0';
+import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 
 
 function createSphere() {
     const materialSpec = {
-        color: 'purple',
+        color: 0xBBBBBB,
     }
 
     const radius = 0.042; //meters
@@ -15,14 +15,14 @@ function createSphere() {
 
     const sphere = {
         mesh: new THREE.Mesh(geometry, material),
-        body: new Body({
+        body: new CANNON.Body({
             mass: 0.045, //kg
-            shape: new Sphere(radius),
-            angularDamping: 0.70,
+            shape: new CANNON.Sphere(radius),
+            angularDamping: 0.90,
         }),
     };
 
-    sphere.body.position.set(0, 1, 0);
+    sphere.body.position.set(0, 0.1, 0);
     sphere.body.quaternion.setFromEuler(-0.5, -0.1, 0.8);
 
     sphere.mesh.position.copy(sphere.body.position);
@@ -32,15 +32,14 @@ function createSphere() {
         sphere.mesh.position.copy(sphere.body.position);
         sphere.mesh.quaternion.copy(sphere.body.quaternion);
 
-        if(
-            sphere.body.velocity.length() < 0.05
-        ) {
-            sphere.angularDamping = 0.99; 
-        } else
-        {
-            sphere.angularDamping = 0.70;
-        }
-    };
+        if (sphere.body.velocity.length() < 0.8 && sphere.body.velocity.y < 0.01) {
+            const temp = sphere.body.velocity.y;
+            sphere.body.velocity.scale(0.98,sphere.body.velocity);
+            sphere.body.velocity.y = temp;
+        };
+
+
+    }
 
     sphere.strike = (cameraDirection, strikePower) => {
         let strikeForce = new THREE.Vector3();

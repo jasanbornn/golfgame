@@ -2,13 +2,13 @@
 
 import * as THREE from '../../../vendor/three/build/three.module.js';
 
-function createPointer(camera) {
+function createPointer(camera, strikePower) {
 
     //pointer dimensions (meters)
     const ARROW_TAIL_WIDTH = 0.05;
-    const ARROW_TAIL_LENGTH = 1.5;
+    const ARROW_TAIL_LENGTH = 4.0;
     const ARROW_HEAD_WIDTH = 0.125;
-    const ARROW_HEAD_LENGTH = 0.2;
+    const ARROW_HEAD_LENGTH = 1.0;
     const ARROW_LENGTH = ARROW_TAIL_LENGTH + ARROW_HEAD_LENGTH;
 
 
@@ -37,7 +37,7 @@ function createPointer(camera) {
     });
 
     const pointer = {
-        mesh: new THREE.Mesh( geometry, material),
+        mesh: new THREE.Mesh(geometry, material),
     };
 
     //position pointer slightly above the ground
@@ -64,7 +64,20 @@ function createPointer(camera) {
         //push the arrow forward 0.4 meters
         pointer.mesh.translateZ(0.4);
 
+        //toggle visibility on only when ball is moving
+        const ball = camera.targetObj;
+        if(ball.velocity.length() < 0.01) {
+            pointer.mesh.visible = true;
+        } else
+        {
+            pointer.mesh.visible = false;
+        }
+
+        pointer.mesh.scale.set(1.0, 1.0, strikePower.percentPower());
+        
+
     };
+
 
     return pointer;
 }

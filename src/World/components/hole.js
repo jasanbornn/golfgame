@@ -3,10 +3,10 @@ import { Body, Box, Plane, Vec3 } from 'https://cdn.skypack.dev/cannon-es@0.20.0
 
 function createHole(numSides) {
 
-    const GROUND_OFFSET = -0.18;
+    const GROUND_OFFSET = -0.171;
 
     const materialSpec = {
-        color: 'green' 
+        color: 0x999999,
     };
 
     let radius = 0.11;

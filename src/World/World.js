@@ -8,6 +8,7 @@ import { createPlaneClip } from './components/planeClip.js';
 import { createScene } from './components/scene.js';
 import { createLights } from './components/lights.js';
 import { createPhysWorld } from './components/physWorld.js';
+import { createStrikePower } from './components/strikePower.js';
 
 import { createDebugScreen } from './systems/debugScreen.js';
 import { createControls } from './systems/controls.js';
@@ -36,21 +37,29 @@ class World {
 
         const resizer = new Resizer(container, camera, renderer);
 
+        const MIN_STRIKE_POWER = 1;
+        const MAX_STRIKE_POWER = 100;
+
+        const strikePower = createStrikePower(MIN_STRIKE_POWER, MAX_STRIKE_POWER);
+
+        //const strikeIterations = 32;
+        //const STRIKE_POWER_INTERVAL = 
+        //    (MAX_STRIKE_POWER - MIN_STRIKE_POWER) / strikeIterations;
+        //let strikePower = (MAX_STRIKE_POWER + MIN_STRIKE_POWER) / 2;
+        //let strikePercent = (() => {
+        //    return strikePower / (MAX_STRIKE_POWER - MIN_STRIKE_POWER);
+        //})();
+
         const debugScreen = createDebugScreen();
         const controls = createControls(camera, renderer.domElement);
         const sphere = createSphere();
-        const pointer = createPointer(camera);
+        const pointer = createPointer(camera,strikePower);
         const plane = createPlane();
-        const hole = createHole(16);
+        const hole = createHole(32);
         const light = createLights();
         const planeClip = createPlaneClip(plane,hole);
         const holeTrigger = createHoleTrigger(hole);
 
-        const MIN_STRIKE_POWER = 1;
-        const MAX_STRIKE_POWER = 100;
-        const iterations = 32;
-        const STRIKE_POWER_INTERVAL = (MAX_STRIKE_POWER - MIN_STRIKE_POWER) / iterations;
-        let strikePower = (MAX_STRIKE_POWER + MIN_STRIKE_POWER) / 2;
 
         //hole-ball collision event listeners
         holeTrigger.body.addEventListener('collide', (event) => {
@@ -97,14 +106,17 @@ class World {
             return sphere.body.velocity.length().toFixed(2);
         });
         debugScreen.addEntry("Power: ", () => {
-            return strikePower.toFixed(2);
+            return strikePower.getValue().toFixed(2);
         });
-        debugScreen.addEntry("Cam qtrn: ", () => {
-            return camera.quaternion.x.toFixed(2) + "," +
-                camera.quaternion.y.toFixed(2) + ", " +
-                camera.quaternion.z.toFixed(2) + ", " +
-                camera.quaternion.w.toFixed(2) + ", ";
+        debugScreen.addEntry("Power %: ", () => {
+            return strikePower.percentPower().toFixed(2);
         });
+        //debugScreen.addEntry("Cam qtrn: ", () => {
+        //    return camera.quaternion.x.toFixed(2) + "," +
+        //        camera.quaternion.y.toFixed(2) + ", " +
+        //        camera.quaternion.z.toFixed(2) + ", " +
+        //        camera.quaternion.w.toFixed(2) + ", ";
+        //});
         debugScreen.addEntry("Cam pos: ", () => {
             return camera.position.x.toFixed(2) + "," +
                 camera.position.y.toFixed(2) + ", " +
@@ -117,19 +129,25 @@ class World {
                 camDirection.y.toFixed(2) + ", " +
                 camDirection.z.toFixed(2);
         });
-        debugScreen.addEntry("Ptr qtrn: ", () => {
-            return pointer.mesh.quaternion.x.toFixed(2) + "," +
-                pointer.mesh.quaternion.y.toFixed(2) + "," +
-                pointer.mesh.quaternion.z.toFixed(2) + ", " +
-                pointer.mesh.quaternion.w.toFixed(2);
+        debugScreen.addEntry("Ball vel: ", () => {
+            return sphere.body.velocity.x.toFixed(2) + ", " +
+                sphere.body.velocity.y.toFixed(2) + ", " +
+                sphere.body.velocity.z.toFixed(2);
         });
-        debugScreen.addEntry("Ptr dir: ", () => {
-            let pointerDirection = new THREE.Vector3();
-            pointer.mesh.getWorldDirection(pointerDirection);
-            return pointerDirection.x.toFixed(2) + "," +
-                pointerDirection.y.toFixed(2) + ", " +
-                pointerDirection.z.toFixed(2);
-        });
+
+        //debugScreen.addEntry("Ptr qtrn: ", () => {
+        //    return pointer.mesh.quaternion.x.toFixed(2) + "," +
+        //        pointer.mesh.quaternion.y.toFixed(2) + "," +
+        //        pointer.mesh.quaternion.z.toFixed(2) + ", " +
+        //        pointer.mesh.quaternion.w.toFixed(2);
+        //});
+        //debugScreen.addEntry("Ptr dir: ", () => {
+        //    let pointerDirection = new THREE.Vector3();
+        //    pointer.mesh.getWorldDirection(pointerDirection);
+        //    return pointerDirection.x.toFixed(2) + "," +
+        //        pointerDirection.y.toFixed(2) + ", " +
+        //        pointerDirection.z.toFixed(2);
+        //});
 
         //key press event listner
         document.addEventListener("keydown", (event) => {
@@ -139,7 +157,7 @@ class World {
                 if (sphere.body.velocity.length() < 0.01) {
                     let cameraDirection = new THREE.Vector3(0, 0, 0);
                     camera.getWorldDirection(cameraDirection);
-                    sphere.strike(cameraDirection, strikePower);
+                    sphere.strike(cameraDirection, strikePower.getValue());
                 }
             }
 
@@ -160,18 +178,22 @@ class World {
             }
             //W key
             if (keyCode == 87) {
-                strikePower += STRIKE_POWER_INTERVAL;
-                if (strikePower > MAX_STRIKE_POWER) {
-                    strikePower = MAX_STRIKE_POWER;
-                }
+                strikePower.increasePower();
+
+                //strikePower += STRIKE_POWER_INTERVAL;
+                //if (strikePower > MAX_STRIKE_POWER) {
+                //    strikePower = MAX_STRIKE_POWER;
+                //}
             }
 
             //S key
             if (keyCode == 83) {
-                strikePower -= STRIKE_POWER_INTERVAL;
-                if (strikePower < MIN_STRIKE_POWER) {
-                    strikePower = MIN_STRIKE_POWER;
-                }
+                strikePower.decreasePower();
+
+                //strikePower -= STRIKE_POWER_INTERVAL;
+                //if (strikePower < MIN_STRIKE_POWER) {
+                //    strikePower = MIN_STRIKE_POWER;
+                //}
             }
 
         }, false);

@@ -3,7 +3,7 @@ function createLights() {
     // create a directional light
     const light = new THREE.DirectionalLight(
         'white', //color
-        8 //intensity
+        6 //intensity
     );
 
     light.castShadow = true;

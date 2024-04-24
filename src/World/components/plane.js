@@ -25,21 +25,22 @@ function createPlane() {
 
 function createMaterial() {
 
-//    return new MeshStandardMaterial({
-//        color: 'darkgreen',
-//    });
-
     const textureLoader = new THREE.TextureLoader();
 
     const texture = textureLoader.load(
-        '../../assets/dev-texture.png',
+        //'../../assets/dev-texture.png',
+        '../../assets/grass.png',
     );
 
-    const material = new THREE.MeshStandardMaterial({
-        map: texture,
-    });
+    texture.wrapS = THREE.RepeatedWrapping;
+    texture.wrapT = THREE.RepeatedWrapping;
 
-    return material;
+    texture.repeat.set(10,10);
+
+    return new THREE.MeshStandardMaterial({
+        map: texture,
+        //color: 'darkgreen',
+    });
     
 }
 

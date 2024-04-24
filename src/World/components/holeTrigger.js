@@ -6,7 +6,7 @@ import { CSG } from '../../../vendor/three-csg/three-csg.js';
 
 function createHoleTrigger(targetHole) {
     //trigger
-    const triggerRadius = 0.3;
+    const triggerRadius = 0.11;
     const holeTriggerGeometry = new THREE.SphereGeometry(triggerRadius, 32, 16);
     const holeTriggerMaterial = new THREE.MeshStandardMaterial({
         color: 'red',

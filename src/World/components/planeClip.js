@@ -2,7 +2,7 @@ import * as THREE from '../../../vendor/three/build/three.module.js';
 import { CSG } from '../../../vendor/three-csg/three-csg.js';
 
 function createPlaneClip(targetPlane, targetHole) {
-    const planeClipGeometry = new THREE.SphereGeometry(0.6, 32, 16);
+    const planeClipGeometry = new THREE.CylinderGeometry(0.112, 0.112, 0.5, 32);
     const planeClipMaterial = new THREE.MeshStandardMaterial({
         color: 'red',
     });
