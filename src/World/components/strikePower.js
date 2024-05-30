@@ -1,5 +1,5 @@
 function createStrikePower(minStrikePower, maxStrikePower) {
-    const iterations = 32;
+    const iterations = 64;
 
     const minPower = minStrikePower;
     const maxPower = maxStrikePower;

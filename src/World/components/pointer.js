@@ -11,7 +11,6 @@ function createPointer(camera, strikePower) {
     const ARROW_HEAD_LENGTH = 1.0;
     const ARROW_LENGTH = ARROW_TAIL_LENGTH + ARROW_HEAD_LENGTH;
 
-
     //pointer shape
     const arrowShape = new THREE.Shape();
     arrowShape.moveTo(0,0);
@@ -30,7 +29,7 @@ function createPointer(camera, strikePower) {
     };
 
     const geometry = new THREE.ExtrudeGeometry(arrowShape, extrudeSettings);
-    //rotate so pointer points towards positive z axis
+    //rotate so pointer points towards its positive z axis
     geometry.rotateX(Math.PI / 2);
     const material = new THREE.MeshStandardMaterial({
         color: 'blue',
@@ -64,7 +63,7 @@ function createPointer(camera, strikePower) {
         //push the arrow forward 0.4 meters
         pointer.mesh.translateZ(0.4);
 
-        //toggle visibility on only when ball is moving
+        //make pointer visible only when the ball is not moving
         const ball = camera.targetObj;
         if(ball.velocity.length() < 0.01) {
             pointer.mesh.visible = true;
@@ -73,6 +72,7 @@ function createPointer(camera, strikePower) {
             pointer.mesh.visible = false;
         }
 
+        //scale the pointer based on strike power
         pointer.mesh.scale.set(1.0, 1.0, strikePower.percentPower());
         
 

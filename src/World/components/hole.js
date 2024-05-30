@@ -12,9 +12,9 @@ function createHole(numSides) {
     let radius = 0.11;
     let holeDepth = 0.12;
 
-    const baseWidth = radius*4;
+    const baseWidth = radius*2;
     const baseHeight = 0.1;
-    const baseDepth = radius*4;
+    const baseDepth = radius*2;
 
     const parentGeometry = new THREE.BoxGeometry(baseWidth, baseHeight, baseDepth);
     const parentMaterial = new THREE.MeshStandardMaterial(materialSpec);
@@ -25,12 +25,11 @@ function createHole(numSides) {
         shape: new Box(new Vec3(baseWidth / 2, baseHeight / 2, baseDepth / 2)),
     });
 
-    body.position.set(3, GROUND_OFFSET, 1);
-    //body.position.set(1, 1, -5);
+    body.position.set(0, GROUND_OFFSET, -4);
     parentMesh.position.copy(body.position);
 
-    const boxWidth = 3.5*radius;
-    const boxDepth = 0.5;
+    const boxWidth = 3.5 * radius;
+    const boxDepth = 0.05;
 
     const dTheta = (2 * Math.PI) / numSides;
     //const yOffset = baseHeight / 2;
@@ -39,7 +38,6 @@ function createHole(numSides) {
 
         const xOffset = (radius + boxDepth/2)*Math.cos(i*dTheta);
         const zOffset = (radius + boxDepth/2)*Math.sin(i*dTheta);
-
 
         //generate mesh for rendering bound box
         const geometry = new THREE.BoxGeometry(boxWidth, holeDepth, boxDepth);
