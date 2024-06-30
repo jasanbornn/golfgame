@@ -32,6 +32,7 @@ class World {
         scene = createScene();
         loop = new Loop(camera, scene, renderer);
         physWorld = createPhysWorld();
+        physWorld.solver.iterations = 50;
         const controls = createControls(camera, renderer.domElement);
         const light = createLights();
 
@@ -70,6 +71,17 @@ class World {
             }
         });
 
+        //contact materials
+        const groundMaterial = course.ground.body.material;
+        const barrierMaterial = course.barriers[0].body.material;
+        const ballMaterial = ball.body.material;
+
+        const ballGroundContact = new CANNON.ContactMaterial(ballMaterial, groundMaterial, {friction: 0.4, restitution: 0.2});
+        const ballBarrierContact = new CANNON.ContactMaterial(ballMaterial, barrierMaterial, {friction: 0.8, restitution: 0.9});
+        
+        physWorld.addContactMaterial(ballGroundContact);
+        physWorld.addContactMaterial(ballBarrierContact);
+
         //adding phys bodys to cannon-js phys world
         physWorld.addBody(ball.body);
         for (let o of course.physObjects) {
@@ -93,7 +105,7 @@ class World {
         loop.updatables.push(debugScreen);
         loop.updatables.push(pointer);
 
-        addDebugEntries(debugScreen, ball, strikePower);
+        addDebugEntries(debugScreen, ball, strikePower, pointer);
 
         //key press event listner
         document.addEventListener("keydown", (event) => {
@@ -127,6 +139,7 @@ function processKeyEvent(event, ball, debugScreen, strikePower) {
             ball.strike(cameraDirection, strikePower.getValue());
         }
     }
+
     //Down Arrow
     if (keyCode == 40) { ball.body.velocity = new CANNON.Vec3(0, 0, 0); }
     //I key
@@ -138,7 +151,7 @@ function processKeyEvent(event, ball, debugScreen, strikePower) {
 
 }
 
-function addDebugEntries(debugScreen, ball, strikePower) {
+function addDebugEntries(debugScreen, ball, strikePower, pointer) {
     //debug screen entries
     debugScreen.addEntry("Ball speed: ", () => {
         return ball.body.velocity.length().toFixed(2);
@@ -165,6 +178,12 @@ function addDebugEntries(debugScreen, ball, strikePower) {
         return ball.body.velocity.x.toFixed(2) + ", " +
             ball.body.velocity.y.toFixed(2) + ", " +
             ball.body.velocity.z.toFixed(2);
+    });
+    debugScreen.addEntry("Ptr quatern: ", () => {
+        return pointer.mesh.quaternion.x.toFixed(2) + ", " +  
+            pointer.mesh.quaternion.y.toFixed(2) + ", " +  
+            pointer.mesh.quaternion.z.toFixed(2) + ", " +  
+            pointer.mesh.quaternion.w.toFixed(2);
     });
 
 }

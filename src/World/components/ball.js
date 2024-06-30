@@ -2,22 +2,20 @@ import * as THREE from '../../../vendor/three/build/three.module.js';
 import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 
 function createBall() {
-    const materialSpec = {
-        color: 0xBBBBBB,
-    }
-
     const radius = 0.042; //meters
     const widthSegments = 32;
     const heightSegments = 16;
     const geometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments);
-    const material = new THREE.MeshStandardMaterial(materialSpec);
+    const material = createMaterial();
+    const physMaterial = new CANNON.Material('ball');
 
     const ball = {
         mesh: new THREE.Mesh(geometry, material),
         body: new CANNON.Body({
             mass: 0.045, //kg
             shape: new CANNON.Sphere(radius),
-            angularDamping: 0.80,
+            material: physMaterial,
+            angularDamping: 0.70,
         }),
     };
 
@@ -38,7 +36,12 @@ function createBall() {
             ball.body.velocity.y = temp;
         };
 
-
+        if (ball.mesh.position.y < -10) {
+            ball.mesh.position.set(0, 2, 0);
+            ball.body.position.copy(ball.mesh.position);
+            ball.body.velocity.set(0, 0, 0);
+            ball.body.torque.set(0, 0, 0);
+        };
     }
 
     ball.strike = (cameraDirection, strikePower) => {
@@ -50,6 +53,20 @@ function createBall() {
     };
 
     return ball;
+}
+
+function createMaterial() {
+    const textureLoader = new THREE.TextureLoader();
+
+    const texture = textureLoader.load(
+        '../../assets/uv.jpg',
+    );
+
+    return new THREE.MeshStandardMaterial({
+        map: texture,
+        //color: 0xBBBBBB,
+    });
+
 }
 
 export { createBall };

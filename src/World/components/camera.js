@@ -8,7 +8,7 @@ const baseTarget = {
 
 function createCamera() {
     const camera = new THREE.PerspectiveCamera(
-        35, //fov
+        75, //fov
         1, //aspect ratio (dummy value to be resized later)
         0.1, // near clipping plane
         100, // far clipping plane

@@ -8,12 +8,14 @@ function createGround(width, height, hole) {
     const geometry = new THREE.PlaneGeometry(width, height);
     geometry.rotateX(-Math.PI / 2);
     const material = createMaterial(width, height);
+    const physMaterial = new CANNON.Material('ground');
     const groundHalfExtents = new CANNON.Vec3(width / 2, 0.5, height / 2);
     const groundShape = new CANNON.Box(groundHalfExtents);
     const ground = {
         mesh: createGroundHoleClip(new THREE.Mesh(geometry, material), hole),
         body: new CANNON.Body({
             type: CANNON.Body.STATIC,
+            material: physMaterial,
             shape: groundShape,
         }),
     };
