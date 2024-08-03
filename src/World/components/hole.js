@@ -1,9 +1,11 @@
 import * as THREE from '../../../vendor/three/build/three.module.js';
-import { Body, Box, Plane, Vec3 } from 'https://cdn.skypack.dev/cannon-es@0.20.0';
+import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 
-function createHole(numSides) {
+const GROUND_OFFSET = -0.171;
 
-    const GROUND_OFFSET = -0.171;
+function createHole(position) {
+
+    const numSides = 32;
 
     const materialSpec = {
         color: 0x999999,
@@ -20,12 +22,13 @@ function createHole(numSides) {
     const parentMaterial = new THREE.MeshStandardMaterial(materialSpec);
     let parentMesh = new THREE.Mesh(parentGeometry, parentMaterial);
 
-    let body = new Body({
-        type: Body.STATIC,
-        shape: new Box(new Vec3(baseWidth / 2, baseHeight / 2, baseDepth / 2)),
+    let body = new CANNON.Body({
+        type: CANNON.Body.STATIC,
+        shape: new CANNON.Box(new CANNON.Vec3(baseWidth / 2, baseHeight / 2, baseDepth / 2)),
     });
 
-    body.position.set(0, GROUND_OFFSET, -4);
+    body.position.set(position.x, position.y, position.z);
+    body.position.y += GROUND_OFFSET;
     parentMesh.position.copy(body.position);
 
     const boxWidth = 3.5 * radius;
@@ -50,18 +53,50 @@ function createHole(numSides) {
         parentMesh.add(childMesh);
 
         //generate physical bound box
-        const offset = new Vec3(xOffset, yOffset, zOffset);
+        const offset = new CANNON.Vec3(xOffset, yOffset, zOffset);
         const quaternion = childMesh.quaternion;
-        const halfExtents = new Vec3(boxWidth / 2, holeDepth / 2, boxDepth / 2);
-        const boundBox = new Box(halfExtents);
+        const halfExtents = new CANNON.Vec3(boxWidth / 2, holeDepth / 2, boxDepth / 2);
+        const boundBox = new CANNON.Box(halfExtents);
         body.addShape(boundBox, offset, quaternion);
     }
 
     return {
         mesh: parentMesh,
         body: body,
+        trigger: createHoleTrigger(parentMesh),
         GROUND_OFFSET: GROUND_OFFSET,
     };
 }
 
+function createHoleTrigger(holeMesh) {
+    //trigger
+    const triggerRadius = 0.11;
+    const holeTriggerGeometry = new THREE.SphereGeometry(triggerRadius, 32, 16);
+    const holeTriggerMaterial = new THREE.MeshStandardMaterial({
+        color: 'red',
+    });
+    const holeTriggerMesh = new THREE.Mesh(holeTriggerGeometry, holeTriggerMaterial);
+    holeTriggerMesh.position.copy(holeMesh.position);
+    holeTriggerMesh.position.y = 
+        holeMesh.position.y - 
+        GROUND_OFFSET -
+        0.01;
+
+    //trigger body
+    const holeTriggerBody = new CANNON.Body({
+        type: CANNON.Body.STATIC,
+        isTrigger: true,
+        shape: new CANNON.Sphere(triggerRadius),
+    });
+
+    holeTriggerBody.position.copy(holeTriggerMesh.position);
+
+    const holeTrigger = {
+        mesh: holeTriggerMesh,
+        body: holeTriggerBody,
+    };
+
+    return holeTrigger;
+
+}
 export { createHole }; 

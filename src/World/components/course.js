@@ -1,20 +1,16 @@
-import { createWedge } from './obstacles/wedge.js';
 import { createBarrier } from './obstacles/barrier.js';
 import { createGround } from './ground.js';
 import { createHole } from './hole.js';
-import { createHoleTrigger } from './holeTrigger.js';
 
 import * as THREE from '../../../vendor/three/build/three.module.js';
 import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
-function createCourse(width, height) {
+function createCourse(ballPosition, holePosition) {
 
-    const wedge = createWedge();
-    
-    const hole = createHole(32);
-    const holeTrigger = createHoleTrigger(hole);
-    const ground = createGround(width, height, hole);
+    const hole = createHole(holePosition);
+    const ground = createGround(2, 10, hole);
 
     const barrierMaterial = new CANNON.Material('barrier');
+
     const northBarrier = createBarrier(2 + 0.4); 
     northBarrier.setQuaternion(0, 1.0, 0, 0.0);
     northBarrier.setPosition(0, 0, 5);
@@ -42,35 +38,51 @@ function createCourse(width, height) {
     barriers.push(eastBarrier);
 
     const course = {
-        ballSpawnpoint: new THREE.Vector3(0, 2, 3),
-        holeTrigger: holeTrigger,
+        ballSpawnpoint: ballPosition,
+        hole: hole,
         ground: ground,
         barriers: barriers,
-        models: [
-            ground.mesh,
-        ],
-        physObjects: [
-            ground.body,
-            holeTrigger.body,
-        ],
     };
 
-    course.models.push(hole.mesh);
-    course.models.push(northBarrier.mesh);
-    course.models.push(southBarrier.mesh);
-    course.models.push(westBarrier.mesh);
-    course.models.push(eastBarrier.mesh);
+    course.models = [ 
+        course.ground.mesh,
+        course.hole.mesh,
+        northBarrier.mesh,
+        southBarrier.mesh,
+        westBarrier.mesh,
+        eastBarrier.mesh,
+    ];
 
-    course.physObjects.push(hole.body);
-    course.physObjects.push(holeTrigger.body);
-    course.physObjects.push(northBarrier.body);
-    course.physObjects.push(southBarrier.body);
-    course.physObjects.push(westBarrier.body);
-    course.physObjects.push(eastBarrier.body);
+    course.physObjects = [
+        course.ground.body,
+        course.hole.body,
+        course.hole.trigger.body,
+        northBarrier.body,
+        southBarrier.body,
+        westBarrier.body,
+        eastBarrier.body,
+    ];
 
     return course;
 
 }
 
 export { createCourse };
+
+// course needs:
+// ball spawn point
+// hole location
+
+// other course objects:
+// the ground(s) (made of rectangular pieces)
+// barriers
+
+//course object structure:
+//  *ball spawn point
+//  *hole location
+//  *objects (unordered)
+//      *barriers
+//      *ground
+//      *obstacles
+//      *scenery
 

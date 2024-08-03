@@ -42,7 +42,9 @@ class World {
         const MAX_STRIKE_POWER = 60;
         const strikePower = createStrikePower(MIN_STRIKE_POWER, MAX_STRIKE_POWER);
 
-        const course = createCourse(2, 10);
+        const ballSpawnPoint = new THREE.Vector3(0, 2, 3);
+        const holePosition = new THREE.Vector3(0, 0, -4);
+        const course = createCourse(ballSpawnPoint, holePosition);
         const pointer = createPointer(camera,strikePower);
         const ball = createBall();
         ball.body.position.copy(course.ballSpawnpoint);
@@ -53,7 +55,7 @@ class World {
         camera.targetObj = ball.body;
 
         //hole-ball collision event listeners
-        course.holeTrigger.body.addEventListener('collide', (event) => {
+        course.hole.trigger.body.addEventListener('collide', (event) => {
             if (event.body === ball.body) {
                 course.ground.body.collisionFilterGroup = 2;
                 ball.body.collisionFilterMask = 1;
@@ -62,8 +64,8 @@ class World {
         });
         physWorld.addEventListener('endContact', (event) => {
             if (
-                (event.bodyA === ball.body && event.bodyB === course.holeTrigger.body) ||
-                (event.bodyA === course.holeTrigger.body && event.bodyB === ball.body)
+                (event.bodyA === ball.body && event.bodyB === course.hole.trigger.body) ||
+                (event.bodyA === course.hole.trigger.body && event.bodyB === ball.body)
             ) {
                 course.ground.body.collisionFilterGroup = 1;
                 ball.body.collisionFilterMask = -1;
@@ -82,7 +84,7 @@ class World {
         physWorld.addContactMaterial(ballGroundContact);
         physWorld.addContactMaterial(ballBarrierContact);
 
-        //adding phys bodys to cannon-js phys world
+        //adding phys bodies to cannon-js phys world
         physWorld.addBody(ball.body);
         for (let o of course.physObjects) {
             physWorld.addBody(o);
