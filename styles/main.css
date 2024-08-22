@@ -28,6 +28,7 @@ h1 {
     left: 10px;
     color: black;
     z-index: 1;
+    pointer-events: none;
 }
 
 #scene-container {

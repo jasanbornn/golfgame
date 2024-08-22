@@ -26,15 +26,20 @@ function createBall() {
     ball.mesh.position.copy(ball.body.position);
     ball.mesh.quaternion.copy(ball.body.quaternion);
 
+    ball.body.material = new CANNON.Material({
+        friction: 0.8,
+        restitution: 0.9,
+    });
+
     ball.tick = (delta) => {
         ball.mesh.position.copy(ball.body.position);
         ball.mesh.quaternion.copy(ball.body.quaternion);
 
-        if (ball.body.velocity.length() < 0.8 && ball.body.velocity.y < 0.01) {
-            const temp = ball.body.velocity.y;
-            ball.body.velocity.scale(0.98,ball.body.velocity);
-            ball.body.velocity.y = temp;
-        };
+//        if (ball.body.velocity.length() < 0.8 && ball.body.velocity.y < 0.01) {
+//            const temp = ball.body.velocity.y;
+//            ball.body.velocity.scale(0.98,ball.body.velocity);
+//            ball.body.velocity.y = temp;
+//        };
 
         if (ball.mesh.position.y < -10) {
             ball.mesh.position.set(0, 2, 0);

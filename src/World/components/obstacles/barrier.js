@@ -1,14 +1,17 @@
 import * as THREE from '../../../../vendor/three/build/three.module.js';
 import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 
-function createBarrier(width) {
-    const barrierWidth = width;
-    const barrierHeight = 0.2;
-    const barrierDepth = barrierHeight;
+function createBarrier(width, position, quaternion, hasExtraWidth) {
+    const barrierHeight = 0.1;
+    const barrierDepth = 0.05;
+    let barrierWidth = width;
+    if(hasExtraWidth) {
+        barrierWidth += barrierDepth * 2;   
+    }
 
     const geometry = new THREE.BoxGeometry(barrierWidth, barrierHeight, barrierDepth);
     const material = new THREE.MeshStandardMaterial({
-        color: 'brown',  
+        color: 'silver',  
     });
 
     const barrierHalfExtents = new CANNON.Vec3(
@@ -22,23 +25,22 @@ function createBarrier(width) {
             type: CANNON.STATIC,
             shape: new CANNON.Box(barrierHalfExtents),
         }),
-        setPosition: function(x, y, z) {
-            this.mesh.position.set(x, y, z);
-            this.mesh.translateY(barrierHeight / 2);
-            this.mesh.translateZ(-barrierHeight / 2);
-            this.body.position.copy(this.mesh.position);
-        },
-        setQuaternion: function(x, y, z, w) {
-            this.mesh.quaternion.set(x, y, z, w);
-            this.mesh.quaternion.normalize();
-            this.body.quaternion.copy(this.mesh.quaternion);
-        },
-        setPhysMaterial: function(material) {
-            this.body.material = material;
-        },
     }
-    barrier.mesh.position.set(0, 0, 0);
+
+    barrier.mesh.position.copy(position);
+    barrier.mesh.quaternion.copy(quaternion);
+
+    barrier.mesh.translateY(barrierHeight / 2);
+    barrier.mesh.translateZ(-barrierDepth / 2);
+
     barrier.body.position.copy(barrier.mesh.position);
+    barrier.body.quaternion.copy(barrier.mesh.quaternion);
+
+    //barrier.body.material = new CANNON.Material('barrier');
+    barrier.body.material = new CANNON.Material({
+        friction: 0.8,
+        restitution: 0.9,
+    });
 
     return barrier;
 }

@@ -26,6 +26,11 @@ function createHole(position) {
         type: CANNON.Body.STATIC,
         shape: new CANNON.Box(new CANNON.Vec3(baseWidth / 2, baseHeight / 2, baseDepth / 2)),
     });
+    
+    body.material = new CANNON.Material({
+        friction: 0.8,
+        restitution: 0.6,
+    });
 
     body.position.set(position.x, position.y, position.z);
     body.position.y += GROUND_OFFSET;
@@ -60,16 +65,18 @@ function createHole(position) {
         body.addShape(boundBox, offset, quaternion);
     }
 
-    return {
+    let hole = {
         mesh: parentMesh,
         body: body,
         trigger: createHoleTrigger(parentMesh),
         GROUND_OFFSET: GROUND_OFFSET,
-    };
+    }
+
+    return hole;
 }
 
 function createHoleTrigger(holeMesh) {
-    //trigger
+    //trigger visualization
     const triggerRadius = 0.11;
     const holeTriggerGeometry = new THREE.SphereGeometry(triggerRadius, 32, 16);
     const holeTriggerMaterial = new THREE.MeshStandardMaterial({
@@ -92,7 +99,7 @@ function createHoleTrigger(holeMesh) {
     holeTriggerBody.position.copy(holeTriggerMesh.position);
 
     const holeTrigger = {
-        mesh: holeTriggerMesh,
+        //mesh: holeTriggerMesh,
         body: holeTriggerBody,
     };
 

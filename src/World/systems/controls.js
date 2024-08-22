@@ -15,7 +15,7 @@ function createControls(camera, canvas) {
 
     controls.tick = (delta) => {
         controls.target.copy(controls.targetObj.position); 
-        controls.update();
+        controls.update(delta);
     };
 
     return controls;

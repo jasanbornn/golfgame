@@ -1,9 +1,9 @@
 function createStrikePower(minStrikePower, maxStrikePower) {
-    const iterations = 64;
+    const intervals = 64;
 
     const minPower = minStrikePower;
     const maxPower = maxStrikePower;
-    const powerInterval = (maxPower - minPower) / iterations;
+    const powerInterval = (maxPower - minPower) / intervals;
     const startPower = (maxPower + minPower) / 4;
 
     const strikePower = {
@@ -32,12 +32,8 @@ function createStrikePower(minStrikePower, maxStrikePower) {
         }
     };
 
-
     return strikePower;
-
-
 }
 
 export { createStrikePower };
-
 

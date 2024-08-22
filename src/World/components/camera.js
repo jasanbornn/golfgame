@@ -1,9 +1,9 @@
 import * as THREE from '../../../vendor/three/build/three.module.js';
-import { Vec3 } from 'https://cdn.skypack.dev/cannon-es@0.20.0';
+import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 
 const baseTarget = {
     position: new THREE.Vector3(0, 0, 0),
-    velocity: new Vec3(0, 0, 0),
+    velocity: new CANNON.Vec3(0, 0, 0),
 };
 
 function createCamera() {
