@@ -7,6 +7,8 @@ import { createLights } from './components/lights.js';
 import { createPhysWorld } from './components/physWorld.js';
 import { createStrikePower } from './components/strikePower.js';
 
+import { createInGameMenu } from './ui/inGameMenu.js';
+
 import { createDebugScreen } from './systems/debugScreen.js';
 import { createControls } from './systems/controls.js';
 import { createRenderer } from './systems/renderer.js';
@@ -37,6 +39,7 @@ class World {
         const light = createLights();
 
         const debugScreen = createDebugScreen();
+        const inGameMenu = createInGameMenu();
 
         const MIN_STRIKE_POWER = 1;
         const MAX_STRIKE_POWER = 60;
@@ -93,7 +96,7 @@ class World {
 
         //key press event listner
         document.addEventListener("keydown", (event) => {
-            processKeyEvent(event, ball, debugScreen, strikePower);
+            processKeyEvent(event, ball, debugScreen, strikePower, inGameMenu);
         }, false);
     }
 
@@ -111,7 +114,7 @@ class World {
     }
 }
 
-function processKeyEvent(event, ball, debugScreen, strikePower) {
+function processKeyEvent(event, ball, debugScreen, strikePower, inGameMenu) {
     let keyCode = event.which;
 
     //Up Arrow
@@ -131,6 +134,10 @@ function processKeyEvent(event, ball, debugScreen, strikePower) {
     if (keyCode == 87) { strikePower.increasePower(); }
     //S key
     if (keyCode == 83) { strikePower.decreasePower(); }
+    //M Key
+    if (keyCode == 77) {
+        inGameMenu.toggle();
+    }
 
 }
 

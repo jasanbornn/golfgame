@@ -25,7 +25,7 @@ function createBarrier(width, position, quaternion, hasExtraWidth) {
             type: CANNON.STATIC,
             shape: new CANNON.Box(barrierHalfExtents),
         }),
-    }
+    };
 
     barrier.mesh.position.copy(position);
     barrier.mesh.quaternion.copy(quaternion);

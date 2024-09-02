@@ -1,6 +1,7 @@
 import { createBarrier } from '../obstacles/barrier.js';
 import { createGround } from '../ground.js';
 import { createHole } from '../hole.js';
+import { createFlag } from '../flag.js';
 
 import * as THREE from '../../../../vendor/three/build/three.module.js';
 import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
@@ -8,6 +9,7 @@ import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 function createCourse2(physMaterials) {
 
     const hole = createHole(new THREE.Vector3(-3, -0.001, -3));
+    const flag = createFlag(new THREE.Vector3(-3, 0, -3));
     const holeGroundSection = createGround(
         1,
         5,
@@ -99,6 +101,7 @@ function createCourse2(physMaterials) {
     course.objects = [
         course.hole,
         course.hole.trigger,
+        flag,
     ];
 
     for(let groundSection of groundSections) {
