@@ -23,7 +23,6 @@ let camera;
 let renderer;
 let scene;
 let loop;
-let physWorld;
 
 class World {
     constructor(container) {
@@ -33,56 +32,26 @@ class World {
         const resizer = new Resizer(container, camera, renderer);
         scene = createScene();
         loop = new Loop(camera, scene, renderer);
-        physWorld = createPhysWorld();
+        const physWorld = createPhysWorld();
         physWorld.solver.iterations = 50;
         const controls = createControls(camera, renderer.domElement);
         const light = createLights();
-
         const debugScreen = createDebugScreen();
+
         const inGameMenu = createInGameMenu();
 
         const MIN_STRIKE_POWER = 1;
         const MAX_STRIKE_POWER = 60;
         const strikePower = createStrikePower(MIN_STRIKE_POWER, MAX_STRIKE_POWER);
 
-        const course = createCourse(2);
-        const pointer = createPointer(camera,strikePower);
         const ball = createBall();
-        ball.body.position.copy(course.ballSpawnpoint);
-        ball.mesh.position.copy(ball.body.position);
+        const pointer = createPointer(camera,strikePower);
 
         //camera target
-        controls.targetObj = ball.mesh;
+        controls.targetObj = ball.body;
         camera.targetObj = ball.body;
 
-        //hole-ball collision event listeners
-        course.hole.trigger.body.addEventListener('collide', (event) => {
-            if (event.body === ball.body) {
-                course.holeGroundSection.body.collisionFilterGroup = 2;
-                ball.body.collisionFilterMask = 1;
-                console.log('trigger activated', event);
-            }
-        });
-        physWorld.addEventListener('endContact', (event) => {
-            if (
-                (event.bodyA === ball.body && event.bodyB === course.hole.trigger.body) ||
-                (event.bodyA === course.hole.trigger.body && event.bodyB === ball.body)
-            ) {
-                course.holeGroundSection.body.collisionFilterGroup = 1;
-                ball.body.collisionFilterMask = -1;
-                console.log('trigger disactivated', event);
-            }
-        });
-
-        //add game objects to the world
-        scene.add(ball.mesh); 
-        scene.add(pointer.mesh);
-        scene.add(light);
-        physWorld.addBody(ball.body);
-        for (let o of course.objects) {
-            if(o.mesh != null) { scene.add(o.mesh); }
-            if(o.body != null) { physWorld.addBody(o.body); }
-        }
+        loadCourse(1, ball, pointer, camera, physWorld, light); 
 
         //adding updatable objects to updating loop
         loop.updatables.push(physWorld);
@@ -96,7 +65,7 @@ class World {
 
         //key press event listner
         document.addEventListener("keydown", (event) => {
-            processKeyEvent(event, ball, debugScreen, strikePower, inGameMenu);
+            processKeyEvent(event, ball, debugScreen, strikePower, inGameMenu, pointer, camera, physWorld, light);
         }, false);
     }
 
@@ -114,7 +83,59 @@ class World {
     }
 }
 
-function processKeyEvent(event, ball, debugScreen, strikePower, inGameMenu) {
+function loadCourse(courseNum, ball, pointer, camera, physWorld, light) {
+    const course = createCourse(courseNum);
+    ball.mesh.position.copy(course.ballSpawnpoint);
+    ball.body.position.copy(course.ballSpawnpoint);
+    ball.body.velocity = new CANNON.Vec3(0, 0, 0);
+    ball.body.angularVelocity = new CANNON.Vec3(0, 0, 0);
+    camera.position.copy(course.cameraSpawnpoint);
+
+    scene.clear();
+    physWorld.bodies = [];
+
+    //add game objects to the world
+    scene.add(ball.mesh); 
+    scene.add(pointer.mesh);
+    scene.add(light);
+    physWorld.addBody(ball.body);
+    for (let o of course.objects) {
+        if(o.mesh != null) { scene.add(o.mesh); }
+        if(o.body != null) { physWorld.addBody(o.body); }
+    }
+
+    //event listeners
+
+    const holeCollideResponse = (event) => {
+        if (event.body === ball.body) {
+            course.holeGroundSection.body.collisionFilterGroup = 2;
+            ball.body.collisionFilterMask = 1;
+            console.log('trigger activated', event);
+        }
+    };
+
+    const holeCollideEndResponse = (event) => {
+        if (
+            (event.bodyA === ball.body && event.bodyB === course.hole.trigger.body) ||
+            (event.bodyA === course.hole.trigger.body && event.bodyB === ball.body)
+        ) {
+            course.holeGroundSection.body.collisionFilterGroup = 1;
+            ball.body.collisionFilterMask = -1;
+            console.log('trigger disactivated', event);
+        }
+
+    };
+
+    course.hole.trigger.body.removeEventListener('collide', holeCollideResponse);
+    course.hole.trigger.body.addEventListener('collide', holeCollideResponse);
+
+    physWorld.removeEventListener('endContact', holeCollideEndResponse);
+    physWorld.addEventListener('endContact', holeCollideEndResponse);
+
+    return course;
+}
+
+function processKeyEvent(event, ball, debugScreen, strikePower, inGameMenu, pointer, camera, physWorld, light) {
     let keyCode = event.which;
 
     //Up Arrow
@@ -138,6 +159,10 @@ function processKeyEvent(event, ball, debugScreen, strikePower, inGameMenu) {
     if (keyCode == 77) {
         inGameMenu.toggle();
     }
+    //1 key
+    if (keyCode == 49) { loadCourse(1, ball, pointer, camera, physWorld, light); }
+    //2 key
+    if (keyCode == 50) { loadCourse(2, ball, pointer, camera, physWorld, light); }
 
 }
 
