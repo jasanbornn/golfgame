@@ -11,6 +11,10 @@ function createInGameMenu() {
 
     const inGameMenu = {
         state: "closed",
+
+        //expose buttons to World.js
+        restartButton: restartButton,
+
     };
 
     inGameMenu.setState = (state) => {

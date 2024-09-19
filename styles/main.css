@@ -61,7 +61,7 @@ body {
 
 .button {
     background-color: sandybrown;
-    border: 2px;
+    border: 4px solid black;
     margin: 10px;
     font-size: 30px;
     color: black;
@@ -89,6 +89,7 @@ body {
 
 .level-box {
     background-color: sandybrown;
+    border: 4px solid black;
     border-radius: 10px;
     padding: 10px;
 }

@@ -19,6 +19,8 @@ function createCourse(courseNum) {
         course = createCourse2(physMaterials);
     }
 
+    course.number = courseNum;
+
     return course;
 
 }

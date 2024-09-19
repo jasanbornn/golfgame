@@ -95,9 +95,9 @@ function createWorld(container) {
         //M Key
         if (keyCode == 77) { inGameMenu.toggle(); }
         //1 key
-        if (keyCode == 49) { loadCourse(1, ball, pointer, camera, physWorld, light); }
+        if (keyCode == 49) { course = loadCourse(1); }
         //2 key
-        if (keyCode == 50) { loadCourse(2, ball, pointer, camera, physWorld, light); }
+        if (keyCode == 50) { course = loadCourse(2); }
 
     }
 
@@ -157,8 +157,6 @@ function createWorld(container) {
     const light = createLights();
     const debugScreen = createDebugScreen();
 
-    const inGameMenu = createInGameMenu();
-
     const MIN_STRIKE_POWER = 1;
     const MAX_STRIKE_POWER = 60;
     const strikePower = createStrikePower(MIN_STRIKE_POWER, MAX_STRIKE_POWER);
@@ -170,7 +168,14 @@ function createWorld(container) {
     controls.targetObj = ball.body;
     camera.targetObj = ball.body;
 
-    loadCourse(1); 
+    let course = loadCourse(2);
+
+    const inGameMenu = createInGameMenu();
+    inGameMenu.restartButton.onclick = () => {
+        console.log(course.number);
+        course = loadCourse(course.number); 
+        inGameMenu.setState("closed");
+    };
 
     //adding updatable objects to updating loop
     loop.updatables.push(physWorld);
