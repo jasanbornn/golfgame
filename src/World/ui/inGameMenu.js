@@ -9,11 +9,24 @@ function createInGameMenu() {
     const levelsMenuDiv = document.getElementById("levels-menu");
     const levelsBackButton = document.getElementById("levels-back-button");
 
+    const levelBoxes = [
+        document.getElementById("level-box-1"),
+        document.getElementById("level-box-2"),
+        document.getElementById("level-box-3"),
+        document.getElementById("level-box-4"),
+        document.getElementById("level-box-5"),
+        document.getElementById("level-box-6"),
+        document.getElementById("level-box-7"),
+        document.getElementById("level-box-8"),
+        document.getElementById("level-box-9"),
+    ];
+
     const inGameMenu = {
         state: "closed",
-
-        //expose buttons to World.js
+        //expose buttons and divs to World.js
         restartButton: restartButton,
+
+        levelBoxes: levelBoxes,
 
     };
 

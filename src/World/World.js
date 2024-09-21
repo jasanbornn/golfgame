@@ -177,6 +177,13 @@ function createWorld(container) {
         inGameMenu.setState("closed");
     };
 
+    for(let i = 0; i < 9; i++) {
+        inGameMenu.levelBoxes[i].onclick = () => {
+            course = loadCourse(i + 1);
+            inGameMenu.setState("closed");
+        };
+    }
+
     //adding updatable objects to updating loop
     loop.updatables.push(physWorld);
     loop.updatables.push(ball);
