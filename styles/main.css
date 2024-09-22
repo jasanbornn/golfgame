@@ -12,7 +12,34 @@ body {
 
 }
 
-.ui-container {
+.hud-container {
+    display: flex;
+    justify-content: center;
+    align-content: flex-end;
+    flex-wrap: wrap;
+    height: 100%;
+}
+
+.strike-meter-container {
+    display: flex;
+    height: 40px;
+    margin: 30px;
+    width: 40%;
+    min-width: 250px;
+    border: 4px solid black;
+    border-radius: 20px;
+    z-index: 2;
+}
+
+.strike-meter-value {
+    height: 100%;
+    width: 60%;
+    background-color: red;
+    border-radius: 15px;
+    z-index: 2;
+}
+
+.menu-container {
     display: flex;
     justify-content: center;
     align-content: center;

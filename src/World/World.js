@@ -8,6 +8,7 @@ import { createPhysWorld } from './components/physWorld.js';
 import { createStrikePower } from './components/strikePower.js';
 
 import { createInGameMenu } from './ui/inGameMenu.js';
+import { createHud } from './ui/hud.js';
 
 import { createDebugScreen } from './systems/debugScreen.js';
 import { createControls } from './systems/controls.js';
@@ -112,18 +113,6 @@ function createWorld(container) {
         debugScreen.addEntry("Power %: ", () => {
             return strikePower.percentPower().toFixed(2);
         });
-        //debugScreen.addEntry("Cam pos: ", () => {
-        //    return camera.position.x.toFixed(2) + "," +
-        //        camera.position.y.toFixed(2) + ", " +
-        //        camera.position.z.toFixed(2);
-        //});
-        //debugScreen.addEntry("Cam dir: ", () => {
-        //    const camDirection = new THREE.Vector3();
-        //    camera.getWorldDirection(camDirection);
-        //    return camDirection.x.toFixed(2) + "," +
-        //        camDirection.y.toFixed(2) + ", " +
-        //        camDirection.z.toFixed(2);
-        //});
         debugScreen.addEntry("Ball pos: ", () => {
             return ball.mesh.position.x.toFixed(2) + ", " +  
                 ball.mesh.position.y.toFixed(2) + ", " +  
@@ -184,12 +173,19 @@ function createWorld(container) {
         };
     }
 
+    const hud = createHud();
+    hud.pullStrikePowerPercent = () => {
+        return strikePower.percentPower();
+    };
+
+
     //adding updatable objects to updating loop
     loop.updatables.push(physWorld);
     loop.updatables.push(ball);
     loop.updatables.push(camera);
     loop.updatables.push(controls);
     loop.updatables.push(pointer);
+    loop.updatables.push(hud);
     loop.updatables.push(debugScreen);
 
     addDebugEntries();
