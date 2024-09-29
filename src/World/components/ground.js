@@ -4,9 +4,27 @@ import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 
 
 function createGround(width, depth, position, quaternion, hole) {
+    const textureLoader = new THREE.TextureLoader();
+    textureLoader.path = 'putt';
+    const createMaterial = (width, depth) => {
+        textureLoader.load(
+            '../../assets/grass.png',
+            (texture) => {
+                texture.wrapS = THREE.RepeatedWrapping;
+                texture.wrapT = THREE.RepeatedWrapping;
+                texture.repeat.set(width, depth);
+                ground.mesh.material = new THREE.MeshStandardMaterial({
+                    map: texture,
+                });
+            },
+        );
+    }
+
     const geometry = new THREE.PlaneGeometry(width, depth);
     geometry.rotateX(-Math.PI / 2);
-    const material = createMaterial(width, depth);
+    const material = new THREE.MeshStandardMaterial({
+        color: 0x008013, // grass green
+    });
     const physMaterial = new CANNON.Material('ground');
     const groundHalfExtents = new CANNON.Vec3(width / 2, 0.5, depth / 2);
     const groundShape = new CANNON.Box(groundHalfExtents);
@@ -21,6 +39,8 @@ function createGround(width, depth, position, quaternion, hole) {
             shape: groundShape,
         }),
     };
+
+    createMaterial(width, depth);
 
     ground.body.position.copy(position);
     ground.body.quaternion.copy(quaternion);
@@ -59,27 +79,6 @@ function createGroundHoleClip(groundPreMesh, hole) {
     const groundPostMesh = CSG.toMesh( groundPostBSP, groundPreMesh.matrix, groundPreMesh.material);
 
     return groundPostMesh;
-}
-
-function createMaterial(width, depth) {
-
-    const textureLoader = new THREE.TextureLoader();
-
-    const texture = textureLoader.load(
-        //'../../assets/dev-texture.png',
-        '../../assets/grass.png',
-    );
-
-    texture.wrapS = THREE.RepeatedWrapping;
-    texture.wrapT = THREE.RepeatedWrapping;
-
-    texture.repeat.set(width, depth);
-
-    return new THREE.MeshStandardMaterial({
-        map: texture,
-        //color: 'darkgreen',
-    });
-    
 }
 
 export { createGround };

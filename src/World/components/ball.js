@@ -1,12 +1,24 @@
 import * as THREE from '../../../vendor/three/build/three.module.js';
 import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
-
 function createBall() {
+    const textureLoader = new THREE.TextureLoader();
+    textureLoader.path = 'putt';
+    const createMaterial = () => {
+        textureLoader.load(
+            '../../assets/uv.jpg',
+            (texture) => { 
+                ball.mesh.material = new THREE.MeshStandardMaterial({
+                    map: texture,
+                });
+            },
+        );
+    }
+
     const radius = 0.042; //meters
     const widthSegments = 32;
     const heightSegments = 16;
     const geometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments);
-    const material = createMaterial();
+    const material = new THREE.MeshStandardMaterial();
     const physMaterial = new CANNON.Material('ball');
 
     const ball = {
@@ -18,6 +30,8 @@ function createBall() {
             angularDamping: 0.70,
         }),
     };
+
+    createMaterial();
 
     //ball.body.position.set(0, 0.1, 0);
     ball.body.position.set(0, 2, 0);
@@ -34,12 +48,6 @@ function createBall() {
     ball.tick = (delta) => {
         ball.mesh.position.copy(ball.body.position);
         ball.mesh.quaternion.copy(ball.body.quaternion);
-
-//        if (ball.body.velocity.length() < 0.8 && ball.body.velocity.y < 0.01) {
-//            const temp = ball.body.velocity.y;
-//            ball.body.velocity.scale(0.98,ball.body.velocity);
-//            ball.body.velocity.y = temp;
-//        };
 
         if (ball.mesh.position.y < -10) {
             ball.mesh.position.set(0, 2, 0);
@@ -58,20 +66,6 @@ function createBall() {
     };
 
     return ball;
-}
-
-function createMaterial() {
-    const textureLoader = new THREE.TextureLoader();
-
-    const texture = textureLoader.load(
-        '../../assets/uv.jpg',
-    );
-
-    return new THREE.MeshStandardMaterial({
-        map: texture,
-        //color: 0xBBBBBB,
-    });
-
 }
 
 export { createBall };
