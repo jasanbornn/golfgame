@@ -45,9 +45,12 @@ function createBall() {
         restitution: 0.9,
     });
 
+    ball.touchSphere = createBallTouchSphere();
+
     ball.tick = (delta) => {
         ball.mesh.position.copy(ball.body.position);
         ball.mesh.quaternion.copy(ball.body.quaternion);
+        ball.touchSphere.mesh.position.copy(ball.mesh.position);
 
         if (ball.mesh.position.y < -10) {
             ball.mesh.position.set(0, 2, 0);
@@ -66,6 +69,24 @@ function createBall() {
     };
 
     return ball;
+}
+
+function createBallTouchSphere() {
+    const radius = 0.2; //meters
+    const widthSegments = 32;
+    const heightSegments = 16;
+    const geometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments);
+    const material = new THREE.MeshStandardMaterial({
+        color: 'red',
+        wireframe: true,
+        visible: false,
+    });
+
+    const ballTouchSphere = {
+        mesh: new THREE.Mesh(geometry, material),
+    }
+
+    return ballTouchSphere;
 }
 
 export { createBall };

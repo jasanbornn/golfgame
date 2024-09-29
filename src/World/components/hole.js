@@ -81,6 +81,8 @@ function createHoleTrigger(holeMesh) {
     const holeTriggerGeometry = new THREE.SphereGeometry(triggerRadius, 32, 16);
     const holeTriggerMaterial = new THREE.MeshStandardMaterial({
         color: 'red',
+        wireframe: true,
+        visible: false,
     });
     const holeTriggerMesh = new THREE.Mesh(holeTriggerGeometry, holeTriggerMaterial);
     holeTriggerMesh.position.copy(holeMesh.position);
@@ -99,11 +101,12 @@ function createHoleTrigger(holeMesh) {
     holeTriggerBody.position.copy(holeTriggerMesh.position);
 
     const holeTrigger = {
-        //mesh: holeTriggerMesh,
+        mesh: holeTriggerMesh,
         body: holeTriggerBody,
     };
 
     return holeTrigger;
 
 }
+
 export { createHole }; 

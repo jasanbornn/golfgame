@@ -18,6 +18,10 @@ function createStrikePower(minStrikePower, maxStrikePower) {
         return strikePower.power / maxPower;
     };
 
+    strikePower.setPercentPower = (percent) => {
+        strikePower.power = maxPower * percent;
+    }
+
     strikePower.increasePower = () => {
         strikePower.power += powerInterval;
         if (strikePower.power > maxStrikePower) {

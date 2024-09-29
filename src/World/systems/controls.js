@@ -7,11 +7,34 @@ const baseTarget = {
 };
 
 function createControls(camera, canvas) {
+    const MIN_POLAR_ANGLE = Math.PI / 4;
+    const MAX_POLAR_ANGLE = Math.PI / 2;
+
     const controls = new OrbitControls(camera, canvas);
     controls.enablePan = false;
     controls.targetObj = baseTarget;
-    controls.minPolarAngle = Math.PI / 4;
-    controls.maxPolarAngle = Math.PI / 2;
+    controls.minPolarAngle = MIN_POLAR_ANGLE;
+    controls.maxPolarAngle = MAX_POLAR_ANGLE;
+
+    controls.lockVertical = (bool) => {
+        const polarAngle = controls.getPolarAngle();
+        if(bool) {
+            controls.minPolarAngle = polarAngle;
+            controls.maxPolarAngle = polarAngle;
+        } else {
+            controls.minPolarAngle = MIN_POLAR_ANGLE;
+            controls.maxPolarAngle = MAX_POLAR_ANGLE;
+        }
+    };
+
+    controls.invertHorizontal = (bool) => {
+        if(bool) {
+            controls.rotateSpeed = -0.5;
+        } else {
+            controls.rotateSpeed = 1.0;
+        }
+    };
+
 
     controls.tick = (delta) => {
         controls.target.copy(controls.targetObj.position); 

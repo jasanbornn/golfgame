@@ -39,6 +39,7 @@ function createWorld(container) {
 
         //add game objects to the world
         scene.add(ball.mesh); 
+        scene.add(ball.touchSphere.mesh);
         scene.add(pointer.mesh);
         scene.add(light);
         physWorld.addBody(ball.body);
@@ -69,14 +70,79 @@ function createWorld(container) {
 
         };
 
+        const pointerBallInteract = (event) => {
+            const pointerPos = getPointerPos();
+
+            const raycaster = new THREE.Raycaster();
+
+            raycaster.setFromCamera(pointerPos, camera);
+
+            const intersects = raycaster.intersectObject(ball.touchSphere.mesh, false);
+            if(intersects.length != 0) {
+                if(intersects[0].object === ball.touchSphere.mesh) {
+                    pointerControlsStrikePower = true;
+                    controls.lockVertical(true);
+                    controls.invertHorizontal(true);
+                }
+            }
+        }
+
+
+
+        let strikePowerMoving = false;
+        let startPointerPos;
+        const pointerUpResponse = (event) => {
+            if(pointerControlsStrikePower) {
+                strikeBall();
+            }
+            strikePowerMoving = false;
+            pointerControlsStrikePower = false;
+            controls.lockVertical(false);
+            controls.invertHorizontal(false);
+        }
+
+        const pointerMoveResponse = (event) => {
+            if(!pointerControlsStrikePower) {
+                return;
+            }
+
+            if(strikePowerMoving) {
+                let newStrikePower = (startPointerPos.y - getPointerPos().y) * 0.80;
+                if(newStrikePower > 1.0) {
+                    newStrikePower = 1.0;
+                }
+                if(newStrikePower < 0.0) {
+                    newStrikePower = 0.0;
+                }
+                strikePower.setPercentPower(newStrikePower);
+            } else {
+                strikePowerMoving = true;
+                startPointerPos = getPointerPos();
+            }
+        }
+
         course.hole.trigger.body.removeEventListener('collide', holeCollideResponse);
         course.hole.trigger.body.addEventListener('collide', holeCollideResponse);
 
         physWorld.removeEventListener('endContact', holeCollideEndResponse);
         physWorld.addEventListener('endContact', holeCollideEndResponse);
 
+        window.addEventListener('mousedown', pointerBallInteract);
+        window.addEventListener('mouseup', pointerUpResponse);
+        window.addEventListener('mousemove', pointerMoveResponse);
+
         return course;
     }
+
+    const getPointerPos = () => {
+        //get pointer position on screen
+        //see https://threejs.org/docs/#api/en/core/Raycaster
+        const pointerPos = new THREE.Vector2();
+        pointerPos.x = (event.clientX / window.innerWidth) * 2 - 1;
+        pointerPos.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+        return pointerPos;
+    };
 
     const strikeBall = () => {
         if (ball.body.velocity.length() < 0.01) {
@@ -157,6 +223,8 @@ function createWorld(container) {
     const light = createLights();
     const debugScreen = createDebugScreen();
 
+    let pointerControlsStrikePower = false;
+
     const MIN_STRIKE_POWER = 1;
     const MAX_STRIKE_POWER = 60;
     const strikePower = createStrikePower(MIN_STRIKE_POWER, MAX_STRIKE_POWER);
@@ -191,8 +259,6 @@ function createWorld(container) {
             inGameMenu.setState("closed");
         };
     }
-
-
 
     //adding updatable objects to updating loop
     loop.updatables.push(physWorld);
