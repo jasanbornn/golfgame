@@ -65,6 +65,7 @@ function createCourse1() {
         ballSpawnpoint: new THREE.Vector3(0, 0.1, 3),
         cameraSpawnpoint: new THREE.Vector3(0, 1, 5),
         hole: hole,
+        par: 1,
         holeGroundSection: holeGroundSection,
         groundSections: groundSections,
         barriers: barriers,

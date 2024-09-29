@@ -32,6 +32,11 @@ function createWorld(container) {
         scene.clear();
         physWorld.bodies = [];
 
+        strokes = 0;
+        par = course.par;
+        hud.setStrokesText(strokes);
+        hud.setParText(par);
+
         //add game objects to the world
         scene.add(ball.mesh); 
         scene.add(pointer.mesh);
@@ -73,16 +78,22 @@ function createWorld(container) {
         return course;
     }
 
+    const strikeBall = () => {
+        if (ball.body.velocity.length() < 0.01) {
+            let cameraDirection = new THREE.Vector3(0, 0, 0);
+            camera.getWorldDirection(cameraDirection);
+            ball.strike(cameraDirection, strikePower.getValue());
+            strokes += 1;
+            hud.setStrokesText(strokes);
+        }
+    };
+
     const processKeyEvent = (event) => {
         let keyCode = event.which;
 
         //Up Arrow
         if (keyCode == 38) {
-            if (ball.body.velocity.length() < 0.01) {
-                let cameraDirection = new THREE.Vector3(0, 0, 0);
-                camera.getWorldDirection(cameraDirection);
-                ball.strike(cameraDirection, strikePower.getValue());
-            }
+            strikeBall();
         }
 
         //Down Arrow
@@ -157,6 +168,14 @@ function createWorld(container) {
     controls.targetObj = ball.body;
     camera.targetObj = ball.body;
 
+    let strokes = 0;
+    let par;
+
+    const hud = createHud();
+    hud.pullStrikePowerPercent = () => {
+        return strikePower.percentPower();
+    };
+
     let course = loadCourse(2);
 
     const inGameMenu = createInGameMenu();
@@ -173,10 +192,6 @@ function createWorld(container) {
         };
     }
 
-    const hud = createHud();
-    hud.pullStrikePowerPercent = () => {
-        return strikePower.percentPower();
-    };
 
 
     //adding updatable objects to updating loop

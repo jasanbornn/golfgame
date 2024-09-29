@@ -1,6 +1,6 @@
 function createDebugScreen() {
     const debugScreen = {
-        visible: true,
+        visible: false,
         entries: [],
         textContent: "",
         textElement: document.getElementById("debug-text"),

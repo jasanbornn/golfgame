@@ -94,6 +94,7 @@ function createCourse2(physMaterials) {
         ballSpawnpoint: new THREE.Vector3(0, 0.1, 3.5),
         cameraSpawnpoint: new THREE.Vector3(0, 1, 5),
         hole: hole,
+        par: 2,
         holeGroundSection: holeGroundSection,
         groundSections: groundSections,
         barriers: barriers,

@@ -15,7 +15,7 @@ function createStrikePower(minStrikePower, maxStrikePower) {
     };
 
     strikePower.percentPower = () => {
-        return strikePower.power / (maxPower - minPower);
+        return strikePower.power / maxPower;
     };
 
     strikePower.increasePower = () => {
