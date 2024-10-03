@@ -70,7 +70,10 @@ function createWorld(container) {
 
         };
 
-        const pointerBallInteract = (event) => {
+        const pointerDownResponse = (event) => {
+            if(inGameMenu.state != "closed") {
+                return;
+            }
             const pointerPos = getPointerPos();
 
             const raycaster = new THREE.Raycaster();
@@ -127,7 +130,7 @@ function createWorld(container) {
         physWorld.removeEventListener('endContact', holeCollideEndResponse);
         physWorld.addEventListener('endContact', holeCollideEndResponse);
 
-        window.addEventListener('mousedown', pointerBallInteract);
+        window.addEventListener('mousedown', pointerDownResponse);
         window.addEventListener('mouseup', pointerUpResponse);
         window.addEventListener('mousemove', pointerMoveResponse);
 

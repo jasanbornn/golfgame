@@ -4,7 +4,8 @@ function createInGameMenu() {
     const resumeButton = document.getElementById("resume-button");
     const restartButton = document.getElementById("restart-button");
     const levelsButton = document.getElementById("levels-button");
-    const optionsButton = document.getElementById("options-button");
+
+    const menuButton = document.getElementById("menu-button");
 
     const levelsMenuDiv = document.getElementById("levels-menu");
     const levelsBackButton = document.getElementById("levels-back-button");
@@ -60,9 +61,11 @@ function createInGameMenu() {
         }
     }
 
+    menuButton.onclick = inGameMenu.toggle;
     resumeButton.onclick = inGameMenu.toggle;
-    levelsButton.onclick = () => { inGameMenu.setState("levels-menu"); }
-    levelsBackButton.onclick = () => { inGameMenu.setState("main-menu"); }
+    levelsButton.onclick = () => { inGameMenu.setState("levels-menu"); };
+    levelsBackButton.onclick = () => { inGameMenu.setState("main-menu"); };
+
 
     return inGameMenu;
 }
