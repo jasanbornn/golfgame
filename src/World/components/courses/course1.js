@@ -73,7 +73,8 @@ function createCourse1() {
 
     course.objects = [
         course.hole,
-        course.hole.trigger,
+        course.hole.collideTrigger,
+        course.hole.inTrigger,
     ];
 
     for(let groundSection of groundSections) {

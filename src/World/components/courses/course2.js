@@ -102,7 +102,8 @@ function createCourse2(physMaterials) {
 
     course.objects = [
         course.hole,
-        course.hole.trigger,
+        course.hole.collideTrigger,
+        course.hole.inTrigger,
         flag,
     ];
 

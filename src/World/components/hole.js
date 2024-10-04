@@ -68,45 +68,88 @@ function createHole(position) {
     let hole = {
         mesh: parentMesh,
         body: body,
-        trigger: createHoleTrigger(parentMesh),
+        collideTrigger: createHoleCollideTrigger(parentMesh.position),
+        inTrigger: createHoleInTrigger(parentMesh.position),
         GROUND_OFFSET: GROUND_OFFSET,
     }
 
     return hole;
 }
 
-function createHoleTrigger(holeMesh) {
+function createHoleCollideTrigger(holeMeshPosition) {
     //trigger visualization
     const triggerRadius = 0.11;
-    const holeTriggerGeometry = new THREE.SphereGeometry(triggerRadius, 32, 16);
-    const holeTriggerMaterial = new THREE.MeshStandardMaterial({
+    const holeCollideTriggerGeometry = new THREE.SphereGeometry(triggerRadius, 32, 16);
+    const holeCollideTriggerMaterial = new THREE.MeshStandardMaterial({
         color: 'red',
         wireframe: true,
         visible: false,
     });
-    const holeTriggerMesh = new THREE.Mesh(holeTriggerGeometry, holeTriggerMaterial);
-    holeTriggerMesh.position.copy(holeMesh.position);
-    holeTriggerMesh.position.y = 
-        holeMesh.position.y - 
+    const holeCollideTriggerMesh = new THREE.Mesh(holeCollideTriggerGeometry, holeCollideTriggerMaterial);
+    holeCollideTriggerMesh.position.copy(holeMeshPosition);
+    holeCollideTriggerMesh.position.y = 
+        holeMeshPosition.y - 
         GROUND_OFFSET -
         0.01;
 
     //trigger body
-    const holeTriggerBody = new CANNON.Body({
+    const holeCollideTriggerBody = new CANNON.Body({
         type: CANNON.Body.STATIC,
         isTrigger: true,
         shape: new CANNON.Sphere(triggerRadius),
     });
 
-    holeTriggerBody.position.copy(holeTriggerMesh.position);
+    holeCollideTriggerBody.position.copy(holeCollideTriggerMesh.position);
 
-    const holeTrigger = {
-        mesh: holeTriggerMesh,
-        body: holeTriggerBody,
+    const holeCollideTrigger = {
+        mesh: holeCollideTriggerMesh,
+        body: holeCollideTriggerBody,
     };
 
-    return holeTrigger;
+    return holeCollideTrigger;
 
+}
+
+function createHoleInTrigger(holeMeshPosition) {
+    //trigger visualization
+    const triggerRadius = 0.11;
+    const triggerHeight = 0.05;
+    const holeInTriggerGeometry = new THREE.CylinderGeometry(
+        triggerRadius,
+        triggerRadius,
+        triggerHeight,
+    );
+    const holeInTriggerMaterial = new THREE.MeshStandardMaterial({
+        color: 'red',
+        wireframe: true,
+        visible: true,
+    });
+    const holeInTriggerMesh = new THREE.Mesh(holeInTriggerGeometry, holeInTriggerMaterial);
+    holeInTriggerMesh.position.copy(holeMeshPosition);
+    holeInTriggerMesh.position.y =
+        holeMeshPosition.y -
+        GROUND_OFFSET -
+        0.1;
+
+    //trigger body
+    const holeInTriggerBody = new CANNON.Body({
+        type: CANNON.Body.STATIC,
+        isTrigger: true,
+        shape: new CANNON.Cylinder(
+            triggerRadius,
+            triggerRadius,
+            triggerHeight,
+        ),
+    });
+
+    holeInTriggerBody.position.copy(holeInTriggerMesh.position);
+
+    const holeInTrigger = {
+        mesh: holeInTriggerMesh,
+        body: holeInTriggerBody,
+    };
+
+    return holeInTrigger;
 }
 
 export { createHole }; 

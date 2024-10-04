@@ -22,7 +22,7 @@ import { CSG } from '../../vendor/three-csg/three-csg.js';
 
 function createWorld(container) {
     const loadCourse = (courseNum) => {
-        const course = createCourse(courseNum);
+        let course = createCourse(courseNum);
         ball.mesh.position.copy(course.ballSpawnpoint);
         ball.body.position.copy(course.ballSpawnpoint);
         ball.body.velocity = new CANNON.Vec3(0, 0, 0);
@@ -54,18 +54,24 @@ function createWorld(container) {
             if (event.body === ball.body) {
                 course.holeGroundSection.body.collisionFilterGroup = 2;
                 ball.body.collisionFilterMask = 1;
-                console.log('trigger activated', event);
             }
         };
 
+        const holeInResponse = (event) => {
+            if(event.body === ball.body) {
+
+                course = loadCourse(course.number + 1);
+                console.log('inTrigger activated', event);
+            }
+        }
+
         const holeCollideEndResponse = (event) => {
             if (
-                (event.bodyA === ball.body && event.bodyB === course.hole.trigger.body) ||
-                (event.bodyA === course.hole.trigger.body && event.bodyB === ball.body)
+                (event.bodyA === ball.body && event.bodyB === course.hole.collideTrigger.body) ||
+                (event.bodyA === course.hole.collideTrigger.body && event.bodyB === ball.body)
             ) {
                 course.holeGroundSection.body.collisionFilterGroup = 1;
                 ball.body.collisionFilterMask = -1;
-                console.log('trigger disactivated', event);
             }
 
         };
@@ -109,7 +115,6 @@ function createWorld(container) {
 
             if(activelyControlling) {
                 let newStrikePower = (startPointerPos.y - getPointerPos(event).y) * 1.25;
-                console.log(newStrikePower);
                 if(newStrikePower > 1.0) {
                     newStrikePower = 1.0;
                 }
@@ -123,8 +128,11 @@ function createWorld(container) {
             }
         }
 
-        course.hole.trigger.body.removeEventListener('collide', holeCollideResponse);
-        course.hole.trigger.body.addEventListener('collide', holeCollideResponse);
+        course.hole.collideTrigger.body.removeEventListener('collide', holeCollideResponse);
+        course.hole.collideTrigger.body.addEventListener('collide', holeCollideResponse);
+
+        course.hole.inTrigger.body.removeEventListener('collide', holeInResponse);
+        course.hole.inTrigger.body.addEventListener('collide', holeInResponse);
 
         physWorld.removeEventListener('endContact', holeCollideEndResponse);
         physWorld.addEventListener('endContact', holeCollideEndResponse);
