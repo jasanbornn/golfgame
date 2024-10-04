@@ -74,7 +74,7 @@ function createWorld(container) {
             if(inGameMenu.state != "closed") {
                 return;
             }
-            const pointerPos = getPointerPos();
+            const pointerPos = getPointerPos(event);
 
             const raycaster = new THREE.Raycaster();
 
@@ -90,15 +90,13 @@ function createWorld(container) {
             }
         }
 
-
-
-        let strikePowerMoving = false;
+        let activelyControlling = false;
         let startPointerPos;
         const pointerUpResponse = (event) => {
             if(pointerControlsStrikePower) {
                 strikeBall();
             }
-            strikePowerMoving = false;
+            activelyControlling = false;
             pointerControlsStrikePower = false;
             controls.lockVertical(false);
             controls.invertHorizontal(false);
@@ -109,8 +107,9 @@ function createWorld(container) {
                 return;
             }
 
-            if(strikePowerMoving) {
-                let newStrikePower = (startPointerPos.y - getPointerPos().y) * 0.80;
+            if(activelyControlling) {
+                let newStrikePower = (startPointerPos.y - getPointerPos(event).y) * 1.25;
+                console.log(newStrikePower);
                 if(newStrikePower > 1.0) {
                     newStrikePower = 1.0;
                 }
@@ -119,8 +118,8 @@ function createWorld(container) {
                 }
                 strikePower.setPercentPower(newStrikePower);
             } else {
-                strikePowerMoving = true;
-                startPointerPos = getPointerPos();
+                activelyControlling = true;
+                startPointerPos = getPointerPos(event);
             }
         }
 
@@ -134,16 +133,25 @@ function createWorld(container) {
         window.addEventListener('mouseup', pointerUpResponse);
         window.addEventListener('mousemove', pointerMoveResponse);
 
+        window.addEventListener('touchstart', pointerDownResponse);
+        window.addEventListener('touchend', pointerUpResponse);
+        window.addEventListener('touchmove', pointerMoveResponse);
+
         return course;
     }
 
-    const getPointerPos = () => {
+    const getPointerPos = (event) => {
         //get pointer position on screen
         //see https://threejs.org/docs/#api/en/core/Raycaster
         const pointerPos = new THREE.Vector2();
-        pointerPos.x = (event.clientX / window.innerWidth) * 2 - 1;
-        pointerPos.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
+        if(event.type == 'mousedown' || event.type == 'mouseup' || event.type == 'mousemove') {
+            pointerPos.x = (event.clientX / window.innerWidth) * 2 - 1;
+            pointerPos.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        }
+        else if(event.type == 'touchstart' || event.type == 'touchend' || event.type == 'touchmove') {
+            pointerPos.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
+            pointerPos.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
+        }
         return pointerPos;
     };
 
