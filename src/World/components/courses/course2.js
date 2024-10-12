@@ -41,7 +41,6 @@ function createCourse2(physMaterials) {
                 new THREE.Vector3(0.0, 1.0, 0.0),
                 Math.PI,
             ),
-            false,
         ),
         createBarrier(
             4,
@@ -50,7 +49,6 @@ function createCourse2(physMaterials) {
                 new THREE.Vector3(0.0, 1.0, 0.0),
                 -Math.PI / 2,
             ),
-            false,
         ),
         createBarrier(
             5,
@@ -59,7 +57,6 @@ function createCourse2(physMaterials) {
                 new THREE.Vector3(0.0, 1.0, 0.0),
                 -Math.PI / 4,
             ),
-            false,
         ),
         createBarrier(
             1,
@@ -68,7 +65,6 @@ function createCourse2(physMaterials) {
                 new THREE.Vector3(0.0, 1.0, 0.0),
                 Math.PI / 4,
             ),
-            false,
         ),
         createBarrier(
             4.56,
@@ -77,7 +73,6 @@ function createCourse2(physMaterials) {
                 new THREE.Vector3(0.0, 1.0, 0.0),
                 -5 * Math.PI / 4,
             ),
-            false,
         ),
         createBarrier(
             3.575,
@@ -86,7 +81,6 @@ function createCourse2(physMaterials) {
                 new THREE.Vector3(0.0, 1.0, 0.0),
                 Math.PI / 2,
             ),
-            false,
         ),
     ];
     

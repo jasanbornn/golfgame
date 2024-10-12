@@ -30,7 +30,6 @@ function createCourse1() {
                 new THREE.Vector3(0.0, 1.0, 0.0),
                 Math.PI,
             ),
-            false,
         ),
         createBarrier(
             1.0,
@@ -39,7 +38,6 @@ function createCourse1() {
                 new THREE.Vector3(0.0, 1.0, 0.0),
                 0,
             ),
-            false,
         ),
         createBarrier(
             8.0,
@@ -48,7 +46,6 @@ function createCourse1() {
                 new THREE.Vector3(0.0, 1.0, 0.0),
                 -Math.PI / 2,
             ),
-            false,
         ),
         createBarrier(
             8.0,
@@ -57,7 +54,6 @@ function createCourse1() {
                 new THREE.Vector3(0.0, 1.0, 0.0),
                 Math.PI / 2,
             ),
-            false,
         ),
     ];
 

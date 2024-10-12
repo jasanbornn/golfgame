@@ -4,6 +4,7 @@ import { createHole } from './hole.js';
 
 import { createCourse1 } from './courses/course1.js';
 import { createCourse2 } from './courses/course2.js';
+import { createCourse3 } from './courses/course3.js';
 
 import * as THREE from '../../../vendor/three/build/three.module.js';
 import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
@@ -17,6 +18,8 @@ function createCourse(courseNum) {
         course = createCourse1(physMaterials);
     } else if (courseNum == 2) {
         course = createCourse2(physMaterials);
+    } else if (courseNum == 3) {
+        course = createCourse3(physMaterials);
     }
 
     course.number = courseNum;

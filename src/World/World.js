@@ -80,6 +80,9 @@ function createWorld(container) {
             if(inGameMenu.state != "closed") {
                 return;
             }
+            if(ball.body.velocity.length() >= 0.01) {
+                return;
+            }
             const pointerPos = getPointerPos(event);
 
             const raycaster = new THREE.Raycaster();
@@ -195,6 +198,8 @@ function createWorld(container) {
         if (keyCode == 49) { course = loadCourse(1); }
         //2 key
         if (keyCode == 50) { course = loadCourse(2); }
+        //3 key
+        if (keyCode == 51) { course = loadCourse(3); }
 
     }
 
@@ -244,9 +249,7 @@ function createWorld(container) {
 
     let pointerControlsStrikePower = false;
 
-    const MIN_STRIKE_POWER = 1;
-    const MAX_STRIKE_POWER = 60;
-    const strikePower = createStrikePower(MIN_STRIKE_POWER, MAX_STRIKE_POWER);
+    const strikePower = createStrikePower();
 
     const ball = createBall();
     const pointer = createPointer(camera,strikePower);
@@ -263,7 +266,7 @@ function createWorld(container) {
         return strikePower.percentPower();
     };
 
-    let course = loadCourse(2);
+    let course = loadCourse(3);
 
     const inGameMenu = createInGameMenu();
     inGameMenu.restartButton.onclick = () => {

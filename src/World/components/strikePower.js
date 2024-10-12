@@ -1,10 +1,10 @@
-function createStrikePower(minStrikePower, maxStrikePower) {
+function createStrikePower() {
     const intervals = 64;
 
-    const minPower = minStrikePower;
-    const maxPower = maxStrikePower;
-    const powerInterval = (maxPower - minPower) / intervals;
-    const startPower = (maxPower + minPower) / 4;
+    const minStrikePower = 1;
+    const maxStrikePower = 20;
+    const powerInterval = (maxStrikePower - minStrikePower) / intervals;
+    const startPower = (maxStrikePower + minStrikePower) / 4;
 
     const strikePower = {
         power: startPower,
@@ -15,11 +15,11 @@ function createStrikePower(minStrikePower, maxStrikePower) {
     };
 
     strikePower.percentPower = () => {
-        return strikePower.power / maxPower;
+        return strikePower.power / maxStrikePower;
     };
 
     strikePower.setPercentPower = (percent) => {
-        strikePower.power = maxPower * percent;
+        strikePower.power = maxStrikePower * percent;
     }
 
     strikePower.increasePower = () => {

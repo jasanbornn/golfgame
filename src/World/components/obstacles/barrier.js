@@ -1,13 +1,10 @@
 import * as THREE from '../../../../vendor/three/build/three.module.js';
 import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 
-function createBarrier(width, position, quaternion, hasExtraWidth) {
+function createBarrier(width, position, quaternion) {
     const barrierHeight = 0.1;
     const barrierDepth = 0.05;
     let barrierWidth = width;
-    if(hasExtraWidth) {
-        barrierWidth += barrierDepth * 2;   
-    }
 
     const geometry = new THREE.BoxGeometry(barrierWidth, barrierHeight, barrierDepth);
     const material = new THREE.MeshStandardMaterial({

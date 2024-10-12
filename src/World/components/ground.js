@@ -10,9 +10,20 @@ function createGround(width, depth, position, quaternion, hole) {
         textureLoader.load(
             '../../assets/grass.png',
             (texture) => {
-                texture.wrapS = THREE.RepeatedWrapping;
-                texture.wrapT = THREE.RepeatedWrapping;
-                texture.repeat.set(width, depth);
+                texture.wrapS = THREE.RepeatWrapping;
+                texture.wrapT = THREE.RepeatWrapping;
+                //TODO: maybe implement texture auto-rotation
+                //const rotation = Math.PI / 4;
+                //https://www.desmos.com/calculator/orkv9a5irk
+                //texture.repeat.set(depth, width);
+                //texture.repeat.set(width, depth);
+                //texture.repeat.set(depth, width);
+                //texture.repeat.set(
+                //    ((width - depth) / 2) * Math.cos(2*rotation) + (depth+width)/2,
+                //    ((depth - width) / 2) * Math.cos(2*rotation) + (depth+width)/2,
+                //);
+                //texture.rotation = rotation;
+                //texture.rotation = rotation;
                 ground.mesh.material = new THREE.MeshStandardMaterial({
                     map: texture,
                 });
@@ -25,29 +36,32 @@ function createGround(width, depth, position, quaternion, hole) {
     const material = new THREE.MeshStandardMaterial({
         color: 0x008013, // grass green
     });
-    const physMaterial = new CANNON.Material('ground');
-    const groundHalfExtents = new CANNON.Vec3(width / 2, 0.5, depth / 2);
-    const groundShape = new CANNON.Box(groundHalfExtents);
     const groundPreMesh = new THREE.Mesh(geometry, material);
     groundPreMesh.position.copy(position);
     groundPreMesh.quaternion.copy(quaternion);
+
+    const physMaterial = new CANNON.Material('ground');
+    const groundHalfExtents = new CANNON.Vec3(width / 2, 0.5, depth / 2);
+    const groundShape = new CANNON.Box(groundHalfExtents);
+
     const ground = {
         mesh: createGroundHoleClip(groundPreMesh, hole),
         body: new CANNON.Body({
             type: CANNON.Body.STATIC,
             material: physMaterial,
-            shape: groundShape,
         }),
     };
+
+    ground.body.addShape(groundShape, new CANNON.Vec3(0.0, -0.5, 0.0));
 
     createMaterial(width, depth);
 
     ground.body.position.copy(position);
     ground.body.quaternion.copy(quaternion);
-    ground.body.position.y -= 0.5;
+    //ground.body.position.y -= 0.5;
 
     ground.body.material = new CANNON.Material({
-        friction: 0.4,
+        friction: 0.03,
         restitution: 0.2,
     });
 
