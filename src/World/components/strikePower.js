@@ -2,7 +2,7 @@ function createStrikePower() {
     const intervals = 64;
 
     const minStrikePower = 1;
-    const maxStrikePower = 20;
+    const maxStrikePower = 30;
     const powerInterval = (maxStrikePower - minStrikePower) / intervals;
     const startPower = (maxStrikePower + minStrikePower) / 4;
 

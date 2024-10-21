@@ -21,6 +21,86 @@ import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 import { CSG } from '../../vendor/three-csg/three-csg.js';
 
 function createWorld(container) {
+    //event listeners
+    const holeCollideResponse = (event) => {
+        if (event.body === ball.body) {
+            course.holeGroundSection.body.collisionFilterGroup = 2;
+            ball.body.collisionFilterMask = 1;
+        }
+    };
+
+    const holeInResponse = (event) => {
+        if(event.body === ball.body) {
+            course = loadCourse(course.number + 1);
+        }
+    }
+
+    const holeCollideEndResponse = (event) => {
+        if (
+            (event.bodyA === ball.body && event.bodyB === course.hole.collideTrigger.body) ||
+            (event.bodyA === course.hole.collideTrigger.body && event.bodyB === ball.body)
+        ) {
+            course.holeGroundSection.body.collisionFilterGroup = 1;
+            ball.body.collisionFilterMask = -1;
+        }
+
+    };
+
+    const pointerDownResponse = (event) => {
+        if(inGameMenu.state != "closed") {
+            return;
+        }
+        if(ball.body.velocity.length() >= 0.01) {
+            return;
+        }
+        const pointerPos = getPointerPos(event);
+
+        const raycaster = new THREE.Raycaster();
+
+        raycaster.setFromCamera(pointerPos, camera);
+
+        const intersects = raycaster.intersectObject(ball.touchSphere.mesh, false);
+        if(intersects.length != 0) {
+            if(intersects[0].object === ball.touchSphere.mesh) {
+                pointerControlsStrikePower = true;
+                controls.lockVertical(true);
+                controls.invertHorizontal(true);
+            }
+        }
+    }
+
+    let activelyControlling = false;
+    let startPointerPos;
+    const pointerUpResponse = (event) => {
+        if(pointerControlsStrikePower) {
+            strikeBall();
+        }
+        activelyControlling = false;
+        pointerControlsStrikePower = false;
+        controls.lockVertical(false);
+        controls.invertHorizontal(false);
+    }
+
+    const pointerMoveResponse = (event) => {
+        if(!pointerControlsStrikePower) {
+            return;
+        }
+
+        if(activelyControlling) {
+            let newStrikePower = (startPointerPos.y - getPointerPos(event).y) * 1.25;
+            if(newStrikePower > 1.0) {
+                newStrikePower = 1.0;
+            }
+            if(newStrikePower < 0.0) {
+                newStrikePower = 0.0;
+            }
+            strikePower.setPercentPower(newStrikePower);
+        } else {
+            activelyControlling = true;
+            startPointerPos = getPointerPos(event);
+        }
+    }
+
     const loadCourse = (courseNum) => {
         let course = createCourse(courseNum);
         ball.mesh.position.copy(course.ballSpawnpoint);
@@ -46,89 +126,6 @@ function createWorld(container) {
         for (let o of course.objects) {
             if(o.mesh != null) { scene.add(o.mesh); }
             if(o.body != null) { physWorld.addBody(o.body); }
-        }
-
-        //event listeners
-
-        const holeCollideResponse = (event) => {
-            if (event.body === ball.body) {
-                course.holeGroundSection.body.collisionFilterGroup = 2;
-                ball.body.collisionFilterMask = 1;
-            }
-        };
-
-        const holeInResponse = (event) => {
-            if(event.body === ball.body) {
-
-                course = loadCourse(course.number + 1);
-                console.log('inTrigger activated', event);
-            }
-        }
-
-        const holeCollideEndResponse = (event) => {
-            if (
-                (event.bodyA === ball.body && event.bodyB === course.hole.collideTrigger.body) ||
-                (event.bodyA === course.hole.collideTrigger.body && event.bodyB === ball.body)
-            ) {
-                course.holeGroundSection.body.collisionFilterGroup = 1;
-                ball.body.collisionFilterMask = -1;
-            }
-
-        };
-
-        const pointerDownResponse = (event) => {
-            if(inGameMenu.state != "closed") {
-                return;
-            }
-            if(ball.body.velocity.length() >= 0.01) {
-                return;
-            }
-            const pointerPos = getPointerPos(event);
-
-            const raycaster = new THREE.Raycaster();
-
-            raycaster.setFromCamera(pointerPos, camera);
-
-            const intersects = raycaster.intersectObject(ball.touchSphere.mesh, false);
-            if(intersects.length != 0) {
-                if(intersects[0].object === ball.touchSphere.mesh) {
-                    pointerControlsStrikePower = true;
-                    controls.lockVertical(true);
-                    controls.invertHorizontal(true);
-                }
-            }
-        }
-
-        let activelyControlling = false;
-        let startPointerPos;
-        const pointerUpResponse = (event) => {
-            if(pointerControlsStrikePower) {
-                strikeBall();
-            }
-            activelyControlling = false;
-            pointerControlsStrikePower = false;
-            controls.lockVertical(false);
-            controls.invertHorizontal(false);
-        }
-
-        const pointerMoveResponse = (event) => {
-            if(!pointerControlsStrikePower) {
-                return;
-            }
-
-            if(activelyControlling) {
-                let newStrikePower = (startPointerPos.y - getPointerPos(event).y) * 1.25;
-                if(newStrikePower > 1.0) {
-                    newStrikePower = 1.0;
-                }
-                if(newStrikePower < 0.0) {
-                    newStrikePower = 0.0;
-                }
-                strikePower.setPercentPower(newStrikePower);
-            } else {
-                activelyControlling = true;
-                startPointerPos = getPointerPos(event);
-            }
         }
 
         course.hole.collideTrigger.body.removeEventListener('collide', holeCollideResponse);
@@ -200,6 +197,8 @@ function createWorld(container) {
         if (keyCode == 50) { course = loadCourse(2); }
         //3 key
         if (keyCode == 51) { course = loadCourse(3); }
+        //4 key
+        if (keyCode == 52) { course = loadCourse(4); }
 
     }
 
@@ -229,6 +228,9 @@ function createWorld(container) {
                 pointer.mesh.quaternion.y.toFixed(2) + ", " +  
                 pointer.mesh.quaternion.z.toFixed(2) + ", " +  
                 pointer.mesh.quaternion.w.toFixed(2);
+        });
+        debugScreen.addEntry("Course number: ", () => {
+            return course.number;
         });
 
     }
@@ -266,11 +268,10 @@ function createWorld(container) {
         return strikePower.percentPower();
     };
 
-    let course = loadCourse(3);
+    let course = loadCourse(1);
 
     const inGameMenu = createInGameMenu();
     inGameMenu.restartButton.onclick = () => {
-        console.log(course.number);
         course = loadCourse(course.number); 
         inGameMenu.setState("closed");
     };
