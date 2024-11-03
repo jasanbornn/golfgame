@@ -12,18 +12,7 @@ function createGround(width, depth, position, quaternion, hole) {
             (texture) => {
                 texture.wrapS = THREE.RepeatWrapping;
                 texture.wrapT = THREE.RepeatWrapping;
-                //TODO: maybe implement texture auto-rotation
-                //const rotation = Math.PI / 4;
-                //https://www.desmos.com/calculator/orkv9a5irk
                 texture.repeat.set(width, depth);
-                //texture.repeat.set(depth, width);
-                //texture.repeat.set(depth, width);
-                //texture.repeat.set(
-                //    ((width - depth) / 2) * Math.cos(2*rotation) + (depth+width)/2,
-                //    ((depth - width) / 2) * Math.cos(2*rotation) + (depth+width)/2,
-                //);
-                //texture.rotation = rotation;
-                //texture.rotation = rotation;
                 ground.mesh.material = new THREE.MeshStandardMaterial({
                     map: texture,
                 });

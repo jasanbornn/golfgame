@@ -9,12 +9,16 @@ const baseTarget = {
 function createControls(camera, canvas) {
     const MIN_POLAR_ANGLE = Math.PI / 4;
     const MAX_POLAR_ANGLE = Math.PI / 2;
+    const MIN_DISTANCE = 0.3; //meters
+    const MAX_DISTANCE = 3.0; //meters
 
     const controls = new OrbitControls(camera, canvas);
     controls.enablePan = false;
     controls.targetObj = baseTarget;
     controls.minPolarAngle = MIN_POLAR_ANGLE;
     controls.maxPolarAngle = MAX_POLAR_ANGLE;
+    controls.minDistance = MIN_DISTANCE;
+    controls.maxDistance = MAX_DISTANCE;
 
     controls.lockVertical = (bool) => {
         const polarAngle = controls.getPolarAngle();

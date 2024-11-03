@@ -12,7 +12,7 @@ function createBarrier(width, position, quaternion, isPushedBack) {
 
     const geometry = new THREE.BoxGeometry(barrierWidth, barrierHeight, barrierDepth);
     const material = new THREE.MeshStandardMaterial({
-        color: 'silver',  
+        color: 0x654321,  
     });
 
     const barrierHalfExtents = new CANNON.Vec3(

@@ -14,6 +14,7 @@ function createBall() {
         );
     }
 
+    //create ball
     const radius = 0.042; //meters
     const widthSegments = 32;
     const heightSegments = 16;
@@ -30,15 +31,7 @@ function createBall() {
             angularDamping: 0.70,
         }),
     };
-
     createMaterial();
-
-    //ball.body.position.set(0, 0.1, 0);
-    ball.body.position.set(0, 2, 0);
-    ball.body.quaternion.setFromEuler(-0.5, -0.1, 0.8);
-
-    ball.mesh.position.copy(ball.body.position);
-    ball.mesh.quaternion.copy(ball.body.quaternion);
 
     ball.body.material = new CANNON.Material({
         friction: 0.8,
@@ -47,10 +40,25 @@ function createBall() {
 
     ball.touchSphere = createBallTouchSphere();
 
+    //position ball
+    ball.body.position.set(0, 2, 0);
+    ball.body.quaternion.setFromEuler(-0.5, -0.1, 0.8);
+    ball.mesh.position.copy(ball.body.position);
+    ball.mesh.quaternion.copy(ball.body.quaternion);
+
+    ball.updateTouchSphere = () => {};
+
     ball.tick = (delta) => {
         ball.mesh.position.copy(ball.body.position);
         ball.mesh.quaternion.copy(ball.body.quaternion);
         ball.touchSphere.mesh.position.copy(ball.mesh.position);
+        ball.updateTouchSphereScale();
+
+        if (ball.body.velocity.length() < 0.2) {
+            ball.body.angularDamping = 0.9;
+        } else {
+            ball.body.angularDamping = 0.7; 
+        }
 
         if (ball.mesh.position.y < -10) {
             ball.mesh.position.set(0, 2, 0);
@@ -67,6 +75,7 @@ function createBall() {
         strikeForce.normalize().multiplyScalar(strikePower);
         ball.body.applyForce(strikeForce);
     };
+
 
     return ball;
 }

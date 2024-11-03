@@ -7,6 +7,8 @@ import { createLights } from './components/lights.js';
 import { createPhysWorld } from './components/physWorld.js';
 import { createStrikePower } from './components/strikePower.js';
 
+import { createSceneryGround } from './components/scenery/sceneryGround.js';
+
 import { createInGameMenu } from './ui/inGameMenu.js';
 import { createHud } from './ui/hud.js';
 
@@ -99,21 +101,21 @@ function createWorld(container) {
             activelyControlling = true;
             startPointerPos = getPointerPos(event);
         }
-    }
+    };
 
     const loadCourse = (courseNum) => {
-        let course = createCourse(courseNum);
-        ball.mesh.position.copy(course.ballSpawnpoint);
-        ball.body.position.copy(course.ballSpawnpoint);
+        const newCourse = createCourse(courseNum);
+        ball.mesh.position.copy(newCourse.ballSpawnpoint);
+        ball.body.position.copy(newCourse.ballSpawnpoint);
         ball.body.velocity = new CANNON.Vec3(0, 0, 0);
         ball.body.angularVelocity = new CANNON.Vec3(0, 0, 0);
-        camera.position.copy(course.cameraSpawnpoint);
+        camera.position.copy(newCourse.cameraSpawnpoint);
 
         scene.clear();
         physWorld.bodies = [];
 
         strokes = 0;
-        par = course.par;
+        par = newCourse.par;
         hud.setStrokesText(strokes);
         hud.setParText(par);
 
@@ -122,17 +124,19 @@ function createWorld(container) {
         scene.add(ball.touchSphere.mesh);
         scene.add(pointer.mesh);
         scene.add(light);
+        scene.add(sceneryGround.mesh);
+
         physWorld.addBody(ball.body);
-        for (let o of course.objects) {
+        for (let o of newCourse.objects) {
             if(o.mesh != null) { scene.add(o.mesh); }
             if(o.body != null) { physWorld.addBody(o.body); }
         }
 
-        course.hole.collideTrigger.body.removeEventListener('collide', holeCollideResponse);
-        course.hole.collideTrigger.body.addEventListener('collide', holeCollideResponse);
+        newCourse.hole.collideTrigger.body.removeEventListener('collide', holeCollideResponse);
+        newCourse.hole.collideTrigger.body.addEventListener('collide', holeCollideResponse);
 
-        course.hole.inTrigger.body.removeEventListener('collide', holeInResponse);
-        course.hole.inTrigger.body.addEventListener('collide', holeInResponse);
+        newCourse.hole.inTrigger.body.removeEventListener('collide', holeInResponse);
+        newCourse.hole.inTrigger.body.addEventListener('collide', holeInResponse);
 
         physWorld.removeEventListener('endContact', holeCollideEndResponse);
         physWorld.addEventListener('endContact', holeCollideEndResponse);
@@ -145,7 +149,13 @@ function createWorld(container) {
         window.addEventListener('touchend', pointerUpResponse);
         window.addEventListener('touchmove', pointerMoveResponse);
 
-        return course;
+        return newCourse;
+    }
+
+    const updateBallTouchSphere = (targetBall) => {
+        const distance = controls.getDistance();
+        const scale = Math.sqrt(distance / 3);
+        targetBall.touchSphere.mesh.scale.setScalar(scale);
     }
 
     const getPointerPos = (event) => {
@@ -232,6 +242,11 @@ function createWorld(container) {
         debugScreen.addEntry("Course number: ", () => {
             return course.number;
         });
+        debugScreen.addEntry("Camera pos: ", () => {
+            return camera.position.x.toFixed(2) + ", " +
+                camera.position.y.toFixed(2) + ", " +
+                camera.position.z.toFixed(2);
+        });
 
     }
 
@@ -247,6 +262,7 @@ function createWorld(container) {
     physWorld.solver.iterations = 50;
     const controls = createControls(camera, renderer.domElement);
     const light = createLights();
+    const sceneryGround = createSceneryGround();
     const debugScreen = createDebugScreen();
 
     let pointerControlsStrikePower = false;
@@ -255,6 +271,12 @@ function createWorld(container) {
 
     const ball = createBall();
     const pointer = createPointer(camera,strikePower);
+
+    ball.updateTouchSphereScale = () => {
+        const distance = controls.getDistance();
+        const scale = Math.sqrt(distance / 3);
+        ball.touchSphere.mesh.scale.setScalar(scale);
+    };
 
     //camera target
     controls.targetObj = ball.body;

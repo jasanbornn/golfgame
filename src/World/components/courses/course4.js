@@ -10,7 +10,7 @@ function createCourse4(physMaterials) {
 
     const hole = createHole(new THREE.Vector3(1.0, 0.0, -1.5));
     const flag = createFlag(new THREE.Vector3(1.0, 0.0, -1.5));
-    const ballSpawnpoint = new THREE.Vector3(-1.0, 0.0, -1.5);
+    const ballSpawnpoint = new THREE.Vector3(-1.0, 0.1, -1.5);
     const cameraSpawnpoint = new THREE.Vector3(-1.5, 1.5, -3.5);
     const holeGroundSection = createGround(
             4,
