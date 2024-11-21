@@ -24,7 +24,7 @@ function createPointer(camera, strikePower) {
     arrowShape.lineTo(0,0);
 
     const extrudeSettings = {
-        depth: 0.02,
+        depth: 0.01,
         bevelEnabled: false,
     };
 
@@ -32,15 +32,15 @@ function createPointer(camera, strikePower) {
     //rotate so pointer points towards its positive z axis
     geometry.rotateX(Math.PI / 2);
     const material = new THREE.MeshStandardMaterial({
-        color: 'blue',
+        color: 0xAAAAAA,
     });
 
     const pointer = {
         mesh: new THREE.Mesh(geometry, material),
     };
 
-    //position pointer slightly above the ground
-    pointer.mesh.position.y += 0.05;
+    //position pointer slightly below the ball's center line
+    pointer.mesh.position.y -= 0.03;
     pointer.tick = () => {
 
         //copy camera quaternion into pointer's quaternion
@@ -72,8 +72,11 @@ function createPointer(camera, strikePower) {
             pointer.mesh.visible = false;
         }
 
+        //pointer.mesh.scale.set(1.0, 1.0, 0.3);
         //scale the pointer based on strike power
-        pointer.mesh.scale.set(1.0, 1.0, strikePower.percentPower());
+        pointer.mesh.scale.set(1.0, 1.0, 0.5*strikePower.percentPower());
+
+
         
 
     };

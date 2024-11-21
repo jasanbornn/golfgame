@@ -1,7 +1,7 @@
 import * as THREE from './../../../../vendor/three/build/three.module.js';
 import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 
-function createSceneryGround() {
+function createSceneryGround(position) {
     const WIDTH = 100;
     const DEPTH = 100;
 
@@ -9,7 +9,7 @@ function createSceneryGround() {
     textureLoader.path = 'putt';
     const createMaterial = () => {
         textureLoader.load(
-            '../../../assets/sceneryGrass.jpg',
+            '/../assets/sceneryGrass.jpg',
             (texture) => { 
                 texture.wrapS = THREE.RepeatWrapping;
                 texture.wrapT = THREE.RepeatWrapping;
@@ -30,11 +30,14 @@ function createSceneryGround() {
     const mesh = new THREE.Mesh(geometry, material);
     const physMaterial = new CANNON.Material('ground');
 
+    const groundHalfExtents = new CANNON.Vec3(WIDTH / 2, 0.5, DEPTH / 2);
+    const groundShape = new CANNON.Box(groundHalfExtents);
+
     const body = new CANNON.Body({
         type: CANNON.Body.STATIC,
         material: physMaterial,
     });
-
+    body.addShape(groundShape, new CANNON.Vec3(0.0, -0.5, 0.0));
 
     const sceneryGround = {
         mesh: mesh,
@@ -42,7 +45,7 @@ function createSceneryGround() {
     }
     createMaterial();
 
-    sceneryGround.mesh.position.set(0.0, -0.2, 0.0);
+    sceneryGround.mesh.position.copy(position);
     sceneryGround.body.position.copy(sceneryGround.mesh.position);
     
     return sceneryGround;

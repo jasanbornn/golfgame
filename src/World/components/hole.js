@@ -68,6 +68,7 @@ function createHole(position) {
     let hole = {
         mesh: parentMesh,
         body: body,
+        position: parentMesh.position,
         collideTrigger: createHoleCollideTrigger(parentMesh.position),
         inTrigger: createHoleInTrigger(parentMesh.position),
         GROUND_OFFSET: GROUND_OFFSET,
@@ -122,7 +123,7 @@ function createHoleInTrigger(holeMeshPosition) {
     const holeInTriggerMaterial = new THREE.MeshStandardMaterial({
         color: 'red',
         wireframe: true,
-        visible: true,
+        visible: false,
     });
     const holeInTriggerMesh = new THREE.Mesh(holeInTriggerGeometry, holeInTriggerMaterial);
     holeInTriggerMesh.position.copy(holeMeshPosition);

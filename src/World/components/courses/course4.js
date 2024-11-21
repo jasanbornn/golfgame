@@ -3,15 +3,18 @@ import { createGround } from '../ground.js';
 import { createHole } from '../hole.js';
 import { createFlag } from '../flag.js';
 
+import { createSceneryGround } from '../scenery/sceneryGround.js';
+
 import * as THREE from '../../../../vendor/three/build/three.module.js';
 import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 
 function createCourse4(physMaterials) {
 
+    const sceneryGround = createSceneryGround(new THREE.Vector3(0.0, -0.2, 0.0));
     const hole = createHole(new THREE.Vector3(1.0, 0.0, -1.5));
-    const flag = createFlag(new THREE.Vector3(1.0, 0.0, -1.5));
+    const flag = createFlag(hole.position);
     const ballSpawnpoint = new THREE.Vector3(-1.0, 0.1, -1.5);
-    const cameraSpawnpoint = new THREE.Vector3(-1.5, 1.5, -3.5);
+    const cameraSpawnpoint = new THREE.Vector3(-1.0, 1.5, -3.5);
     const holeGroundSection = createGround(
             4,
             4,
@@ -95,6 +98,7 @@ function createCourse4(physMaterials) {
         course.hole.collideTrigger,
         course.hole.inTrigger,
         flag,
+        sceneryGround,
     ];
 
     for(let groundSection of groundSections) {

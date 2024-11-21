@@ -7,8 +7,6 @@ import { createLights } from './components/lights.js';
 import { createPhysWorld } from './components/physWorld.js';
 import { createStrikePower } from './components/strikePower.js';
 
-import { createSceneryGround } from './components/scenery/sceneryGround.js';
-
 import { createInGameMenu } from './ui/inGameMenu.js';
 import { createHud } from './ui/hud.js';
 
@@ -74,7 +72,7 @@ function createWorld(container) {
     let activelyControlling = false;
     let startPointerPos;
     const pointerUpResponse = (event) => {
-        if(pointerControlsStrikePower) {
+        if(pointerControlsStrikePower && strikePower.getValue() != 0) {
             strikeBall();
         }
         activelyControlling = false;
@@ -124,7 +122,6 @@ function createWorld(container) {
         scene.add(ball.touchSphere.mesh);
         scene.add(pointer.mesh);
         scene.add(light);
-        scene.add(sceneryGround.mesh);
 
         physWorld.addBody(ball.body);
         for (let o of newCourse.objects) {
@@ -214,6 +211,9 @@ function createWorld(container) {
 
     const addDebugEntries = () => {
         //debug screen entries
+        debugScreen.addEntry("FPS: ", () => {
+            
+        });
         debugScreen.addEntry("Ball speed: ", () => {
             return ball.body.velocity.length().toFixed(2);
         });
@@ -262,7 +262,6 @@ function createWorld(container) {
     physWorld.solver.iterations = 50;
     const controls = createControls(camera, renderer.domElement);
     const light = createLights();
-    const sceneryGround = createSceneryGround();
     const debugScreen = createDebugScreen();
 
     let pointerControlsStrikePower = false;

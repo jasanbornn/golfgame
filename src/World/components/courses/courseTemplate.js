@@ -9,7 +9,7 @@ import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 function createCourse(physMaterials) {
 
     const hole = createHole(new THREE.Vector3(0.0, 0.0, 0.0));
-    const flag = createFlag(new THREE.Vector3(0.0, 0.0, 0.0));
+    const flag = createFlag(hole.position);
     const holeGroundSection = createGround(
             1,
             1,

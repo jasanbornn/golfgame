@@ -33,6 +33,30 @@ function createGround(width, depth, position, quaternion, hole) {
     const groundHalfExtents = new CANNON.Vec3(width / 2, 0.5, depth / 2);
     const groundShape = new CANNON.Box(groundHalfExtents);
 
+    const bottomGeometry = new THREE.BoxGeometry(width, 10, depth);
+
+    let forwardQuaternion = new THREE.Quaternion();
+    forwardQuaternion.copy(groundPreMesh.quaternion);
+    forwardQuaternion.x = 0.0;
+    forwardQuaternion.z = 0.0;
+    forwardQuaternion.normalize();
+    bottomGeometry.rotateX(-groundPreMesh.quaternion.angleTo(forwardQuaternion));
+
+    const bottomGeoClipPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(
+        new THREE.Vector3( 0, -1.0, 0,).applyQuaternion(quaternion),
+        groundPreMesh.position,
+    );
+
+    const bottomMaterial = new THREE.MeshStandardMaterial({
+        color: 0x654321,
+        clippingPlanes: [bottomGeoClipPlane],
+    });
+
+    const bottomMesh = new THREE.Mesh(bottomGeometry, bottomMaterial);
+    //bottomMesh.translateX(width / 2);
+    //bottomMesh.translateY(-0.001);
+    //bottomMesh.translateZ(depth / 2);
+
     const ground = {
         mesh: createGroundHoleClip(groundPreMesh, hole),
         body: new CANNON.Body({
@@ -41,6 +65,7 @@ function createGround(width, depth, position, quaternion, hole) {
         }),
     };
 
+    ground.mesh.add(bottomMesh);
     ground.body.addShape(groundShape, new CANNON.Vec3(0.0, -0.5, 0.0));
 
     createMaterial(width, depth);
@@ -63,7 +88,7 @@ function createGroundHoleClip(groundPreMesh, hole) {
     if(hole === undefined) {
         return groundPreMesh;
     }
-    const clipGeometry = new THREE.CylinderGeometry(0.112, 0.112, 0.5, 32);
+    const clipGeometry = new THREE.CylinderGeometry(0.112, 0.112, 0.4, 32);
     const clipMaterial = new THREE.MeshStandardMaterial({
         color: 'red',
     });

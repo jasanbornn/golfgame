@@ -8,10 +8,10 @@ function createPhysWorld() {
     const physWorld = new CANNON.World(options);
 
     physWorld.tick = (delta) => {
-        if(document.hasFocus()) {
-            physWorld.fixedStep(delta); 
+        if(delta < 1 / 60) {
+            physWorld.step(delta);
         } else {
-            physWorld.fixedStep(); 
+            physWorld.fixedStep(1 / 60);
         }
     };
 

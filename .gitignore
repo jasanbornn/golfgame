@@ -1,2 +1,4 @@
 #ignore upload scripts
-*upload.sh
+upload.sh
+website_upload.sh
+

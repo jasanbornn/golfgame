@@ -5,7 +5,7 @@ function createBall() {
     textureLoader.path = 'putt';
     const createMaterial = () => {
         textureLoader.load(
-            '../../assets/uv.jpg',
+            '/../assets/golfball.jpg',
             (texture) => { 
                 ball.mesh.material = new THREE.MeshStandardMaterial({
                     map: texture,

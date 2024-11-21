@@ -10,6 +10,8 @@ function createRenderer() {
     // enable physically correct lighting model
     renderer.physicallyCorrectLights = true;
 
+    renderer.localClippingEnabled = true;
+
     return renderer;
 }
 
