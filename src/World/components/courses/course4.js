@@ -87,7 +87,7 @@ function createCourse4(physMaterials) {
         ballSpawnpoint: ballSpawnpoint,
         cameraSpawnpoint: cameraSpawnpoint,
         hole: hole,
-        par: 1,
+        par: 3,
         holeGroundSection: holeGroundSection,
         groundSections: groundSections,
         barriers: barriers,

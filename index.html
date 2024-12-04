@@ -14,11 +14,15 @@
 
     <body>
         <div id="scene-container">
-            <!-- Our <canvas> will be inserted here -->
+            <!-- <canvas> will be inserted here -->
         </div>
 
         <div id="debug-text-container">
             <h1 id="debug-text"></h1>
+        </div>
+
+        <div class="score-callout-container" id="score-callout-container">
+            <h1 id="score-callout-text">Par</h1>
         </div>
 
         <div class="hud-container">
@@ -31,21 +35,79 @@
                     <p id="par-value-text">Par 1</p>
                 </div>
             </div>
-            <button type="button" class="menu-button" id="menu-button">MENU</button>
+            <table class="scorecard" id="scorecard">
+                <tr>
+                    <th>Hole</th>
+                    <th>Par</th>
+                    <th>Score</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>1</td>
+                    <td> </td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>2</td>
+                    <td> </td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>3</td>
+                    <td> </td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>2</td>
+                    <td> </td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td> </td>
+                    <td> </td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td> </td>
+                    <td> </td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td> </td>
+                    <td> </td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td> </td>
+                    <td> </td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td> </td>
+                    <td> </td>
+                </tr>
+                <tr>
+                    <th>Total</th>
+                    <th> </th>
+                    <th id ="total-text"> </th>
+                </tr>
+            </table>
+            <button type="button" class="menu-button" id="menu-button">Menu</button>
         </div>
+
 
         <div class="menu-container">
             <div class="in-game-menu" id="in-game-menu">
                 <div class="button-container" id="button-container">
-                    <button type="button" class="button" id="resume-button">RESUME</button>
-                    <button type="button" class="button" id="restart-button">RESTART</button>
-                    <button type="button" class="button" id="levels-button">LEVELS</button>
+                    <button type="button" class="button" id="resume-button">Resume</button>
+                    <button type="button" class="button" id="restart-button">Restart</button>
+                    <button type="button" class="button" id="levels-button">Levels</button>
                 </div>
             </div>
 
             <div class="levels-menu" id="levels-menu">
                 <div class="levels-back-button-container">
-                    <button class="button" id="levels-back-button">BACK</button>
+                    <button class="button" id="levels-back-button">Back</button>
                 </div>
                 <div class="level-boxes-container">
                     <div class="level-box" id="level-box-1">

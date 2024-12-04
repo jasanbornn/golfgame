@@ -2,8 +2,8 @@ import * as THREE from './../../../../vendor/three/build/three.module.js';
 import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 
 function createSceneryGround(position) {
-    const WIDTH = 100;
-    const DEPTH = 100;
+    const WIDTH = 50;
+    const DEPTH = 50;
 
     const textureLoader = new THREE.TextureLoader();
     textureLoader.path = 'putt';

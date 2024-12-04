@@ -7,9 +7,7 @@ body {
     margin: 0px;
     height: 100%;
     width: 100%;
-
     font-family: Sans-Serif;
-
 }
 
 .hud-container {
@@ -21,6 +19,46 @@ body {
     width: 100%;
     height: 100%;
     pointer-events: none;
+}
+
+.score-callout-container {
+    position: absolute;
+    display: flex;
+    font-size: 40px;
+    align: center;
+    left: 50%;
+    top: -20%;
+    transform: translate(-50%, -50%);
+}
+
+.score-callout-hide-animation {
+    animation-name: score-callout-hide;
+    animation-duration: 5s;
+    animation-fill-mode: forwards;
+}
+
+.score-callout-show-animation {
+    animation-name: score-callout-show;
+    animation-duration: 0.5s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes score-callout-hide {
+    from {
+        top: 5%;
+    }
+    to {
+        top: -20%;
+    }
+}
+
+@keyframes score-callout-show {
+    from {
+        top: -20%;
+    }
+    to {
+        top: 5%;
+    }
 }
 
 .score-container {
@@ -37,6 +75,61 @@ body {
     margin-bottom: 0px;
 }
 
+.scorecard, tr, th, td {
+    padding: 4px;
+    text-align: center;
+    border: 2px solid black;
+    border-collapse: collapse;
+}
+
+.scorecard-hide-animation {
+    animation-name: scorecard-hide;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+
+.scorecard-show-animation {
+    animation-name: scorecard-show;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes scorecard-hide {
+    from {
+        right: 0px;
+    }
+    to {
+        right: -400px;
+    }
+}
+
+@keyframes scorecard-show {
+    from {
+        right: -400px;
+    }
+    to {
+        right: 0px;
+    }
+}
+
+.scorecard {
+    background-color: white;
+    display: flex;
+    position: absolute;
+    justify-self: center;
+    align-self: center;
+    right: 0px;
+    margin: 30px;
+    padding: 10px;
+    font-size: 30px;
+    border: 4px solid blue;
+    border-radius: 10px;
+}
+
+#total-text {
+    color: red;
+}
+
 .strike-meter-container {
     position: relative;
     height: 50%;
@@ -46,6 +139,7 @@ body {
     min-height: 250px;
     border: 4px solid black;
     border-radius: 20px;
+    z-index: 2;
 }
 
 .strike-meter-value {
@@ -93,8 +187,8 @@ body {
 }
 
 .button {
-    background-color: sandybrown;
-    border: 4px solid black;
+    background-color: white;
+    border: 4px solid blue;
     padding-left: 100px;
     padding-right: 100px;
     padding-top: 10px;
@@ -110,8 +204,8 @@ body {
     position: absolute;
     right: 0px;
     bottom: 0px;
-    background-color: sandybrown;
-    border: 4px solid black;
+    background-color: white;
+    border: 4px solid blue;
     padding-left: 20px;
     padding-right: 20px;
     padding-top: 10px;
@@ -140,8 +234,8 @@ body {
 }
 
 .level-box {
-    background-color: sandybrown;
-    border: 4px solid black;
+    background-color: white;
+    border: 4px solid blue;
     border-radius: 10px;
     padding: 10px;
 }

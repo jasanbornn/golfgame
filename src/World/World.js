@@ -6,6 +6,8 @@ import { createScene } from './components/scene.js';
 import { createLights } from './components/lights.js';
 import { createPhysWorld } from './components/physWorld.js';
 import { createStrikePower } from './components/strikePower.js';
+import { createScorecard } from './components/scorecard.js';
+import { createScoreCallout } from './components/scoreCallout.js';
 
 import { createInGameMenu } from './ui/inGameMenu.js';
 import { createHud } from './ui/hud.js';
@@ -29,12 +31,6 @@ function createWorld(container) {
         }
     };
 
-    const holeInResponse = (event) => {
-        if(event.body === ball.body) {
-            course = loadCourse(course.number + 1);
-        }
-    }
-
     const holeCollideEndResponse = (event) => {
         if (
             (event.bodyA === ball.body && event.bodyB === course.hole.collideTrigger.body) ||
@@ -46,8 +42,27 @@ function createWorld(container) {
 
     };
 
+    const holeInResponse = (event) => {
+        if(gameOver) {
+            return;
+        }
+
+        //temporary...
+        const maxCourse = 4;
+
+        if(event.body === ball.body) {
+            scorecard.setScore(course.number, strokes);
+            scoreCallout.displayScore(course.par, strokes);
+            if(course.number < maxCourse) {
+                course = loadCourse(course.number + 1);
+            } else {
+                gameOverResponse(); 
+            }
+        }
+    }
+
     const pointerDownResponse = (event) => {
-        if(inGameMenu.state != "closed") {
+        if(gameOver || inGameMenu.state != "closed") {
             return;
         }
         if(ball.body.velocity.length() >= 0.01) {
@@ -100,6 +115,13 @@ function createWorld(container) {
             startPointerPos = getPointerPos(event);
         }
     };
+
+    const gameOverResponse = () => {
+        gameOver = true;
+        strikePower.setPercentPower(0);
+
+        
+    }
 
     const loadCourse = (courseNum) => {
         const newCourse = createCourse(courseNum);
@@ -183,21 +205,31 @@ function createWorld(container) {
     const processKeyEvent = (event) => {
         let keyCode = event.which;
 
-        //Up Arrow
-        if (keyCode == 38) {
-            strikeBall();
-        }
-
-        //Down Arrow
-        if (keyCode == 40) { ball.body.velocity = new CANNON.Vec3(0, 0, 0); }
+        //M Key
+        if (keyCode == 77) { inGameMenu.toggle(); }
         //I key
         if (keyCode == 73) { debugScreen.toggleVisibility(); }
+
+        if(gameOver) {
+            return;
+        }
+
+        //N key
+        if( keyCode == 78) { 
+            scorecard.toggle();
+        }
+        ////P key
+        //if( keyCode == 80) {
+        //    scoreCallout.displayScore(par, strokes);
+        //}
+        //Up Arrow
+        if (keyCode == 38) { strikeBall(); }
+        //Down Arrow
+        if (keyCode == 40) { ball.body.velocity = new CANNON.Vec3(0, 0, 0); }
         //W key
         if (keyCode == 87) { strikePower.increasePower(); }
         //S key
         if (keyCode == 83) { strikePower.decreasePower(); }
-        //M Key
-        if (keyCode == 77) { inGameMenu.toggle(); }
         //1 key
         if (keyCode == 49) { course = loadCourse(1); }
         //2 key
@@ -263,6 +295,9 @@ function createWorld(container) {
     const controls = createControls(camera, renderer.domElement);
     const light = createLights();
     const debugScreen = createDebugScreen();
+    const scorecard = createScorecard();
+    const scoreCallout = createScoreCallout();
+    let gameOver = false;
 
     let pointerControlsStrikePower = false;
 
@@ -305,13 +340,14 @@ function createWorld(container) {
     }
 
     //adding updatable objects to updating loop
-    loop.updatables.push(physWorld);
-    loop.updatables.push(ball);
     loop.updatables.push(camera);
     loop.updatables.push(controls);
+    loop.updatables.push(physWorld);
+    loop.updatables.push(ball);
     loop.updatables.push(pointer);
     loop.updatables.push(hud);
     loop.updatables.push(debugScreen);
+    loop.updatables.push(scoreCallout);
 
     addDebugEntries();
 
