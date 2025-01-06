@@ -14,7 +14,24 @@ function createGround(width, depth, position, quaternion, hole) {
                 texture.wrapT = THREE.RepeatWrapping;
                 texture.repeat.set(width, depth);
                 ground.mesh.material = new THREE.MeshStandardMaterial({
+                    color: 0x11AA00,
                     map: texture,
+                });
+            },
+        );
+    }
+
+    const createBottomMaterial = (width, depth) => {
+        textureLoader.load(
+            '../../assets/wood.jpg',
+            (texture) => {
+                texture.wrapS = THREE.RepeatWrapping;
+                texture.wrapT = THREE.RepeatWrapping;
+                texture.repeat.set(width, depth);
+                bottomMesh.material = new THREE.MeshStandardMaterial({
+                    color: 0x654321,
+                    map: texture,
+                    clippingPlanes: [bottomGeoClipPlane],
                 });
             },
         );
@@ -69,6 +86,7 @@ function createGround(width, depth, position, quaternion, hole) {
     ground.body.addShape(groundShape, new CANNON.Vec3(0.0, -0.5, 0.0));
 
     createMaterial(width, depth);
+    createBottomMaterial(width, depth);
 
     ground.body.position.copy(position);
     ground.body.quaternion.copy(quaternion);

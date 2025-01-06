@@ -1,32 +1,37 @@
 import * as THREE from '../../../vendor/three/build/three.module.js';
 const clock = new THREE.Clock();
 
-class Loop {
-    constructor(camera, scene, renderer) {
-        this.camera = camera;
-        this.scene = scene;
-        this.renderer = renderer;
-        this.updatables = [];
+function createLoop(camera, scene, renderer) {
+    const loop = {
+        camera: camera,
+        scene: scene,
+        renderer: renderer,
+        updatables: [],
     }
 
-    start() {
-        this.renderer.setAnimationLoop(() => {
-            this.tick();
-            this.renderer.render(this.scene, this.camera); 
-        });
+    loop.animate = () => {
+        requestAnimationFrame(loop.animate);
+        loop.tick();
+        loop.renderer.render(loop.scene, loop.camera); 
     }
 
-    stop() {
-        this.renderer.setAnimationLoop(null);
+    loop.start = () => {
+        loop.animate();
     }
 
-    tick() {
+    loop.stop = () => {
+        //
+    }
+
+    loop.tick = () => {
         const delta = clock.getDelta();
 
-        for (const object of this.updatables) {
+        for (const object of loop.updatables) {
             object.tick(delta);
         }
     }
+
+    return loop;
 }
 
-export { Loop };
+export { createLoop };

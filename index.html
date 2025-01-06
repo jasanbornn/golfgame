@@ -13,9 +13,17 @@
     </head>
 
     <body>
+        
         <div id="scene-container">
             <!-- <canvas> will be inserted here -->
         </div>
+
+
+        <div class="loading-screen" id="loading-screen">
+            <p>golfgame</p>
+            <span class="loading-spinner"></span>
+        </div>
+
 
         <div id="debug-text-container">
             <h1 id="debug-text"></h1>
@@ -25,16 +33,24 @@
             <h1 id="score-callout-text">Par</h1>
         </div>
 
+        <div class="continue-button-container">
+            <button type="button" class="button" id="continue-button">Continue</button>
+        </div>
+
         <div class="hud-container">
             <div class="strike-meter-container">
                 <div class="strike-meter-value" id="strike-meter-value"></div>
             </div>
-            <div class="score-container">
-                <div class="info-text">
-                    <p id="strokes-value-text"> 0 strokes</p>
-                    <p id="par-value-text">Par 1</p>
-                </div>
-            </div>
+            <table class="hole-info-table">
+                <tr>
+                    <td id="strokes-value-text">0</td>
+                    <td id="par-value-text">0</td>
+                </tr>
+                <tr>
+                    <th>Strokes</th>
+                    <th>Par</th>
+                </tr>
+            </table>
             <table class="scorecard" id="scorecard">
                 <tr>
                     <th>Hole</th>
@@ -92,9 +108,9 @@
                     <th id ="total-text"> </th>
                 </tr>
             </table>
+            <button type="button" class="menu-button" id="scorecard-toggle-button">Hide</button>
             <button type="button" class="menu-button" id="menu-button">Menu</button>
         </div>
-
 
         <div class="menu-container">
             <div class="in-game-menu" id="in-game-menu">

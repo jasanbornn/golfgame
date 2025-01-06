@@ -9,13 +9,13 @@ function createSceneryGround(position) {
     textureLoader.path = 'putt';
     const createMaterial = () => {
         textureLoader.load(
-            '/../assets/sceneryGrass.jpg',
+            '/../assets/sceneryGrass.png',
             (texture) => { 
                 texture.wrapS = THREE.RepeatWrapping;
                 texture.wrapT = THREE.RepeatWrapping;
                 texture.repeat.set(WIDTH, DEPTH)
                 sceneryGround.mesh.material = new THREE.MeshStandardMaterial({
-                    color: 0xCCCCCC,
+                    color: 0x008888,
                     map: texture,
                 });
             },

@@ -6,6 +6,27 @@ function createBarrier(width, position, quaternion, isPushedBack) {
     const barrierDepth = 0.05;
     let barrierWidth = width;
 
+    const textureLoader = new THREE.TextureLoader();
+    textureLoader.path = 'putt';
+    const createMaterial = () => {
+        textureLoader.load(
+            '/../assets/wood.jpg',
+            (texture) => {
+                barrier.mesh.material = new THREE.MeshStandardMaterial({
+                    color: 0x654321,
+                    map: texture,
+                });
+            },
+        );
+
+        textureLoader.load(
+            '/../assets/wood_norm.jpg',
+            (texture) => {
+                barrier.mesh.material.normalMap = texture;
+            },
+        );
+    }
+
     if(isPushedBack === undefined || isPushedBack === null) {
         isPushedBack = true;
     }
@@ -27,6 +48,7 @@ function createBarrier(width, position, quaternion, isPushedBack) {
             shape: new CANNON.Box(barrierHalfExtents),
         }),
     };
+    createMaterial();
 
     barrier.mesh.position.copy(position);
     barrier.mesh.quaternion.copy(quaternion);

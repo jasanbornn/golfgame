@@ -7,8 +7,12 @@ function createBall() {
         textureLoader.load(
             '/../assets/golfball.jpg',
             (texture) => { 
-                ball.mesh.material = new THREE.MeshStandardMaterial({
-                    map: texture,
+                ball.mesh.material = new THREE.MeshPhysicalMaterial({
+                    normalMap: texture,
+                    roughness: 0.0,
+                    clearcoat: 1.0,
+                    clearCoatRoughness: 0.3,
+                    metalness: 0.7,
                 });
             },
         );
@@ -60,11 +64,11 @@ function createBall() {
             ball.body.angularDamping = 0.7; 
         }
 
-        if (ball.mesh.position.y < -10) {
-            ball.mesh.position.set(0, 2, 0);
-            ball.body.position.copy(ball.mesh.position);
+        if (ball.body.position.y < -10) {
+            ball.body.position.set(0, 2, 0);
             ball.body.velocity.set(0, 0, 0);
             ball.body.torque.set(0, 0, 0);
+            ball.mesh.position.copy(ball.body.position);
         };
     }
 

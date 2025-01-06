@@ -3,13 +3,13 @@ function createLights() {
     // create a directional light
     const light = new THREE.DirectionalLight(
         'white', //color
-        6 //intensity
+        8.0 //intensity
     );
 
     light.castShadow = true;
 
     // position the light
-    light.position.set(10, 10, 10);
+    light.position.set(10, 10, 20);
 
     return light;
 }

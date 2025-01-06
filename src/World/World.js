@@ -6,17 +6,19 @@ import { createScene } from './components/scene.js';
 import { createLights } from './components/lights.js';
 import { createPhysWorld } from './components/physWorld.js';
 import { createStrikePower } from './components/strikePower.js';
-import { createScorecard } from './components/scorecard.js';
-import { createScoreCallout } from './components/scoreCallout.js';
 
 import { createInGameMenu } from './ui/inGameMenu.js';
 import { createHud } from './ui/hud.js';
+import { createScorecard } from './ui/scorecard.js';
+import { createScoreCallout } from './ui/scoreCallout.js';
+import { createLoadingScreen } from './ui/loadingScreen.js';
+import { createContinueButton } from './ui/continueButton.js';
 
 import { createDebugScreen } from './systems/debugScreen.js';
 import { createControls } from './systems/controls.js';
 import { createRenderer } from './systems/renderer.js';
 import { Resizer } from './systems/Resizer.js';
-import { Loop } from './systems/Loop.js';
+import { createLoop } from './systems/Loop.js';
 
 import * as THREE from '../../vendor/three/build/three.module.js';
 import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
@@ -42,22 +44,17 @@ function createWorld(container) {
 
     };
 
+    let holeFinished = false;
     const holeInResponse = (event) => {
-        if(gameOver) {
+        if(holeFinished || gameOver) {
             return;
         }
-
-        //temporary...
-        const maxCourse = 4;
+        holeFinished = true;
 
         if(event.body === ball.body) {
             scorecard.setScore(course.number, strokes);
             scoreCallout.displayScore(course.par, strokes);
-            if(course.number < maxCourse) {
-                course = loadCourse(course.number + 1);
-            } else {
-                gameOverResponse(); 
-            }
+            continueButton.prompt();
         }
     }
 
@@ -119,11 +116,14 @@ function createWorld(container) {
     const gameOverResponse = () => {
         gameOver = true;
         strikePower.setPercentPower(0);
-
-        
     }
 
     const loadCourse = (courseNum) => {
+        holeFinished = false;
+        continueButton.hide();
+
+        loadingScreen.show();
+
         const newCourse = createCourse(courseNum);
         ball.mesh.position.copy(newCourse.ballSpawnpoint);
         ball.body.position.copy(newCourse.ballSpawnpoint);
@@ -243,9 +243,6 @@ function createWorld(container) {
 
     const addDebugEntries = () => {
         //debug screen entries
-        debugScreen.addEntry("FPS: ", () => {
-            
-        });
         debugScreen.addEntry("Ball speed: ", () => {
             return ball.body.velocity.length().toFixed(2);
         });
@@ -289,14 +286,15 @@ function createWorld(container) {
     const camera = createCamera();
     const resizer = new Resizer(container, camera, renderer);
     const scene = createScene();
-    const loop = new Loop(camera, scene, renderer);
+    const loop = createLoop(camera, scene, renderer);
     const physWorld = createPhysWorld();
-    physWorld.solver.iterations = 50;
     const controls = createControls(camera, renderer.domElement);
     const light = createLights();
     const debugScreen = createDebugScreen();
     const scorecard = createScorecard();
     const scoreCallout = createScoreCallout();
+    const loadingScreen = createLoadingScreen();
+    const continueButton = createContinueButton(); 
     let gameOver = false;
 
     let pointerControlsStrikePower = false;
@@ -305,6 +303,17 @@ function createWorld(container) {
 
     const ball = createBall();
     const pointer = createPointer(camera,strikePower);
+
+    continueButton.setOnClick(() => {
+        continueButton.hide();
+        const maxCourse = 4; //temporary...
+
+        if(course.number < maxCourse) {
+            course = loadCourse(course.number + 1);
+        } else {
+            gameOverResponse(); 
+        }
+    });
 
     ball.updateTouchSphereScale = () => {
         const distance = controls.getDistance();
@@ -340,14 +349,16 @@ function createWorld(container) {
     }
 
     //adding updatable objects to updating loop
+    loop.updatables.push(physWorld);
     loop.updatables.push(camera);
     loop.updatables.push(controls);
-    loop.updatables.push(physWorld);
     loop.updatables.push(ball);
     loop.updatables.push(pointer);
     loop.updatables.push(hud);
     loop.updatables.push(debugScreen);
     loop.updatables.push(scoreCallout);
+    loop.updatables.push(loadingScreen);
+    loop.updatables.push(continueButton);
 
     addDebugEntries();
 
