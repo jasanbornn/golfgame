@@ -1,16 +1,14 @@
 import * as THREE from '../../../../vendor/three/build/three.module.js';
 import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 
-function createWedge() {
+function createWedge(width, length, position, quaternion) {
     
     const base = new THREE.Shape();
-    const lengthA = 0.4;
-    const lengthB = 0.4;
     const height = 0.1;
 
     base.moveTo(0, 0);
-    base.lineTo(lengthA, 0);
-    base.lineTo(0, lengthB);
+    base.lineTo(width, 0);
+    base.lineTo(0, length);
     base.lineTo(0, 0);
 
     const extrudeSettings = {
@@ -26,7 +24,8 @@ function createWedge() {
         color: 'orange',
     });
     const mesh = new THREE.Mesh(geometry, material);
-    mesh.position.set(-0.2, 0, 1);
+    mesh.position.copy(position);
+    mesh.quaternion.copy(quaternion);
 
     // vertices:
     //  +x                +z
@@ -39,12 +38,12 @@ function createWedge() {
     const wedgeShape = new CANNON.ConvexPolyhedron({
         vertices: [
             new CANNON.Vec3(0, 0, 0), // 1
-            new CANNON.Vec3(0, 0, lengthA), // 2
-            new CANNON.Vec3(lengthB, 0, 0), // 3
+            new CANNON.Vec3(0, 0, width), // 2
+            new CANNON.Vec3(length, 0, 0), // 3
 
             new CANNON.Vec3(0, height, 0), // 4
-            new CANNON.Vec3(0, height, lengthA), // 5
-            new CANNON.Vec3(lengthB, height, 0), // 6
+            new CANNON.Vec3(0, height, width), // 5
+            new CANNON.Vec3(length, height, 0), // 6
         ],
         faces: [
             [0, 1, 2], // +y
@@ -64,6 +63,7 @@ function createWedge() {
         }),
     });
     body.position.copy(mesh.position);
+    body.quaternion.copy(mesh.quaternion);
 
     const wedge = {
         mesh: mesh,

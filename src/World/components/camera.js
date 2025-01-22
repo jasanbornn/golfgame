@@ -20,10 +20,25 @@ function createCamera() {
 
     camera.targetObj = baseTarget;
 
+    const targetObjPrevPosition = new THREE.Vector3().copy(camera.targetObj.position);
+
+    let resetting = false;
+    camera.reset = () => {
+        resetting = true; 
+    }
+
     camera.tick = (delta) => {
-        camera.position.x += camera.targetObj.velocity.x * delta;
-        camera.position.y += camera.targetObj.velocity.y * delta;
-        camera.position.z += camera.targetObj.velocity.z * delta;
+        const targetObjCurrPosition = new THREE.Vector3().copy(camera.targetObj.position);
+        const targetObjPosChange = targetObjCurrPosition.sub(targetObjPrevPosition);
+
+        if(resetting) {
+            targetObjPosChange.set(0.0, 0.0, 0.0);
+            resetting = false;
+        }
+
+        camera.position.add(targetObjPosChange);
+        
+        targetObjPrevPosition.copy(camera.targetObj.position);
     };
 
     return camera;

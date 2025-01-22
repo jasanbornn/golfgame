@@ -108,6 +108,8 @@ function createCourse2(physMaterials) {
         sceneryGround,
     ];
 
+    course.tick = (delta) => {};
+
     for(let groundSection of groundSections) {
         course.objects.push(groundSection);
     }

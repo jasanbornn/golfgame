@@ -9,6 +9,7 @@ function createLoadingScreen() {
     const loadingScreen = {}; 
 
     loadingScreen.show = () => {
+        return; //disable
         loadingScreenDiv.style.pointerEvents = "auto";
         if( loadingScreenDiv.classList.toggle('loading-screen-fade-in-animation') ) {
             loadingScreenDiv.classList.remove('loading-screen-fade-out-animation');
@@ -17,7 +18,7 @@ function createLoadingScreen() {
     }
 
     loadingScreen.tick = (delta) => {
-        if(clock.getElapsedTime() >= 2.0) {
+        if(clock.getElapsedTime() >= 1.0) {
             if( loadingScreenDiv.classList.toggle('loading-screen-fade-out-animation') ) {
                 loadingScreenDiv.classList.remove('loading-screen-fade-in-animation');
             } 

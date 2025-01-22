@@ -24,7 +24,11 @@ function createHole(position) {
 
     let body = new CANNON.Body({
         type: CANNON.Body.STATIC,
-        shape: new CANNON.Box(new CANNON.Vec3(baseWidth / 2, baseHeight / 2, baseDepth / 2)),
+        shape: new CANNON.Box(new CANNON.Vec3(
+            baseWidth / 2,
+            baseHeight / 2,
+            baseDepth / 2
+        )),
     });
     
     body.material = new CANNON.Material({

@@ -53,8 +53,8 @@ function createBarrier(width, position, quaternion, isPushedBack) {
     barrier.mesh.position.copy(position);
     barrier.mesh.quaternion.copy(quaternion);
 
+    barrier.mesh.translateY(barrierHeight / 2);
     if(isPushedBack) {
-        barrier.mesh.translateY(barrierHeight / 2);
         barrier.mesh.translateZ(-barrierDepth / 2);
     }
 

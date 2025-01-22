@@ -1,4 +1,5 @@
 import { createBarrier } from '../obstacles/barrier.js';
+import { createWedge } from '../obstacles/wedge.js';
 import { createGround } from '../ground.js';
 import { createHole } from '../hole.js';
 import { createFlag } from '../flag.js';
@@ -8,18 +9,28 @@ import { createSceneryGround } from '../scenery/sceneryGround.js';
 import * as THREE from '../../../../vendor/three/build/three.module.js';
 import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 
-function createCourse3(physMaterials) {
+function createCourse5(physMaterials) {
 
-    const sceneryGround = createSceneryGround(new THREE.Vector3(0.0, -2.5, 0.0));
-
-    const hole = createHole(new THREE.Vector3(-5.9, -0.975 - 0.975, 5.9));
+    const sceneryGround = createSceneryGround(new THREE.Vector3(0.0, -0.2, 0.0));
+    const hole = createHole(new THREE.Vector3(0.0, 0.0, -7.0));
     const flag = createFlag(hole.position);
-    const ballSpawnpoint = new THREE.Vector3(0.0, 0.1, 0.0);
-    const cameraSpawnpoint = new THREE.Vector3(0.0, 1.0, -2.0);
+    const ballSpawnpoint = new THREE.Vector3(0.0, 0.1, 0.3);
+    const cameraSpawnpoint = new THREE.Vector3(0.0, 1.5, 3.0);
+
+    const wedge = createWedge(
+        0.3,
+        0.3,
+        new THREE.Vector3(0.0, 1.0, -0.72),
+        new THREE.Quaternion().setFromAxisAngle(
+            new THREE.Vector3(0.0, 1.0, 0.0),
+            -Math.PI / 4,
+        ),
+    );
+
     const holeGroundSection = createGround(
             1,
             1,
-            new THREE.Vector3(-5.9, -0.975 - 0.975, 5.9),
+            new THREE.Vector3(0.0, 0.0, -7.0),
             new THREE.Quaternion().setFromAxisAngle(
                 new THREE.Vector3(0.0, 1.0, 0.0),
                 0,
@@ -36,21 +47,12 @@ function createCourse3(physMaterials) {
             new THREE.Quaternion().setFromAxisAngle(
                 new THREE.Vector3(0.0, 1.0, 0.0),
                 0,
-            )
-        ),
-        createGround(
-            1,
-            5,
-            new THREE.Vector3(0.0, -0.488, 2.95),
-            new THREE.Quaternion().setFromAxisAngle(
-                new THREE.Vector3(1.0, 0.0, 0.0),
-                Math.PI / 16,
-            )
+            ),
         ),
         createGround(
             1,
             1,
-            new THREE.Vector3(0.0, -0.975, 5.9),
+            new THREE.Vector3(0.0, 1.0, -1.0),
             new THREE.Quaternion().setFromAxisAngle(
                 new THREE.Vector3(0.0, 1.0, 0.0),
                 0,
@@ -58,90 +60,106 @@ function createCourse3(physMaterials) {
         ),
         createGround(
             1,
-            5,
-            new THREE.Vector3(-2.95, -0.975 - 0.488, 5.9),
+            2,
+            new THREE.Vector3(3.0, 0.5, -0.5),
+            new THREE.Quaternion().setFromAxisAngle(
+                new THREE.Vector3(0.0, 1.0, 0.0),
+                0,
+            )
+        ),
+        createGround(
+            1,
+            2,
+            new THREE.Vector3(-3.0, 0.5, -0.5),
+            new THREE.Quaternion().setFromAxisAngle(
+                new THREE.Vector3(0.0, 1.0, 0.0),
+                0,
+            )
+        ),
+        createGround(
+            1,
+            2.06,
+            new THREE.Vector3(1.5, 0.25, 0.0),
             new THREE.Quaternion().setFromAxisAngle(
                 new THREE.Vector3(0.0, 1.0, 0.0),
                 -Math.PI / 2,
             ).multiply(
                 new THREE.Quaternion().setFromAxisAngle(
                     new THREE.Vector3(1.0, 0.0, 0.0),
-                    Math.PI / 16,
+                    0.244,
                 )
+            ),
+        ),
+        createGround(
+            1,
+            2.06,
+            new THREE.Vector3(1.5, 0.75, -1.0),
+            new THREE.Quaternion().setFromAxisAngle(
+                new THREE.Vector3(0.0, 1.0, 0.0),
+                Math.PI / 2,
+            ).multiply(
+                new THREE.Quaternion().setFromAxisAngle(
+                    new THREE.Vector3(1.0, 0.0, 0.0),
+                    0.244,
+                )
+            ),
+        ),
+        createGround(
+            1,
+            2.06,
+            new THREE.Vector3(-1.5, 0.25, 0.0),
+            new THREE.Quaternion().setFromAxisAngle(
+                new THREE.Vector3(0.0, 1.0, 0.0),
+                Math.PI / 2,
+            ).multiply(
+                new THREE.Quaternion().setFromAxisAngle(
+                    new THREE.Vector3(1.0, 0.0, 0.0),
+                    0.244,
+                )
+            ),
+        ),
+        createGround(
+            1,
+            2.06,
+            new THREE.Vector3(-1.5, 0.75, -1.0),
+            new THREE.Quaternion().setFromAxisAngle(
+                new THREE.Vector3(0.0, 1.0, 0.0),
+                -Math.PI / 2,
+            ).multiply(
+                new THREE.Quaternion().setFromAxisAngle(
+                    new THREE.Vector3(1.0, 0.0, 0.0),
+                    0.244,
+                )
+            ),
+        ),
+        createGround(
+            1,
+            5.099,
+            new THREE.Vector3(0.0, 0.50, -4.0),
+            new THREE.Quaternion().setFromAxisAngle(
+                new THREE.Vector3(0.0, 1.0, 0.0),
+                Math.PI,
+            ).multiply(
+                new THREE.Quaternion().setFromAxisAngle(
+                    new THREE.Vector3(1.0, 0.0, 0.0),
+                    0.197,
+                ),
             ),
         ),
     ];
 
     const barriers = [
         createBarrier(
-            1,
-            new THREE.Vector3(0.0, 0.0, -0.5),
-            new THREE.Quaternion().setFromAxisAngle(
-                new THREE.Vector3(0.0, 1.0, 0.0),
-                0,
-            ),
-        ),
-        createBarrier(
-            1,
-            new THREE.Vector3(0.5, 0.0, 0.0),
+            2,
+            new THREE.Vector3(3.5, 0.5, -0.5),
             new THREE.Quaternion().setFromAxisAngle(
                 new THREE.Vector3(0.0, 1.0, 0.0),
                 -Math.PI / 2,
             ),
         ),
         createBarrier(
-            5,
-            new THREE.Vector3(0.5, -0.488, 2.95),
-            new THREE.Quaternion().setFromAxisAngle(
-                new THREE.Vector3(0.0, 1.0, 0.0),
-                -Math.PI / 2,
-            ).multiply(
-                new THREE.Quaternion().setFromAxisAngle(
-                    new THREE.Vector3(0.0, 0.0, 1.0),
-                    -Math.PI / 16,
-                )
-            ),
-        ),
-        createBarrier(
-            1,
-            new THREE.Vector3(0.5, -0.975, 5.9),
-            new THREE.Quaternion().setFromAxisAngle(
-                new THREE.Vector3(0.0, 1.0, 0.0),
-                -Math.PI / 2,
-            ),
-        ),
-        createBarrier(
-            1,
-            new THREE.Vector3(0.0, -0.975, 6.4),
-            new THREE.Quaternion().setFromAxisAngle(
-                new THREE.Vector3(0.0, 1.0, 0.0),
-                Math.PI,
-            ),
-        ),
-        createBarrier(
-            5,
-            new THREE.Vector3(-2.95, -0.975 - 0.488, 6.4),
-            new THREE.Quaternion().setFromAxisAngle(
-                new THREE.Vector3(0.0, 1.0, 0.0),
-                Math.PI,
-            ).multiply(
-                new THREE.Quaternion().setFromAxisAngle(
-                    new THREE.Vector3(0.0, 0.0, 1.0),
-                    -Math.PI / 16,
-                )
-            ),
-        ),
-        createBarrier(
-            1,
-            new THREE.Vector3(-5.9, -0.975 - 0.975, 6.4),
-            new THREE.Quaternion().setFromAxisAngle(
-                new THREE.Vector3(0.0, 1.0, 0.0),
-                Math.PI,
-            ),
-        ),
-        createBarrier(
-            1,
-            new THREE.Vector3(-6.4, -0.975 - 0.975, 5.9),
+            2,
+            new THREE.Vector3(-3.5, 0.5, -0.5),
             new THREE.Quaternion().setFromAxisAngle(
                 new THREE.Vector3(0.0, 1.0, 0.0),
                 Math.PI / 2,
@@ -149,54 +167,35 @@ function createCourse3(physMaterials) {
         ),
         createBarrier(
             1,
-            new THREE.Vector3(-5.9, -0.975 - 0.975, 5.4),
+            new THREE.Vector3(0.0, 1.0, -0.5),
             new THREE.Quaternion().setFromAxisAngle(
                 new THREE.Vector3(0.0, 1.0, 0.0),
-                0,
+                Math.PI,
             ),
         ),
         createBarrier(
-            5,
-            new THREE.Vector3(-2.95, -0.975 - 0.488, 5.4),
-            new THREE.Quaternion().setFromAxisAngle(
-                new THREE.Vector3(0.0, 1.0, 0.0),
-                0,
-            ).multiply(
-                new THREE.Quaternion().setFromAxisAngle(
-                    new THREE.Vector3(0.0, 0.0, 1.0),
-                    Math.PI / 16,
-                )
-            ),
-        ),
-        createBarrier(
-            5,
-            new THREE.Vector3(-0.5, -0.488, 2.95),
-            new THREE.Quaternion().setFromAxisAngle(
-                new THREE.Vector3(0.0, 1.0, 0.0),
-                Math.PI / 2,
-            ).multiply(
-                new THREE.Quaternion().setFromAxisAngle(
-                    new THREE.Vector3(0.0, 0.0, 1.0),
-                    Math.PI / 16,
-                )
-            ),
-        ),
-        createBarrier(
-            1,
-            new THREE.Vector3(-0.5, 0.0, 0.0),
+            0.2,
+            new THREE.Vector3(-0.5, 1.0, -0.6),
             new THREE.Quaternion().setFromAxisAngle(
                 new THREE.Vector3(0.0, 1.0, 0.0),
                 Math.PI / 2,
             ),
         ),
-
+        createBarrier(
+            0.2,
+            new THREE.Vector3(0.5, 1.0, -0.6),
+            new THREE.Quaternion().setFromAxisAngle(
+                new THREE.Vector3(0.0, 1.0, 0.0),
+                -Math.PI / 2,
+            ),
+        ),
     ];
 
     const course = {
-        ballSpawnpoint: new THREE.Vector3(0.0, 0.1, 0.0),
-        cameraSpawnpoint: new THREE.Vector3(0.0, 1.0, -2.0),
+        ballSpawnpoint: ballSpawnpoint,
+        cameraSpawnpoint: cameraSpawnpoint,
         hole: hole,
-        par: 3,
+        par: 4,
         holeGroundSection: holeGroundSection,
         groundSections: groundSections,
         barriers: barriers,
@@ -224,4 +223,4 @@ function createCourse3(physMaterials) {
 
 }
 
-export { createCourse3 };
+export { createCourse5 };

@@ -125,11 +125,12 @@ function createWorld(container) {
         loadingScreen.show();
 
         const newCourse = createCourse(courseNum);
-        ball.mesh.position.copy(newCourse.ballSpawnpoint);
-        ball.body.position.copy(newCourse.ballSpawnpoint);
         ball.body.velocity = new CANNON.Vec3(0, 0, 0);
         ball.body.angularVelocity = new CANNON.Vec3(0, 0, 0);
+        ball.mesh.position.copy(newCourse.ballSpawnpoint);
+        ball.body.position.copy(newCourse.ballSpawnpoint);
         camera.position.copy(newCourse.cameraSpawnpoint);
+        camera.reset();
 
         scene.clear();
         physWorld.bodies = [];
@@ -167,6 +168,8 @@ function createWorld(container) {
         window.addEventListener('touchstart', pointerDownResponse);
         window.addEventListener('touchend', pointerUpResponse);
         window.addEventListener('touchmove', pointerMoveResponse);
+
+        loop.targetCourse = newCourse;
 
         return newCourse;
     }
@@ -238,6 +241,16 @@ function createWorld(container) {
         if (keyCode == 51) { course = loadCourse(3); }
         //4 key
         if (keyCode == 52) { course = loadCourse(4); }
+        //5 key
+        if (keyCode == 53) { course = loadCourse(5); }
+        //6 key
+        if (keyCode == 54) { course = loadCourse(6); }
+        //7 key
+        if (keyCode == 55) { course = loadCourse(7); }
+        //8 key
+        if (keyCode == 56) { course = loadCourse(8); }
+        //9 key
+        if (keyCode == 57) { course = loadCourse(9); }
 
     }
 
@@ -306,7 +319,7 @@ function createWorld(container) {
 
     continueButton.setOnClick(() => {
         continueButton.hide();
-        const maxCourse = 4; //temporary...
+        const maxCourse = 9; 
 
         if(course.number < maxCourse) {
             course = loadCourse(course.number + 1);
@@ -350,15 +363,16 @@ function createWorld(container) {
 
     //adding updatable objects to updating loop
     loop.updatables.push(physWorld);
+    loop.updatables.push(ball);
     loop.updatables.push(camera);
     loop.updatables.push(controls);
-    loop.updatables.push(ball);
     loop.updatables.push(pointer);
     loop.updatables.push(hud);
     loop.updatables.push(debugScreen);
     loop.updatables.push(scoreCallout);
     loop.updatables.push(loadingScreen);
     loop.updatables.push(continueButton);
+    loop.targetCourse = course;
 
     addDebugEntries();
 

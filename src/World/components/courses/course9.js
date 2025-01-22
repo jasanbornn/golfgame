@@ -8,13 +8,13 @@ import { createSceneryGround } from '../scenery/sceneryGround.js';
 import * as THREE from '../../../../vendor/three/build/three.module.js';
 import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 
-function createCourse5(physMaterials) {
+function createCourse9(physMaterials) {
 
     const sceneryGround = createSceneryGround(new THREE.Vector3(0.0, -0.2, 0.0));
     const hole = createHole(new THREE.Vector3(0.0, 0.0, 0.0));
     const flag = createFlag(hole.position);
     const ballSpawnpoint = new THREE.Vector3(0.0, 0.1, 0.3);
-    const cameraSpawnpoint = new THREE.Vector3(1.0, 0.1, 1.0);
+    const cameraSpawnpoint = new THREE.Vector3(0.0, 1.5, 3.0);
     const holeGroundSection = createGround(
             1,
             1,
@@ -82,4 +82,4 @@ function createCourse5(physMaterials) {
 
 }
 
-export { createCourse5 };
+export { createCourse9 };

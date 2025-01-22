@@ -83,6 +83,8 @@ function createCourse1() {
         sceneryGround,
     ];
 
+    course.tick = (delta) => {};
+
     for(let groundSection of groundSections) {
         course.objects.push(groundSection);
     }

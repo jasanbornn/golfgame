@@ -53,6 +53,7 @@ function createBall() {
     ball.updateTouchSphere = () => {};
 
     ball.tick = (delta) => {
+
         ball.mesh.position.copy(ball.body.position);
         ball.mesh.quaternion.copy(ball.body.quaternion);
         ball.touchSphere.mesh.position.copy(ball.mesh.position);

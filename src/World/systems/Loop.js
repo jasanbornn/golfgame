@@ -7,7 +7,9 @@ function createLoop(camera, scene, renderer) {
         scene: scene,
         renderer: renderer,
         updatables: [],
+        targetCourse: null,
     }
+
 
     loop.animate = () => {
         requestAnimationFrame(loop.animate);
@@ -29,6 +31,11 @@ function createLoop(camera, scene, renderer) {
         for (const object of loop.updatables) {
             object.tick(delta);
         }
+        if(loop.targetCourse != null) {
+            loop.targetCourse.tick(delta);
+        }
+
+
     }
 
     return loop;
