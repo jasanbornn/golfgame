@@ -18,8 +18,8 @@ function createLoadingScreen() {
     }
 
     loadingScreen.tick = (delta) => {
-        if(clock.getElapsedTime() >= 1.0) {
-            if( loadingScreenDiv.classList.toggle('loading-screen-fade-out-animation') ) {
+        if (clock.getElapsedTime() >= 1.0) {
+            if ( loadingScreenDiv.classList.toggle('loading-screen-fade-out-animation') ) {
                 loadingScreenDiv.classList.remove('loading-screen-fade-in-animation');
             } 
             clock.start();

@@ -4,3 +4,5 @@ website_upload.sh
 notes.txt
 sources.ods
 
+assets/downloads
+assets/downloads/*

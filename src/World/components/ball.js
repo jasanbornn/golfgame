@@ -9,9 +9,9 @@ function createBall() {
             (texture) => { 
                 ball.mesh.material = new THREE.MeshPhysicalMaterial({
                     normalMap: texture,
+                    normalScale: new THREE.Vector2(1.0, 1.0),
                     roughness: 0.0,
                     clearcoat: 1.0,
-                    clearCoatRoughness: 0.3,
                     metalness: 0.7,
                 });
             },
@@ -26,6 +26,11 @@ function createBall() {
     const material = new THREE.MeshStandardMaterial();
     const physMaterial = new CANNON.Material('ball');
 
+
+    let isMoving = false;
+    let isSettled = true;
+    const settleClock = new THREE.Clock(false); //autostart = false;
+
     const ball = {
         mesh: new THREE.Mesh(geometry, material),
         body: new CANNON.Body({
@@ -39,7 +44,7 @@ function createBall() {
 
     ball.body.material = new CANNON.Material({
         friction: 0.8,
-        restitution: 0.9,
+        restitution: 0.7,
     });
 
     ball.touchSphere = createBallTouchSphere();
@@ -50,9 +55,29 @@ function createBall() {
     ball.mesh.position.copy(ball.body.position);
     ball.mesh.quaternion.copy(ball.body.quaternion);
 
+    const lastPosition = new THREE.Vector3().copy(ball.body.position);
+
     ball.updateTouchSphere = () => {};
+    ball.onSettling = () => {};
 
     ball.tick = (delta) => {
+        if (ball.body.velocity.length() > 0.1) {
+            isMoving = true;
+            isSettled = false;
+            settleClock.start();
+            settleClock.stop();
+        } else if (ball.body.velocity.length() < 0.01) {
+            if (isMoving) {
+                isMoving = false;
+                settleClock.start();
+            }
+            if (settleClock.getElapsedTime() >= 0.5) {
+                settleClock.start();
+                settleClock.stop();
+                isSettled = true;
+                ball.onSettling();
+            }
+        }
 
         ball.mesh.position.copy(ball.body.position);
         ball.mesh.quaternion.copy(ball.body.quaternion);
@@ -66,9 +91,7 @@ function createBall() {
         }
 
         if (ball.body.position.y < -10) {
-            ball.body.position.set(0, 2, 0);
-            ball.body.velocity.set(0, 0, 0);
-            ball.body.torque.set(0, 0, 0);
+            ball.toLastPosition();
             ball.mesh.position.copy(ball.body.position);
         };
     }
@@ -81,6 +104,23 @@ function createBall() {
         ball.body.applyForce(strikeForce);
     };
 
+    ball.stop = () => {
+        ball.body.velocity.set(0.0, 0.0, 0.0);
+        ball.body.angularVelocity.set(0.0, 0.0, 0.0);
+    }
+
+    ball.recordPosition = () => {
+        lastPosition.copy(ball.body.position);
+    }
+
+    ball.toLastPosition = () => {
+        ball.stop();
+        ball.body.position.copy(lastPosition);
+        ball.mesh.position.copy(lastPosition);
+    }
+
+    ball.isSettled = () => { return isSettled; }
+    ball.isMoving = () => { return isMoving; }
 
     return ball;
 }

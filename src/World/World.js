@@ -58,6 +58,11 @@ function createWorld(container) {
         }
     }
 
+    let inBounds = true;
+    const outOfBoundsResponse = (event) => {
+         
+    }
+
     const pointerDownResponse = (event) => {
         if(gameOver || inGameMenu.state != "closed") {
             return;
@@ -125,8 +130,7 @@ function createWorld(container) {
         loadingScreen.show();
 
         const newCourse = createCourse(courseNum);
-        ball.body.velocity = new CANNON.Vec3(0, 0, 0);
-        ball.body.angularVelocity = new CANNON.Vec3(0, 0, 0);
+        ball.stop();
         ball.mesh.position.copy(newCourse.ballSpawnpoint);
         ball.body.position.copy(newCourse.ballSpawnpoint);
         camera.position.copy(newCourse.cameraSpawnpoint);
@@ -196,7 +200,7 @@ function createWorld(container) {
     };
 
     const strikeBall = () => {
-        if (ball.body.velocity.length() < 0.01) {
+        if (ball.isSettled()) {
             let cameraDirection = new THREE.Vector3(0, 0, 0);
             camera.getWorldDirection(cameraDirection);
             ball.strike(cameraDirection, strikePower.getValue());
@@ -315,7 +319,7 @@ function createWorld(container) {
     const strikePower = createStrikePower();
 
     const ball = createBall();
-    const pointer = createPointer(camera,strikePower);
+    const pointer = createPointer(ball, camera, strikePower);
 
     continueButton.setOnClick(() => {
         continueButton.hide();
@@ -332,6 +336,14 @@ function createWorld(container) {
         const distance = controls.getDistance();
         const scale = Math.sqrt(distance / 3);
         ball.touchSphere.mesh.scale.setScalar(scale);
+    };
+
+    ball.onSettling = () => {
+        if(ball.body.position.y < course.outOfBoundsYLevel) {
+            ball.toLastPosition();
+        } else  {
+            ball.recordPosition();
+        }
     };
 
     //camera target

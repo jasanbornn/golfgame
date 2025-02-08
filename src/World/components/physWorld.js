@@ -6,7 +6,7 @@ function createPhysWorld() {
     const clock = new THREE.Clock(false);
     let time = 0;
     const dTime = 0.01;
-    const timeStep = 1/60;
+    const timeStep = 1/120;
     let currentTime = performance.now() / 1000;
     let accumulator = 0.0;
     

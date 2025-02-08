@@ -4,6 +4,8 @@ import { createHole } from '../hole.js';
 import { createFlag } from '../flag.js';
 import { createWindmillBase, createWindmillBlades } from '../obstacles/windmill.js';
 
+import { createOutOfBoundsPlane } from '../debug/outOfBoundsPlane.js';
+
 import { createSceneryGround } from '../scenery/sceneryGround.js';
 
 import * as THREE from '../../../../vendor/three/build/three.module.js';
@@ -16,6 +18,8 @@ function createCourse8(physMaterials) {
     const flag = createFlag(hole.position);
     const ballSpawnpoint = new THREE.Vector3(0.0, 0.1, 0.3);
     const cameraSpawnpoint = new THREE.Vector3(0.0, 1.5, 3.0);
+    const outOfBoundsYLevel = -0.1;
+    const outOfBoundsPlane = createOutOfBoundsPlane(outOfBoundsYLevel);
 
     const windmillBase = createWindmillBase(
         new THREE.Vector3(0.0, 0.0, -3.0),
@@ -81,6 +85,7 @@ function createCourse8(physMaterials) {
         holeGroundSection: holeGroundSection,
         groundSections: groundSections,
         barriers: barriers,
+        outOfBoundsYLevel: outOfBoundsYLevel,
     }
 
     course.objects = [
@@ -91,6 +96,7 @@ function createCourse8(physMaterials) {
         sceneryGround,
         windmillBase,
         windmillBlades,
+        outOfBoundsPlane,
     ];
 
     course.tick = (delta) => {

@@ -2,7 +2,7 @@
 
 import * as THREE from '../../../vendor/three/build/three.module.js';
 
-function createPointer(camera, strikePower) {
+function createPointer(ball, camera, strikePower) {
 
     //pointer dimensions (meters)
     const ARROW_TAIL_WIDTH = 0.05;
@@ -64,11 +64,9 @@ function createPointer(camera, strikePower) {
         pointer.mesh.translateZ(0.4);
 
         //make pointer visible only when the ball is not moving
-        const ball = camera.targetObj;
-        if(ball.velocity.length() < 0.01) {
+        if(ball.isSettled()) {
             pointer.mesh.visible = true;
-        } else
-        {
+        } else {
             pointer.mesh.visible = false;
         }
 

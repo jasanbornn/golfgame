@@ -12,11 +12,21 @@ function createGround(width, depth, position, quaternion, hole) {
             (texture) => {
                 texture.wrapS = THREE.RepeatWrapping;
                 texture.wrapT = THREE.RepeatWrapping;
-                texture.repeat.set(width, depth);
+                texture.repeat.set(width / 4, depth / 4);
                 ground.mesh.material = new THREE.MeshStandardMaterial({
-                    color: 0x11AA00,
+                    color: 0x446644,
                     map: texture,
                 });
+            },
+        );
+        textureLoader.load(
+            '../../assets/grass_norm.png',
+            (texture) => {
+                texture.wrapS = THREE.RepeatWrapping;
+                texture.wrapT = THREE.RepeatWrapping;
+                texture.repeat.set(width / 4, depth / 4);
+                ground.mesh.material.normalMap = texture;
+                ground.mesh.material.normalScale = new THREE.Vector2(0.1, 0.1);
             },
         );
     }
@@ -70,9 +80,6 @@ function createGround(width, depth, position, quaternion, hole) {
     });
 
     const bottomMesh = new THREE.Mesh(bottomGeometry, bottomMaterial);
-    //bottomMesh.translateX(width / 2);
-    //bottomMesh.translateY(-0.001);
-    //bottomMesh.translateZ(depth / 2);
 
     const ground = {
         mesh: createGroundHoleClip(groundPreMesh, hole),
@@ -90,10 +97,9 @@ function createGround(width, depth, position, quaternion, hole) {
 
     ground.body.position.copy(position);
     ground.body.quaternion.copy(quaternion);
-    //ground.body.position.y -= 0.5;
 
     ground.body.material = new CANNON.Material({
-        friction: 0.03,
+        friction: 1.0,
         restitution: 0.2,
     });
 

@@ -33,7 +33,7 @@ function createHole(position) {
     
     body.material = new CANNON.Material({
         friction: 0.8,
-        restitution: 0.6,
+        restitution: 0.1,
     });
 
     body.position.set(position.x, position.y, position.z);

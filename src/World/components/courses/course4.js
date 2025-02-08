@@ -3,6 +3,8 @@ import { createGround } from '../ground.js';
 import { createHole } from '../hole.js';
 import { createFlag } from '../flag.js';
 
+import { createOutOfBoundsPlane } from '../debug/outOfBoundsPlane.js';
+
 import { createSceneryGround } from '../scenery/sceneryGround.js';
 
 import * as THREE from '../../../../vendor/three/build/three.module.js';
@@ -15,6 +17,9 @@ function createCourse4(physMaterials) {
     const flag = createFlag(hole.position);
     const ballSpawnpoint = new THREE.Vector3(-1.0, 0.1, -1.5);
     const cameraSpawnpoint = new THREE.Vector3(-1.0, 1.5, -3.5);
+    const outOfBoundsYLevel = -0.1;
+    const outOfBoundsPlane = createOutOfBoundsPlane(outOfBoundsYLevel);
+
     const holeGroundSection = createGround(
             4,
             4,
@@ -91,6 +96,7 @@ function createCourse4(physMaterials) {
         holeGroundSection: holeGroundSection,
         groundSections: groundSections,
         barriers: barriers,
+        outOfBoundsYLevel: outOfBoundsYLevel,
     }
 
     course.objects = [
@@ -99,6 +105,7 @@ function createCourse4(physMaterials) {
         course.hole.inTrigger,
         flag,
         sceneryGround,
+        outOfBoundsPlane,
     ];
 
     course.tick = (delta) => {};
