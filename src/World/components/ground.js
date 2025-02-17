@@ -60,14 +60,17 @@ function createGround(width, depth, position, quaternion, hole) {
     const groundHalfExtents = new CANNON.Vec3(width / 2, 0.5, depth / 2);
     const groundShape = new CANNON.Box(groundHalfExtents);
 
-    const bottomGeometry = new THREE.BoxGeometry(width, 10, depth);
 
-    let forwardQuaternion = new THREE.Quaternion();
-    forwardQuaternion.copy(groundPreMesh.quaternion);
-    forwardQuaternion.x = 0.0;
-    forwardQuaternion.z = 0.0;
-    forwardQuaternion.normalize();
-    bottomGeometry.rotateX(-groundPreMesh.quaternion.angleTo(forwardQuaternion));
+    const horizQuaternion = new THREE.Quaternion().copy(quaternion); 
+    horizQuaternion.x = 0.0;
+    horizQuaternion.z = 0.0;
+    horizQuaternion.normalize();
+    const axisAngle = quaternion.angleTo(horizQuaternion);
+
+    const bottomDepth = depth * Math.cos(axisAngle);
+    const bottomGeometry = new THREE.BoxGeometry(width, 10, bottomDepth);
+
+    bottomGeometry.rotateX(-axisAngle);
 
     const bottomGeoClipPlane = new THREE.Plane().setFromNormalAndCoplanarPoint(
         new THREE.Vector3( 0, -1.0, 0,).applyQuaternion(quaternion),
