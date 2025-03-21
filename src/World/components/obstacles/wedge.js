@@ -70,6 +70,8 @@ function createWedge(width, length, position, quaternion) {
         body: body,
     }
 
+    wedge.mesh.name = "wedge";
+
     return wedge;
 }
 

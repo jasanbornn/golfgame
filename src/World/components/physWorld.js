@@ -16,32 +16,11 @@ function createPhysWorld() {
 
     const physWorld = new CANNON.World(options);
 
-    physWorld.solver.iterations = 20;
+    physWorld.solver.iterations = 200;
 
     physWorld.tick = (delta) => {
-
-        let newTime = performance.now() / 1000;
-        let frameTime = newTime - currentTime;
-        currentTime = newTime;
-        
-        accumulator += frameTime;
-
-        while(accumulator >= dTime) {
-            physWorld.step(timeStep)
-            accumulator -= dTime;
-            time += dTime;
-        }
-
-
-        //physWorld.step(delta);
-        //physWorld.fixedStep(1/3);
-        //if(delta < 1 / 60) {
-        //    physWorld.step(delta);
-        //} else {
-        //    physWorld.fixedStep(1 / 60);
-        //}
-
-    };
+        physWorld.fixedStep(timeStep, 20);
+    }
 
     return physWorld;
 }

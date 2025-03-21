@@ -1,3 +1,4 @@
+import { createLight } from '../light.js';
 import { createBarrier } from '../obstacles/barrier.js';
 import { createGround } from '../ground.js';
 import { createHole } from '../hole.js';
@@ -12,7 +13,8 @@ import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 
 function createCourse2(physMaterials) {
 
-    const sceneryGround = createSceneryGround(new THREE.Vector3(0.0, -0.3, 0.0));
+    const light = createLight(new THREE.Vector3(-0.5, 6, 10));
+    const sceneryGround = createSceneryGround(new THREE.Vector3(0.0, -0.33, 0.0));
 
     const hole = createHole(new THREE.Vector3(-3, -0.001, -3));
     const flag = createFlag(hole.position);
@@ -107,6 +109,7 @@ function createCourse2(physMaterials) {
     }
 
     course.objects = [
+        light,
         course.hole,
         course.hole.collideTrigger,
         course.hole.inTrigger,

@@ -59,6 +59,8 @@ function createSceneryGround(position) {
     }
     createMaterial();
 
+    sceneryGround.mesh.name = "scenery_ground";
+
     sceneryGround.mesh.position.copy(position);
     sceneryGround.body.position.copy(sceneryGround.mesh.position);
     

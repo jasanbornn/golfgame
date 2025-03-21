@@ -2,7 +2,9 @@
 
 //import*as THREE from "./lib/three.module.js";
 
-import*as THREE from 'https://cdn.skypack.dev/three@0.132.2' //"https://threejs.org/build/three.module.js";
+//import*as THREE from 'https://cdn.skypack.dev/three@0.132.2' //"https://threejs.org/build/three.module.js";
+
+import * as THREE from '../three/build/three.module.js';
 
 let { BufferGeometry, Vector3, Vector2} = THREE;
 import {CSG, Vertex, Vector, Polygon} from "./csg-lib.js"

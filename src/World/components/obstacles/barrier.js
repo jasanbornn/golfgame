@@ -50,6 +50,8 @@ function createBarrier(width, position, quaternion, isPushedBack) {
     };
     createMaterial();
 
+    barrier.mesh.name = "barrier";
+
     barrier.mesh.position.copy(position);
     barrier.mesh.quaternion.copy(quaternion);
 
@@ -61,9 +63,8 @@ function createBarrier(width, position, quaternion, isPushedBack) {
     barrier.body.position.copy(barrier.mesh.position);
     barrier.body.quaternion.copy(barrier.mesh.quaternion);
 
-    //barrier.body.material = new CANNON.Material('barrier');
     barrier.body.material = new CANNON.Material({
-        friction: 0.8,
+        friction: 0.6,
         restitution: 0.9,
     });
 

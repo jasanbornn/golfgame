@@ -1,3 +1,4 @@
+import { createLight } from '../light.js';
 import { createBarrier } from '../obstacles/barrier.js';
 import { createGround } from '../ground.js';
 import { createHole } from '../hole.js';
@@ -12,18 +13,19 @@ import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 
 function createCourse9(physMaterials) {
 
+    const light = createLight(new THREE.Vector3(5, 5, -6));
     const sceneryGround = createSceneryGround(new THREE.Vector3(0.0, -0.2, 0.0));
-    const hole = createHole(new THREE.Vector3(0.0, 0.0, 0.0));
+    const hole = createHole(new THREE.Vector3(0.0, 1.0, -3.4));
     const flag = createFlag(hole.position);
-    const ballSpawnpoint = new THREE.Vector3(0.0, 0.1, 0.3);
-    const cameraSpawnpoint = new THREE.Vector3(0.0, 1.5, 3.0);
+    const ballSpawnpoint = new THREE.Vector3(0.0, 3.1, 0.0);
+    const cameraSpawnpoint = new THREE.Vector3(0.0, 4.0, 3.0);
     const outOfBoundsYLevel = -0.1;
     const outOfBoundsPlane = createOutOfBoundsPlane(outOfBoundsYLevel);
 
     const holeGroundSection = createGround(
             1,
             1,
-            new THREE.Vector3(0.0, 0.0, 0.0),
+            new THREE.Vector3(0.0, 1.0, -3.4),
             new THREE.Quaternion().setFromAxisAngle(
                 new THREE.Vector3(0.0, 1.0, 0.0),
                 0,
@@ -32,34 +34,98 @@ function createCourse9(physMaterials) {
         );
 
     const groundSections = [
+        //starting ground
+        createGround(
+            1,
+            3,
+            new THREE.Vector3(0.0, 3.0, -1.3),
+            new THREE.Quaternion().setFromAxisAngle(
+                new THREE.Vector3(0.0, 1.0, 0.0),
+                0,
+            )
+        ),
+        //first bump ramp
+        createGround(
+            1,
+            0.1118,
+            new THREE.Vector3(0.0, 3.025, -2.85),
+            new THREE.Quaternion().setFromAxisAngle(
+                new THREE.Vector3(1.0, 0.0, 0.0),
+                0.4636,
+            )
+        ),
+        //first forward landing
+        createGround(
+            2,
+            2,
+            new THREE.Vector3(0.0, 1.0, -10.0),
+            new THREE.Quaternion().setFromAxisAngle(
+                new THREE.Vector3(0.0, 1.0, 0.0),
+                0,
+            )
+        ),
+        //first foward landing back board
+        createGround(
+            2.0,
+            0.5,
+            new THREE.Vector3(0.0, 2.5, -11.25),
+            new THREE.Quaternion().setFromAxisAngle(
+                new THREE.Vector3(0.0, 1.0, 0.0),
+                0,
+            )
+        ),
+        //second reverse bump ramp
+        createGround(
+            2,
+            0.1118,
+            new THREE.Vector3(0.0, 1.025, -9.0),
+            new THREE.Quaternion().setFromAxisAngle(
+                new THREE.Vector3(0.0, 1.0, 0.0),
+                Math.PI,
+            ).multiply(new THREE.Quaternion().setFromAxisAngle(
+                new THREE.Vector3(1.0, 0.0, 0.0),
+                0.4636,
+            ),
+        )),
         holeGroundSection,
-        //createGround(
-        //    1,
-        //    1,
-        //    new THREE.Vector3(0.0, 0.0, 0.0),
-        //    new THREE.Quaternion().setFromAxisAngle(
-        //        new THREE.Vector3(0.0, 1.0, 0.0),
-        //        0,
-        //    )
-        //),
     ];
 
     const barriers = [
-        //createBarrier(
-        //    1,
-        //    new THREE.Vector3(0.0, 0.0, 0.0),
-        //    new THREE.Quaternion().setFromAxisAngle(
-        //        new THREE.Vector3(0.0, 1.0, 0.0),
-        //        0,
-        //    ),
-        //),
+        //flag barrier
+        createBarrier(
+            1,
+            new THREE.Vector3(0.0, 1.0, -3.9),
+            new THREE.Quaternion().setFromAxisAngle(
+                new THREE.Vector3(0.0, 1.0, 0.0),
+                0,
+            ),
+        ),
+        //flag barrier
+        createBarrier(
+            1,
+            new THREE.Vector3(-0.5, 1.0, -3.4),
+            new THREE.Quaternion().setFromAxisAngle(
+                new THREE.Vector3(0.0, 1.0, 0.0),
+                Math.PI / 2,
+            ),
+        ),
+        //flag barrier
+        createBarrier(
+            1,
+            new THREE.Vector3(0.5, 1.0, -3.4),
+            new THREE.Quaternion().setFromAxisAngle(
+                new THREE.Vector3(0.0, 1.0, 0.0),
+                -Math.PI / 2,
+            ),
+        ),
+
     ];
 
     const course = {
         ballSpawnpoint: ballSpawnpoint,
         cameraSpawnpoint: cameraSpawnpoint,
         hole: hole,
-        par: 1,
+        par: 3,
         holeGroundSection: holeGroundSection,
         groundSections: groundSections,
         barriers: barriers,
@@ -67,6 +133,7 @@ function createCourse9(physMaterials) {
     }
 
     course.objects = [
+        light,
         course.hole,
         course.hole.collideTrigger,
         course.hole.inTrigger,

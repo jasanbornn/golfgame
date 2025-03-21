@@ -84,6 +84,8 @@ body {
     flex-direction: column;
     text-align: center;
     font-size: 40px;
+    color: yellow;
+    text-shadow: 4px 4px black;
     align: center;
     left: 50%;
     top: -50%;

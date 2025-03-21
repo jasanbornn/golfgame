@@ -39,6 +39,8 @@ function createPointer(ball, camera, strikePower) {
         mesh: new THREE.Mesh(geometry, material),
     };
 
+    pointer.mesh.name = "pointer";
+
     //position pointer slightly below the ball's center line
     pointer.mesh.position.y -= 0.03;
     pointer.tick = () => {

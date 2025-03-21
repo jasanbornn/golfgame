@@ -58,6 +58,8 @@ function createFlag(position) {
         mesh: poleMesh
     };
 
+    flag.mesh.name = "flag";
+
     flag.mesh.position.copy(position);
 
     return flag;

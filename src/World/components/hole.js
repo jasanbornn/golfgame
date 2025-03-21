@@ -30,6 +30,8 @@ function createHole(position) {
             baseDepth / 2
         )),
     });
+
+    
     
     body.material = new CANNON.Material({
         friction: 0.8,
@@ -77,6 +79,8 @@ function createHole(position) {
         inTrigger: createHoleInTrigger(parentMesh.position),
         GROUND_OFFSET: GROUND_OFFSET,
     }
+
+    hole.mesh.name = "hole";
 
     return hole;
 }

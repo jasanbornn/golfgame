@@ -34,7 +34,7 @@ function createBall() {
     const ball = {
         mesh: new THREE.Mesh(geometry, material),
         body: new CANNON.Body({
-            mass: 0.045, //kg
+            mass: 0.046, //kg
             shape: new CANNON.Sphere(radius),
             material: physMaterial,
             angularDamping: 0.70,
@@ -42,9 +42,11 @@ function createBall() {
     };
     createMaterial();
 
+    ball.mesh.name = "ball";
+
     ball.body.material = new CANNON.Material({
-        friction: 0.8,
-        restitution: 0.7,
+        friction: 0.3,
+        restitution: 0.9,
     });
 
     ball.touchSphere = createBallTouchSphere();
@@ -60,8 +62,18 @@ function createBall() {
     ball.updateTouchSphere = () => {};
     ball.onSettling = () => {};
 
+    const prevVelocity = new THREE.Vector3();
+
+    ball.velocityChange = new THREE.Vector3();
     ball.tick = (delta) => {
-        if (ball.body.velocity.length() > 0.1) {
+        const velocityChange = new THREE.Vector3().copy(ball.body.velocity.vsub(prevVelocity));
+        ball.velocityChange.copy(velocityChange);
+
+        if (velocityChange.length() > 0.1) {
+            //console.log(velocityChange.length());
+        }
+
+        if (ball.body.velocity.length() > 0.10) {
             isMoving = true;
             isSettled = false;
             settleClock.start();
@@ -71,7 +83,7 @@ function createBall() {
                 isMoving = false;
                 settleClock.start();
             }
-            if (settleClock.getElapsedTime() >= 0.5) {
+            if (settleClock.getElapsedTime() >= 0.50) {
                 settleClock.start();
                 settleClock.stop();
                 isSettled = true;
@@ -83,6 +95,7 @@ function createBall() {
         ball.mesh.quaternion.copy(ball.body.quaternion);
         ball.touchSphere.mesh.position.copy(ball.mesh.position);
         ball.updateTouchSphereScale();
+        prevVelocity.copy(ball.body.velocity);
 
         if (ball.body.velocity.length() < 0.2) {
             ball.body.angularDamping = 0.9;
@@ -90,7 +103,7 @@ function createBall() {
             ball.body.angularDamping = 0.7; 
         }
 
-        if (ball.body.position.y < -10) {
+        if (ball.body.position.y < -10.0) {
             ball.toLastPosition();
             ball.mesh.position.copy(ball.body.position);
         };

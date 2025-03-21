@@ -96,6 +96,8 @@ function createWindmillBase(position, quaternion) {
         body: topBody,
     };
 
+    windmillBase.mesh.name = "windmill_base";
+
     return windmillBase;
 }
 
@@ -149,12 +151,14 @@ function createWindmillBlades(windmillBasePosition, windmillBaseQuaternion) {
     bladesBody.position.copy(bladesMesh.getWorldPosition(new THREE.Vector3()));
     bladesBody.quaternion.copy(bladesMesh.getWorldQuaternion(new THREE.Quaternion()));
 
-    bladesBody.angularVelocity = new CANNON.Vec3(0.0, 0.0, 1.5*Math.PI);
+    bladesBody.angularVelocity = new CANNON.Vec3(0.0, 0.0, 1.0*Math.PI);
 
     const windmillBlades = {
         mesh: bladesMesh,
         body: bladesBody,
     }
+
+    windmillBlades.mesh.name = "windmill_blades";
 
     windmillBlades.tick = (delta) => {
         windmillBlades.mesh.quaternion.copy(windmillBlades.body.quaternion);

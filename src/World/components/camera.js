@@ -14,6 +14,8 @@ function createCamera() {
         100, // far clipping plane
     );
 
+    camera.name = "camera";
+
     // move the camera back so we can view the scene
     camera.position.set(0, 2, 2);
     camera.quaternion.setFromEuler(new THREE.Euler(-Math.PI / 16, 0, 0))

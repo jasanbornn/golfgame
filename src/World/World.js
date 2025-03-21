@@ -3,7 +3,6 @@ import { createBall } from './components/ball.js';
 import { createPointer } from './components/pointer.js';
 import { createCourse } from './components/course.js';
 import { createScene } from './components/scene.js';
-import { createLights } from './components/lights.js';
 import { createPhysWorld } from './components/physWorld.js';
 import { createStrikePower } from './components/strikePower.js';
 
@@ -19,6 +18,7 @@ import { createControls } from './systems/controls.js';
 import { createRenderer } from './systems/renderer.js';
 import { Resizer } from './systems/Resizer.js';
 import { createLoop } from './systems/Loop.js';
+import { createAudioHelper } from './systems/audioHelper.js';
 
 import * as THREE from '../../vendor/three/build/three.module.js';
 import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
@@ -52,18 +52,36 @@ function createWorld(container) {
         holeFinished = true;
 
         if(event.body === ball.body) {
+            audioHelper.playSound('assets/sound/ball_into_hole.wav');
+            //audioHelper.playSound('assets/sound/clap.wav');
             scorecard.setScore(course.number, strokes);
             scoreCallout.displayScore(course.par, strokes);
             continueButton.prompt();
         }
     }
 
-    let inBounds = true;
-    const outOfBoundsResponse = (event) => {
-         
+    const ballCollideResponse = (event) => {
+        if(event.body.isTrigger) {
+            return;
+        }
+
+        if(ball.velocityChange.length > 0.1) {
+            //console.log("[world]" + ball.velocityChange.length());
+        }
+
+        const soundVolume = ball.velocityChange.length() / 10;
+
+        if(event.body.material.restitution != undefined) {
+            if(event.body.material.restitution > 0.5) {
+               audioHelper.playSound('assets/sound/wood_thud.wav', soundVolume);
+            } else {
+               audioHelper.playSound('assets/sound/grass_thud.wav', soundVolume);
+            }
+        }
     }
 
     const pointerDownResponse = (event) => {
+        audioHelper.resume();
         if(gameOver || inGameMenu.state != "closed") {
             return;
         }
@@ -144,16 +162,25 @@ function createWorld(container) {
         hud.setStrokesText(strokes);
         hud.setParText(par);
 
+
         //add game objects to the world
         scene.add(ball.mesh); 
         scene.add(ball.touchSphere.mesh);
         scene.add(pointer.mesh);
-        scene.add(light);
+
+        //ambient light
+        const ambientLight = new THREE.AmbientLight(0x809080, 1.0);
+        scene.add(ambientLight);
 
         physWorld.addBody(ball.body);
-        for (let o of newCourse.objects) {
+        for (const o of newCourse.objects) {
+            if(o.isLight) { scene.add(o); }
             if(o.mesh != null) { scene.add(o.mesh); }
             if(o.body != null) { physWorld.addBody(o.body); }
+        }
+        
+        for (const sound of audioHelper.sounds) {
+            scene.add(sound.audio);
         }
 
         newCourse.hole.collideTrigger.body.removeEventListener('collide', holeCollideResponse);
@@ -161,6 +188,9 @@ function createWorld(container) {
 
         newCourse.hole.inTrigger.body.removeEventListener('collide', holeInResponse);
         newCourse.hole.inTrigger.body.addEventListener('collide', holeInResponse);
+
+        ball.body.removeEventListener('collide', ballCollideResponse);
+        ball.body.addEventListener('collide', ballCollideResponse);
 
         physWorld.removeEventListener('endContact', holeCollideEndResponse);
         physWorld.addEventListener('endContact', holeCollideEndResponse);
@@ -201,6 +231,15 @@ function createWorld(container) {
 
     const strikeBall = () => {
         if (ball.isSettled()) {
+            if(strikePower.percentPower() < 0.3) {
+                audioHelper.playSound('assets/sound/strike_low_power.wav')
+                
+            } else if (strikePower.percentPower() < 0.6) {
+                audioHelper.playSound('assets/sound/strike_medium_power.wav')
+
+            } else {
+                audioHelper.playSound('assets/sound/strike_high_power.wav')
+            }
             let cameraDirection = new THREE.Vector3(0, 0, 0);
             camera.getWorldDirection(cameraDirection);
             ball.strike(cameraDirection, strikePower.getValue());
@@ -298,21 +337,25 @@ function createWorld(container) {
 
     const world = {};
 
+
+
     const renderer = createRenderer();
     container.append(renderer.domElement);
     const camera = createCamera();
     const resizer = new Resizer(container, camera, renderer);
     const scene = createScene();
     const loop = createLoop(camera, scene, renderer);
+    const audioHelper = createAudioHelper();
     const physWorld = createPhysWorld();
     const controls = createControls(camera, renderer.domElement);
-    const light = createLights();
     const debugScreen = createDebugScreen();
     const scorecard = createScorecard();
     const scoreCallout = createScoreCallout();
     const loadingScreen = createLoadingScreen();
     const continueButton = createContinueButton(); 
     let gameOver = false;
+
+    camera.add(audioHelper.audioListener);
 
     let pointerControlsStrikePower = false;
 
