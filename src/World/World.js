@@ -389,6 +389,36 @@ function createWorld(container) {
         }
     };
 
+    //https://github.com/schteppe/cannon.js/issues/202
+    ball.raycastCollideCheck = (delta) => {
+        const ballVelocity = ball.body.velocity.clone();
+    
+        const offset = ballVelocity.clone().unit().scale(ball.radius + 0.01);
+        const from = ball.body.position.clone().vadd(offset);
+        const to = from.clone().vadd(ball.body.velocity);
+
+        const changeInPosition = ballVelocity.length()*(physWorld.dt);
+
+        const raycastResult = new CANNON.RaycastResult;
+        physWorld.raycastClosest(from, to, {}, raycastResult);
+
+        if(raycastResult.hasHit) {
+            if(changeInPosition > raycastResult.distance) {
+
+                ball.body.position.copy(raycastResult.hitPointWorld);
+
+                const overshotCorrectionVector = ballVelocity
+                    .clone()
+                    .unit()
+                    .scale(-1.0*(ball.radius - 0.001));
+
+                ball.body.position.vadd(overshotCorrectionVector, ball.body.position);
+                ball.mesh.position.copy(ball.body.position);
+
+            }
+        }
+    }
+
     //camera target
     controls.targetObj = ball.body;
     camera.targetObj = ball.body;

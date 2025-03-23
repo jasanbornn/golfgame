@@ -32,7 +32,7 @@ function createPointer(ball, camera, strikePower) {
     //rotate so pointer points towards its positive z axis
     geometry.rotateX(Math.PI / 2);
     const material = new THREE.MeshStandardMaterial({
-        color: 0xAAAAAA,
+        color: 0xFFFF00,
     });
 
     const pointer = {

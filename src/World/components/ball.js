@@ -39,8 +39,11 @@ function createBall() {
             material: physMaterial,
             angularDamping: 0.70,
         }),
+        radius: radius,
     };
     createMaterial();
+
+
 
     ball.mesh.name = "ball";
 
@@ -59,8 +62,10 @@ function createBall() {
 
     const lastPosition = new THREE.Vector3().copy(ball.body.position);
 
+    //to be defined in World.js
     ball.updateTouchSphere = () => {};
     ball.onSettling = () => {};
+    ball.raycastCollideCheck = (delta) => {};
 
     const prevVelocity = new THREE.Vector3();
 
@@ -68,6 +73,10 @@ function createBall() {
     ball.tick = (delta) => {
         const velocityChange = new THREE.Vector3().copy(ball.body.velocity.vsub(prevVelocity));
         ball.velocityChange.copy(velocityChange);
+
+        if(ball.body.velocity.length() > 2.0) {
+            ball.raycastCollideCheck();
+        }
 
         if (velocityChange.length() > 0.1) {
             //console.log(velocityChange.length());
@@ -91,12 +100,6 @@ function createBall() {
             }
         }
 
-        ball.mesh.position.copy(ball.body.position);
-        ball.mesh.quaternion.copy(ball.body.quaternion);
-        ball.touchSphere.mesh.position.copy(ball.mesh.position);
-        ball.updateTouchSphereScale();
-        prevVelocity.copy(ball.body.velocity);
-
         if (ball.body.velocity.length() < 0.2) {
             ball.body.angularDamping = 0.9;
         } else {
@@ -107,6 +110,13 @@ function createBall() {
             ball.toLastPosition();
             ball.mesh.position.copy(ball.body.position);
         };
+        
+        ball.mesh.position.copy(ball.body.position);
+        ball.mesh.quaternion.copy(ball.body.quaternion);
+        ball.touchSphere.mesh.position.copy(ball.mesh.position);
+        ball.updateTouchSphereScale();
+        prevVelocity.copy(ball.body.velocity);
+
     }
 
     ball.strike = (cameraDirection, strikePower) => {
