@@ -7,97 +7,101 @@ function createGround(width, length, position, quaternion, hole) {
     const textureLoader = new THREE.TextureLoader();
     textureLoader.path = 'putt';
     const createMaterial = (width, length) => {
-        textureLoader.load(
+        ground.mesh.material = new THREE.MeshStandardMaterial({
+            color: 0x446644,
+        });
+
+        ground.mesh.material.map = textureLoader.load(
             '../../assets/grass.png',
             (texture) => {
                 texture.wrapS = THREE.RepeatWrapping;
                 texture.wrapT = THREE.RepeatWrapping;
                 texture.repeat.set(width / 4, length / 4);
-                ground.mesh.material = new THREE.MeshStandardMaterial({
-                    color: 0x446644,
-                    map: texture,
-                });
+            },
+            // progress
+            undefined,
+            //on error
+            (xhr) => {
+                console.log('error loading texture'); 
             },
         );
-        textureLoader.load(
+
+        ground.mesh.material.normalScale = new THREE.Vector2(0.1, 0.1);
+        ground.mesh.material.normalMap = textureLoader.load(
             '../../assets/grass_norm.png',
             (texture) => {
                 texture.wrapS = THREE.RepeatWrapping;
                 texture.wrapT = THREE.RepeatWrapping;
                 texture.repeat.set(width / 4, length / 4);
-                ground.mesh.material.normalMap = texture;
-                ground.mesh.material.normalScale = new THREE.Vector2(0.1, 0.1);
+            },
+            // progress
+            undefined,
+            //on error
+            (xhr) => {
+                console.log('error loading texture'); 
             },
         );
     }
     
-    //todo: different material for each side to get rid of stretching
     //https://discourse.threejs.org/t/different-textures-on-each-face-of-cube/23700
+
     const createBottomMaterial = (width, length) => {
-        textureLoader.load(
-            '../../assets/bricks.png',
-            (texture) => {
-                texture.wrapS = THREE.RepeatWrapping;
-                texture.wrapT = THREE.RepeatWrapping;
-                texture.repeat.set(length, 12);
+        const loadSideTexture = (dimension) => {
+            return textureLoader.load(
+                '../../assets/bricks.png',
+                (texture) => {
+                    texture.wrapS = THREE.RepeatWrapping;
+                    texture.wrapT = THREE.RepeatWrapping;
+                    texture.repeat.set(dimension, 12);
+                },
+                // progress
+                undefined,
+                //on error
+                (xhr) => {
+                    console.log('error loading texture'); 
+                },
+            );
+        };
+        const loadSideNormalMap = (dimension) => {
+            return textureLoader.load(
+                '../../assets/bricks_norm.png',
+                (texture) => {
+                    texture.wrapS = THREE.RepeatWrapping;
+                    texture.wrapT = THREE.RepeatWrapping;
+                    texture.repeat.set(dimension, 12);
+                },
+                // progress
+                undefined,
+                //on error
+                (xhr) => {
+                    console.log('error loading texture'); 
+                },
+            );
+        };
 
-                bottomMesh.material[0] = new THREE.MeshStandardMaterial({
-                    map: texture,
-                    clippingPlanes: [bottomGeoClipPlane],
-                });
-                bottomMesh.material[1] = new THREE.MeshStandardMaterial({
-                    map: texture,
-                    clippingPlanes: [bottomGeoClipPlane],
-                });
-            },
-        );
-        textureLoader.load(
-            '../../assets/bricks.png',
-            (texture) => {
-                texture.wrapS = THREE.RepeatWrapping;
-                texture.wrapT = THREE.RepeatWrapping;
-                texture.repeat.set(width, 12);
+        bottomMesh.material[0] = new THREE.MeshStandardMaterial({
+            clippingPlanes: [bottomGeoClipPlane],
+        });
+        bottomMesh.material[1] = new THREE.MeshStandardMaterial({
+            clippingPlanes: [bottomGeoClipPlane],
+        });
+        bottomMesh.material[4] = new THREE.MeshStandardMaterial({
+            clippingPlanes: [bottomGeoClipPlane],
+        });
+        bottomMesh.material[5] = new THREE.MeshStandardMaterial({
+            clippingPlanes: [bottomGeoClipPlane],
+        });
 
-                bottomMesh.material[4] = new THREE.MeshStandardMaterial({
-                    map: texture,
-                    clippingPlanes: [bottomGeoClipPlane],
-                });
-                bottomMesh.material[5] = new THREE.MeshStandardMaterial({
-                    map: texture,
-                    clippingPlanes: [bottomGeoClipPlane],
-                });
-            },
-        );
-        textureLoader.load(
-            '../../assets/bricks_norm.png',
-            (texture) => {
-                texture.wrapS = THREE.RepeatWrapping;
-                texture.wrapT = THREE.RepeatWrapping;
-                texture.repeat.set(length, 12);
+        bottomMesh.material[0].map = loadSideTexture(length);
+        bottomMesh.material[1].map = loadSideTexture(length);
+        bottomMesh.material[4].map = loadSideTexture(width);
+        bottomMesh.material[5].map = loadSideTexture(width);
 
-                bottomMesh.material[0].setValues({
-                    normalMap: texture,
-                });
-                bottomMesh.material[1].setValues({
-                    normalMap: texture,
-                });
-            },
-        );
-        textureLoader.load(
-            '../../assets/bricks_norm.png',
-            (texture) => {
-                texture.wrapS = THREE.RepeatWrapping;
-                texture.wrapT = THREE.RepeatWrapping;
-                texture.repeat.set(width, 12);
+        bottomMesh.material[0].normalMap = loadSideNormalMap(length);
+        bottomMesh.material[1].normalMap = loadSideNormalMap(length);
+        bottomMesh.material[4].normalMap = loadSideNormalMap(width);
+        bottomMesh.material[5].normalMap = loadSideNormalMap(width);
 
-                bottomMesh.material[4].setValues({
-                    normalMap: texture,
-                });
-                bottomMesh.material[5].setValues({
-                    normalMap: texture,
-                });
-            },
-        );
     }
 
     //geometry of the top surface of the ground
@@ -265,10 +269,6 @@ function calculateVertices(width, length, position, axisAngle) {
         //+x -y -z vertex 7
         new CANNON.Vec3(width / 2, colliderBottom, -length / 2),
     ];
-
-
-    //tan(axisAngle) = height / length
-    //height = length*tan(axisAngle)
 
     return vertices;
 }

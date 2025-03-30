@@ -65,7 +65,7 @@ function createBarrier(width, position, quaternion, isPushedBack) {
 
     barrier.body.material = new CANNON.Material({
         friction: 0.6,
-        restitution: 0.9,
+        restitution: 0.8,
     });
 
     return barrier;

@@ -4,18 +4,13 @@ function createBall() {
     const textureLoader = new THREE.TextureLoader();
     textureLoader.path = 'putt';
     const createMaterial = () => {
-        textureLoader.load(
-            '/../assets/golfball.jpg',
-            (texture) => { 
-                ball.mesh.material = new THREE.MeshPhysicalMaterial({
-                    normalMap: texture,
-                    normalScale: new THREE.Vector2(1.0, 1.0),
-                    roughness: 0.0,
-                    clearcoat: 1.0,
-                    metalness: 0.7,
-                });
-            },
-        );
+        ball.mesh.material = new THREE.MeshPhysicalMaterial({
+            normalScale: new THREE.Vector3(1.0, 1.0),
+            roughness: 0.0,
+            clearcoat: 1.0,
+            metalness: 0.7,
+        });
+        ball.mesh.material.normalMap = textureLoader.load('/../assets/golfball.jpg');
     }
 
     //create ball
@@ -43,8 +38,6 @@ function createBall() {
     };
     createMaterial();
 
-
-
     ball.mesh.name = "ball";
 
     ball.body.material = new CANNON.Material({
@@ -67,11 +60,11 @@ function createBall() {
     ball.onSettling = () => {};
     ball.raycastCollideCheck = (delta) => {};
 
-    const prevVelocity = new THREE.Vector3();
+    ball.prevVelocity = new THREE.Vector3();
 
     ball.velocityChange = new THREE.Vector3();
     ball.tick = (delta) => {
-        const velocityChange = new THREE.Vector3().copy(ball.body.velocity.vsub(prevVelocity));
+        const velocityChange = new THREE.Vector3().copy(ball.body.velocity.vsub(ball.prevVelocity));
         ball.velocityChange.copy(velocityChange);
 
         if(ball.body.velocity.length() > 2.0) {
@@ -79,7 +72,7 @@ function createBall() {
         }
 
         if (velocityChange.length() > 0.1) {
-            //console.log(velocityChange.length());
+            //console.log("dVel: " + velocityChange.length());
         }
 
         if (ball.body.velocity.length() > 0.10) {
@@ -110,13 +103,28 @@ function createBall() {
             ball.toLastPosition();
             ball.mesh.position.copy(ball.body.position);
         };
+
+        //reduce the precision of the position of the ball.
+        //this is to avoid the ball sometimes getting stuck in
+        //barriers by 0.00000000002 meters...
+        const order = 1000000000;
+        ball.body.position.x = Math.round(ball.body.position.x*order)/order;
+        ball.body.position.y = Math.round(ball.body.position.y*order)/order;
+        ball.body.position.z = Math.round(ball.body.position.z*order)/order;
         
         ball.mesh.position.copy(ball.body.position);
         ball.mesh.quaternion.copy(ball.body.quaternion);
         ball.touchSphere.mesh.position.copy(ball.mesh.position);
         ball.updateTouchSphereScale();
-        prevVelocity.copy(ball.body.velocity);
+        ball.prevVelocity.copy(ball.body.velocity);
 
+
+    }
+
+    ball.calculateVelocityChange = () => {
+        const velocityChange = new THREE.Vector3().copy(ball.body.velocity.vsub(ball.prevVelocity));
+        ball.prevVelocity.copy(ball.body.velocity);
+        return velocityChange.length();
     }
 
     ball.strike = (cameraDirection, strikePower) => {

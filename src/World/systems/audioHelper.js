@@ -59,7 +59,7 @@ function createAudioHelper() {
         }
         for(const sound of sounds) {
             if(sound.url == url) {
-                //sound.audio.setVolume(volume);
+                sound.audio.setVolume(volume);
                 if(sound.audio.isPlaying) {
                     sound.audio.stop();
                 }

@@ -8,36 +8,31 @@ function createSceneryGround(position) {
     const textureLoader = new THREE.TextureLoader();
     textureLoader.path = 'putt';
     const createMaterial = () => {
-        textureLoader.load(
+
+        sceneryGround.mesh.material = new THREE.MeshStandardMaterial({ color: 0x005000});
+        sceneryGround.mesh.material.map = textureLoader.load(
             '/../assets/scenery_grass.png',
             (texture) => { 
                 texture.wrapS = THREE.RepeatWrapping;
                 texture.wrapT = THREE.RepeatWrapping;
                 texture.repeat.set(WIDTH / 10, DEPTH / 10)
-                sceneryGround.mesh.material = new THREE.MeshStandardMaterial({
-                    color: 0x008888,
-                    map: texture,
-                });
             },
         );
-        textureLoader.load(
+
+        sceneryGround.mesh.material.normalScale = new THREE.Vector2(1.0, 1.0);
+        sceneryGround.mesh.material.normalMap = textureLoader.load(
             '/../assets/scenery_grass_norm.png',
             (texture) => { 
                 texture.wrapS = THREE.RepeatWrapping;
                 texture.wrapT = THREE.RepeatWrapping;
                 texture.repeat.set(WIDTH, DEPTH);
-                sceneryGround.mesh.material.normalMap = texture;
-                sceneryGround.mesh.material.normalScale = new THREE.Vector2(1.0, 1.0);
             },
         );
     }
 
     const geometry = new THREE.PlaneGeometry(WIDTH, DEPTH);
     geometry.rotateX(-Math.PI / 2);
-    const material = new THREE.MeshStandardMaterial({
-        color: 0x008013 // grass green
-    });
-    const mesh = new THREE.Mesh(geometry, material);
+    const mesh = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial());
     const physMaterial = new CANNON.Material('ground');
 
     const groundHalfExtents = new CANNON.Vec3(WIDTH / 2, 0.5, DEPTH / 2);

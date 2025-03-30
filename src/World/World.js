@@ -53,7 +53,6 @@ function createWorld(container) {
 
         if(event.body === ball.body) {
             audioHelper.playSound('assets/sound/ball_into_hole.wav');
-            //audioHelper.playSound('assets/sound/clap.wav');
             scorecard.setScore(course.number, strokes);
             scoreCallout.displayScore(course.par, strokes);
             continueButton.prompt();
@@ -65,19 +64,28 @@ function createWorld(container) {
             return;
         }
 
-        if(ball.velocityChange.length > 0.1) {
-            //console.log("[world]" + ball.velocityChange.length());
+        const contactNormal = event.contact.ni.clone();
+        //component of ball's velocity that strikes contact point
+        //https://en.wikipedia.org/wiki/Vector_projection
+        const contactSpeed = (ball.body.velocity.clone().dot(contactNormal))/contactNormal.length();
+
+        //console.log(contactSpeed);
+        
+        let soundVolume = 1.0;
+        if(contactSpeed > 0.1 && contactSpeed < 1.0) {
+            soundVolume = contactSpeed;
+        } else if (contactSpeed < 0.1) {
+            soundVolume = 0.0;
         }
 
-        const soundVolume = ball.velocityChange.length() / 10;
-
-        if(event.body.material.restitution != undefined) {
+        if(soundVolume != 0.0 && event.body.material.restitution != undefined) {
             if(event.body.material.restitution > 0.5) {
                audioHelper.playSound('assets/sound/wood_thud.wav', soundVolume);
             } else {
                audioHelper.playSound('assets/sound/grass_thud.wav', soundVolume);
             }
         }
+
     }
 
     const pointerDownResponse = (event) => {
@@ -309,9 +317,9 @@ function createWorld(container) {
             return strikePower.percentPower().toFixed(2);
         });
         debugScreen.addEntry("Ball pos: ", () => {
-            return ball.mesh.position.x.toFixed(2) + ", " +  
-                ball.mesh.position.y.toFixed(2) + ", " +  
-                ball.mesh.position.z.toFixed(2);
+            return ball.mesh.position.x + ", " +  
+                ball.mesh.position.y.toFixed(9) + ", " +  
+                ball.mesh.position.z.toFixed(9);
         });
         debugScreen.addEntry("Ball vel: ", () => {
             return ball.body.velocity.x.toFixed(2) + ", " +
@@ -404,7 +412,6 @@ function createWorld(container) {
 
         if(raycastResult.hasHit) {
             if(changeInPosition > raycastResult.distance) {
-
                 ball.body.position.copy(raycastResult.hitPointWorld);
 
                 const overshotCorrectionVector = ballVelocity

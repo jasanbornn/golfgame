@@ -9,7 +9,6 @@ function createLoadingScreen() {
     const loadingScreen = {}; 
 
     loadingScreen.show = () => {
-        return; //disable
         loadingScreenDiv.style.pointerEvents = "auto";
         if( loadingScreenDiv.classList.toggle('loading-screen-fade-in-animation') ) {
             loadingScreenDiv.classList.remove('loading-screen-fade-out-animation');
