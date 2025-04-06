@@ -1,6 +1,5 @@
 import * as THREE from '../../../vendor/three/build/three.module.js';
-//import { OrbitControls } from 'https://cdn.skypack.dev/three@0.163.0/examples/jsm/controls/OrbitControls.js';
-import { OrbitControls } from '../../../vendor/OrbitControls.js';
+import { OrbitControls } from '../../../vendor/three/addons/OrbitControls.js';
 
 const baseTarget = {
     position: new THREE.Vector3(0, 0, 0),

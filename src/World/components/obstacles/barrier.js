@@ -7,10 +7,9 @@ function createBarrier(width, position, quaternion, isPushedBack) {
     let barrierWidth = width;
 
     const textureLoader = new THREE.TextureLoader();
-    textureLoader.path = 'putt';
     const createMaterial = () => {
         textureLoader.load(
-            '/../assets/wood.jpg',
+            'assets/wood.jpg',
             (texture) => {
                 barrier.mesh.material = new THREE.MeshStandardMaterial({
                     color: 0x654321,
@@ -20,7 +19,7 @@ function createBarrier(width, position, quaternion, isPushedBack) {
         );
 
         textureLoader.load(
-            '/../assets/wood_norm.jpg',
+            'assets/wood_norm.jpg',
             (texture) => {
                 barrier.mesh.material.normalMap = texture;
             },

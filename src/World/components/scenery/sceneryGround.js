@@ -6,12 +6,11 @@ function createSceneryGround(position) {
     const DEPTH = 50;
 
     const textureLoader = new THREE.TextureLoader();
-    textureLoader.path = 'putt';
     const createMaterial = () => {
 
         sceneryGround.mesh.material = new THREE.MeshStandardMaterial({ color: 0x005000});
         sceneryGround.mesh.material.map = textureLoader.load(
-            '/../assets/scenery_grass.png',
+            'assets/scenery_grass.png',
             (texture) => { 
                 texture.wrapS = THREE.RepeatWrapping;
                 texture.wrapT = THREE.RepeatWrapping;
@@ -21,7 +20,7 @@ function createSceneryGround(position) {
 
         sceneryGround.mesh.material.normalScale = new THREE.Vector2(1.0, 1.0);
         sceneryGround.mesh.material.normalMap = textureLoader.load(
-            '/../assets/scenery_grass_norm.png',
+            'assets/scenery_grass_norm.png',
             (texture) => { 
                 texture.wrapS = THREE.RepeatWrapping;
                 texture.wrapT = THREE.RepeatWrapping;

@@ -8,14 +8,21 @@ import { createWindmillBase, createWindmillBlades } from '../obstacles/windmill.
 import { createOutOfBoundsPlane } from '../debug/outOfBoundsPlane.js';
 
 import { createSceneryGround } from '../scenery/sceneryGround.js';
+import { createTrees } from '../scenery/trees.js';
 
 import * as THREE from '../../../../vendor/three/build/three.module.js';
 import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 
 function createCourse5(physMaterials) {
 
+    const clearingPosition = new THREE.Vector3(0.0, 0.0, 0.0);
+    const clearingRadius = 10.0;
+    const groundHeight = -0.33;
+
     const light = createLight(new THREE.Vector3(9, 5, 2));
-    const sceneryGround = createSceneryGround(new THREE.Vector3(0.0, -0.33, 0.0));
+    const sceneryGround = createSceneryGround(new THREE.Vector3(0.0, groundHeight, 0.0));
+    const trees = createTrees(clearingPosition, clearingRadius, groundHeight);
+
     const hole = createHole(new THREE.Vector3(0.0, 0.0, -6.0));
     const flag = createFlag(hole.position);
     const ballSpawnpoint = new THREE.Vector3(0.0, 0.1, 0.3);
@@ -133,6 +140,10 @@ function createCourse5(physMaterials) {
 
     for(let barrier of barriers) {
         course.objects.push(barrier); 
+    }
+
+    for(const tree of trees) {
+        course.objects.push(tree);
     }
 
     return course;

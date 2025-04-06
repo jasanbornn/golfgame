@@ -2,7 +2,6 @@ import * as THREE from '../../../vendor/three/build/three.module.js';
 import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 function createBall() {
     const textureLoader = new THREE.TextureLoader();
-    textureLoader.path = 'putt';
     const createMaterial = () => {
         ball.mesh.material = new THREE.MeshPhysicalMaterial({
             normalScale: new THREE.Vector3(1.0, 1.0),
@@ -10,7 +9,7 @@ function createBall() {
             clearcoat: 1.0,
             metalness: 0.7,
         });
-        ball.mesh.material.normalMap = textureLoader.load('/../assets/golfball.jpg');
+        ball.mesh.material.normalMap = textureLoader.load('assets/golfball.jpg');
     }
 
     //create ball

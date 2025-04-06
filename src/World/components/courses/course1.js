@@ -7,15 +7,20 @@ import { createFlag } from '../flag.js';
 import { createOutOfBoundsPlane } from '../debug/outOfBoundsPlane.js';
 
 import { createSceneryGround } from '../scenery/sceneryGround.js';
+import { createTrees } from '../scenery/trees.js';
 
 import * as THREE from '../../../../vendor/three/build/three.module.js';
 import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 
 function createCourse1() {
 
-    //const light = createLight(new THREE.Vector3(3, 5, 10));
+    const clearingPosition = new THREE.Vector3(0.0, 0.0, 0.0);
+    const clearingRadius = 10.0;
+    const groundHeight = -0.33;
+
     const light = createLight(new THREE.Vector3(1, 2, 3));
-    const sceneryGround = createSceneryGround(new THREE.Vector3(0.0, -0.33, 0.0));
+    const sceneryGround = createSceneryGround(new THREE.Vector3(0.0, groundHeight, 0.0));
+    const trees = createTrees(clearingPosition, clearingRadius, groundHeight);
 
     const hole = createHole(new THREE.Vector3(0, 0, -3.5));
     const flag = createFlag(hole.position);
@@ -103,6 +108,10 @@ function createCourse1() {
 
     for(let barrier of barriers) {
         course.objects.push(barrier);
+    }
+
+    for(const tree of trees) {
+        course.objects.push(tree);
     }
 
     return course;

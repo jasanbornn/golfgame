@@ -5,14 +5,13 @@ import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 
 function createGround(width, length, position, quaternion, hole) {
     const textureLoader = new THREE.TextureLoader();
-    textureLoader.path = 'putt';
     const createMaterial = (width, length) => {
         ground.mesh.material = new THREE.MeshStandardMaterial({
             color: 0x446644,
         });
 
         ground.mesh.material.map = textureLoader.load(
-            '../../assets/grass.png',
+            'assets/grass.png',
             (texture) => {
                 texture.wrapS = THREE.RepeatWrapping;
                 texture.wrapT = THREE.RepeatWrapping;
@@ -28,7 +27,7 @@ function createGround(width, length, position, quaternion, hole) {
 
         ground.mesh.material.normalScale = new THREE.Vector2(0.1, 0.1);
         ground.mesh.material.normalMap = textureLoader.load(
-            '../../assets/grass_norm.png',
+            'assets/grass_norm.png',
             (texture) => {
                 texture.wrapS = THREE.RepeatWrapping;
                 texture.wrapT = THREE.RepeatWrapping;
@@ -48,7 +47,7 @@ function createGround(width, length, position, quaternion, hole) {
     const createBottomMaterial = (width, length) => {
         const loadSideTexture = (dimension) => {
             return textureLoader.load(
-                '../../assets/bricks.png',
+                'assets/bricks.png',
                 (texture) => {
                     texture.wrapS = THREE.RepeatWrapping;
                     texture.wrapT = THREE.RepeatWrapping;
@@ -64,7 +63,7 @@ function createGround(width, length, position, quaternion, hole) {
         };
         const loadSideNormalMap = (dimension) => {
             return textureLoader.load(
-                '../../assets/bricks_norm.png',
+                'assets/bricks_norm.png',
                 (texture) => {
                     texture.wrapS = THREE.RepeatWrapping;
                     texture.wrapT = THREE.RepeatWrapping;
