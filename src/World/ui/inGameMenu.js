@@ -7,6 +7,8 @@ function createInGameMenu() {
 
     const menuButton = document.getElementById("menu-button");
 
+    const menuScreenDim = document.getElementById("menu-screen-dim");
+
     const levelsMenuDiv = document.getElementById("levels-menu");
     const levelsBackButton = document.getElementById("levels-back-button");
 
@@ -37,19 +39,23 @@ function createInGameMenu() {
             case "main-menu":
                 mainMenuDiv.style.display = "flex";
                 levelsMenuDiv.style.display = "none";
+                menuScreenDim.style.display = "inline";
                 break;
             case "levels-menu":
                 levelsMenuDiv.style.display = "flex";
                 mainMenuDiv.style.display = "none";
+                menuScreenDim.style.display = "inline";
                 break;
             case "closed":
                 levelsMenuDiv.style.display = "none";
                 mainMenuDiv.style.display = "none";
+                menuScreenDim.style.display = "none";
                 break;
             default:
                 inGameMenu.state = "closed";
                 levelsMenuDiv.style.display = "none";
                 mainMenuDiv.style.display = "none";
+                menuScreenDim.style.display = "none";
         }
     }
 

@@ -30,9 +30,9 @@ function createCourse9(physMaterials) {
     const outOfBoundsPlane = createOutOfBoundsPlane(outOfBoundsYLevel);
 
     const holeGroundSection = createGround(
-            1,
-            1,
-            new THREE.Vector3(0.0, 1.0, -3.4),
+            1.5,
+            1.5,
+            new THREE.Vector3(0.0, 1.0, -3.65),
             new THREE.Quaternion().setFromAxisAngle(
                 new THREE.Vector3(0.0, 1.0, 0.0),
                 0,
@@ -100,8 +100,8 @@ function createCourse9(physMaterials) {
     const barriers = [
         //flag barrier
         createBarrier(
-            1,
-            new THREE.Vector3(0.0, 1.0, -3.9),
+            1.5,
+            new THREE.Vector3(0.0, 1.0, -4.35),
             new THREE.Quaternion().setFromAxisAngle(
                 new THREE.Vector3(0.0, 1.0, 0.0),
                 0,
@@ -109,8 +109,8 @@ function createCourse9(physMaterials) {
         ),
         //flag barrier
         createBarrier(
-            1,
-            new THREE.Vector3(-0.5, 1.0, -3.4),
+            1.5,
+            new THREE.Vector3(-0.75, 1.0, -3.65),
             new THREE.Quaternion().setFromAxisAngle(
                 new THREE.Vector3(0.0, 1.0, 0.0),
                 Math.PI / 2,
@@ -118,11 +118,29 @@ function createCourse9(physMaterials) {
         ),
         //flag barrier
         createBarrier(
-            1,
-            new THREE.Vector3(0.5, 1.0, -3.4),
+            1.5,
+            new THREE.Vector3(0.75, 1.0, -3.65),
             new THREE.Quaternion().setFromAxisAngle(
                 new THREE.Vector3(0.0, 1.0, 0.0),
                 -Math.PI / 2,
+            ),
+        ),
+        //back barrier 1
+        createBarrier(
+            0.27,
+            new THREE.Vector3(0.64, 1.0, -2.85),
+            new THREE.Quaternion().setFromAxisAngle(
+                new THREE.Vector3(0.0, 1.0, 0.0),
+                0,
+            ),
+        ),
+        //back barrier 2
+        createBarrier(
+            0.27,
+            new THREE.Vector3(-0.64, 1.0, -2.85),
+            new THREE.Quaternion().setFromAxisAngle(
+                new THREE.Vector3(0.0, 1.0, 0.0),
+                0,
             ),
         ),
 

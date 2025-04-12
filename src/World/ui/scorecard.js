@@ -26,21 +26,21 @@ function createScorecard() {
     };
 
     scorecard.toggle = () => {
-        if( scorecardTable.classList.toggle('scorecard-hide-animation') ) {
-            scorecardTable.classList.remove('scorecard-show-animation');
+        if( scorecardTable.classList.toggle('scorecard-show-animation') ) {
+            scorecardTable.classList.remove('scorecard-hide-animation');
             return true;
         } else {
-            scorecardTable.classList.add('scorecard-show-animation');
-            scorecardTable.classList.remove('scorecard-hide-animation');
+            scorecardTable.classList.add('scorecard-hide-animation');
+            scorecardTable.classList.remove('scorecard-show-animation');
             return false;
         }
     }
 
     scorecardToggleButton.onclick = () => {
         if(scorecard.toggle()) {
-            scorecardToggleButton.innerText = 'Show';
-        } else {
             scorecardToggleButton.innerText = 'Hide';
+        } else {
+            scorecardToggleButton.innerText = 'Score';
         }
     };
 

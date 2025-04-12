@@ -169,7 +169,7 @@ function createWorld(container) {
         par = newCourse.par;
         hud.setStrokesText(strokes);
         hud.setParText(par);
-
+        hud.setHoleNumberText(courseNum);
 
         //add game objects to the world
         scene.add(ball.mesh); 
@@ -317,14 +317,14 @@ function createWorld(container) {
             return strikePower.percentPower().toFixed(2);
         });
         debugScreen.addEntry("Ball pos: ", () => {
-            return ball.mesh.position.x + ", " +  
+            return ball.mesh.position.x.toFixed(9) + ", " +  
                 ball.mesh.position.y.toFixed(9) + ", " +  
                 ball.mesh.position.z.toFixed(9);
         });
         debugScreen.addEntry("Ball vel: ", () => {
-            return ball.body.velocity.x.toFixed(2) + ", " +
-                ball.body.velocity.y.toFixed(2) + ", " +
-                ball.body.velocity.z.toFixed(2);
+            return ball.body.velocity.x.toFixed(9) + ", " +
+                ball.body.velocity.y.toFixed(9) + ", " +
+                ball.body.velocity.z.toFixed(9);
         });
         debugScreen.addEntry("Ptr quatern: ", () => {
             return pointer.mesh.quaternion.x.toFixed(2) + ", " +  
@@ -417,10 +417,12 @@ function createWorld(container) {
                 const overshotCorrectionVector = ballVelocity
                     .clone()
                     .unit()
-                    .scale(-1.0*(ball.radius - 0.001));
+                    .scale(-1.0*(ball.radius - 0.00001));
 
                 ball.body.position.vadd(overshotCorrectionVector, ball.body.position);
                 ball.mesh.position.copy(ball.body.position);
+
+
 
             }
         }

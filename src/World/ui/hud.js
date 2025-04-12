@@ -1,8 +1,10 @@
 function createHud() {
     const strikePowerBar = document.getElementById("strike-meter-value");
-    const strokesValueText = document.getElementById("strokes-value-text");
-    const parText = document.getElementById("par-value-text");
-    
+    const strokesNumberText = document.getElementById("strokes-number-text");
+    const strokesLabelText = document.getElementById("strokes-label-text");
+    const holeNumberText = document.getElementById("hole-full-text");
+    const parNumberText = document.getElementById("par-full-text");
+
     const hud = {};
 
     const setStrikePowerBarValue = (value) => {
@@ -10,11 +12,21 @@ function createHud() {
     };
 
     hud.setStrokesText = (value) => {
-       strokesValueText.textContent = value.toFixed(0); 
+        strokesNumberText.textContent = value.toFixed(0); 
+        if(value == 1) {
+            strokesLabelText.textContent = "stroke";
+        } else {
+            strokesLabelText.textContent = "strokes";
+        }
+
     };
 
     hud.setParText = (value) => {
-        parText.textContent = value.toFixed(0);
+        parNumberText.textContent = "Par " + value.toFixed(0);
+    };
+
+    hud.setHoleNumberText = (value) => {
+        holeNumberText.textContent = "Hole " + value.toFixed(0);
     };
 
     hud.pullStrikePowerPercent = () => {};

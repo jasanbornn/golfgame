@@ -2,7 +2,7 @@
 <html>
 
     <head>
-        <title>golf</title>
+        <title>Mini9 Javascript Mini-golf Game</title>
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta charset="UTF-8" />
@@ -20,10 +20,9 @@
 
 
         <div class="loading-screen" id="loading-screen">
-            <p>golfgame</p>
+            <p>Mini<span id="loading-title-nine">9</span></p>
             <span class="loading-spinner"></span>
         </div>
-
 
         <div id="debug-text-container">
             <h1 id="debug-text"></h1>
@@ -37,20 +36,17 @@
             <button type="button" class="button" id="continue-button">Continue</button>
         </div>
 
+        <div class="hole-info-container">
+            <p id="strokes-number-text">0</p>
+            <p id="strokes-label-text">strokes</p>
+            <p id="hole-full-text">Hole 0</span></p>
+            <p id="par-full-text"> Par 0</span></p>
+        </div>
+
         <div class="hud-container">
             <div class="strike-meter-container">
                 <div class="strike-meter-value" id="strike-meter-value"></div>
             </div>
-            <table class="hole-info-table">
-                <tr>
-                    <td id="strokes-value-text">0</td>
-                    <td id="par-value-text">0</td>
-                </tr>
-                <tr>
-                    <th>Strokes</th>
-                    <th>Par</th>
-                </tr>
-            </table>
             <table class="scorecard" id="scorecard">
                 <tr>
                     <th>Hole</th>
@@ -108,11 +104,14 @@
                     <th id ="total-text"> </th>
                 </tr>
             </table>
-            <button type="button" class="menu-button" id="scorecard-toggle-button">Hide</button>
-            <button type="button" class="menu-button" id="menu-button">Menu</button>
+            <div class="bottom-buttons-container">
+                <button type="button" class="menu-button" id="menu-button">Menu</button>
+                <button type="button" class="menu-button" id="scorecard-toggle-button">Score</button>
+            </div>
         </div>
 
         <div class="menu-container">
+            <div class="menu-screen-dim", id="menu-screen-dim"></div>
             <div class="in-game-menu" id="in-game-menu">
                 <div class="button-container" id="button-container">
                     <button type="button" class="button" id="resume-button">Resume</button>
@@ -127,40 +126,40 @@
                 </div>
                 <div class="level-boxes-container">
                     <div class="level-box" id="level-box-1">
+                        <img src="./assets/level-1-thumb.png" width="160" height="100"></img>
                         <p>1</p>
-                        <img src="./assets/level-thumb.png" width="160" height="100"></img>
                     </div>
                     <div class="level-box" id="level-box-2">
-                        <p>2</p>
                         <img src="./assets/level-thumb.png" width="160" height="100"></img>
+                        <p>2</p>
                     </div>
                     <div class="level-box" id="level-box-3">
-                        <p>3</p>
                         <img src="./assets/level-thumb.png" width="160" height="100"></img>
+                        <p>3</p>
                     </div>
                     <div class="level-box" id="level-box-4">
-                        <p>4</p>
                         <img src="./assets/level-thumb.png" width="160" height="100"></img>
+                        <p>4</p>
                     </div>
                     <div class="level-box" id="level-box-5">
-                        <p>5</p>
                         <img src="./assets/level-thumb.png" width="160" height="100"></img>
+                        <p>5</p>
                     </div>
                     <div class="level-box" id="level-box-6">
-                        <p>6</p>
                         <img src="./assets/level-thumb.png" width="160" height="100"></img>
+                        <p>6</p>
                     </div>
                     <div class="level-box" id="level-box-7">
-                        <p>7</p>
                         <img src="./assets/level-thumb.png" width="160" height="100"></img>
+                        <p>7</p>
                     </div>
                     <div class="level-box" id="level-box-8">
-                        <p>8</p>
                         <img src="./assets/level-thumb.png" width="160" height="100"></img>
+                        <p>8</p>
                     </div>
                     <div class="level-box" id="level-box-9">
-                        <p>9</p>
                         <img src="./assets/level-thumb.png" width="160" height="100"></img>
+                        <p>9</p>
                     </div>
                 </div>
             </div>

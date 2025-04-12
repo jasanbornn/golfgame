@@ -41,6 +41,11 @@ function createPointer(ball, camera, strikePower) {
 
     pointer.mesh.name = "pointer";
 
+    //pointer renders on top of everything else
+    pointer.mesh.renderOrder = 999;
+    pointer.mesh.material.depthTest = false;
+    pointer.mesh.material.depthWrite = false;
+
     //position pointer slightly below the ball's center line
     pointer.mesh.position.y -= 0.03;
     pointer.tick = () => {

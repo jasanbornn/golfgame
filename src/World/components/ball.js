@@ -70,10 +70,6 @@ function createBall() {
             ball.raycastCollideCheck();
         }
 
-        if (velocityChange.length() > 0.1) {
-            //console.log("dVel: " + velocityChange.length());
-        }
-
         if (ball.body.velocity.length() > 0.10) {
             isMoving = true;
             isSettled = false;
@@ -92,6 +88,10 @@ function createBall() {
             }
         }
 
+        if (ball.isSettled && ball.body.velocity.length() < 0.001) {
+            ball.stop();
+        }
+
         if (ball.body.velocity.length() < 0.2) {
             ball.body.angularDamping = 0.9;
         } else {
@@ -106,10 +106,10 @@ function createBall() {
         //reduce the precision of the position of the ball.
         //this is to avoid the ball sometimes getting stuck in
         //barriers by 0.00000000002 meters...
-        const order = 1000000000;
-        ball.body.position.x = Math.round(ball.body.position.x*order)/order;
-        ball.body.position.y = Math.round(ball.body.position.y*order)/order;
-        ball.body.position.z = Math.round(ball.body.position.z*order)/order;
+        //const order = 1000000000;
+        //ball.body.position.x = Math.round(ball.body.position.x*order)/order;
+        //ball.body.position.y = Math.round(ball.body.position.y*order)/order;
+        //ball.body.position.z = Math.round(ball.body.position.z*order)/order;
         
         ball.mesh.position.copy(ball.body.position);
         ball.mesh.quaternion.copy(ball.body.quaternion);
