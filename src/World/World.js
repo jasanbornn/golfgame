@@ -12,6 +12,7 @@ import { createScorecard } from './ui/scorecard.js';
 import { createScoreCallout } from './ui/scoreCallout.js';
 import { createLoadingScreen } from './ui/loadingScreen.js';
 import { createContinueButton } from './ui/continueButton.js';
+import { createMainMenu } from './ui/mainMenu.js';
 
 import { createDebugScreen } from './systems/debugScreen.js';
 import { createControls } from './systems/controls.js';
@@ -21,6 +22,7 @@ import { createLoop } from './systems/Loop.js';
 import { createAudioHelper } from './systems/audioHelper.js';
 
 import * as THREE from '../../vendor/three/build/three.module.js';
+import { RGBELoader } from '../../vendor/three/addons/RGBELoader.js'
 import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 import { CSG } from '../../vendor/three-csg/three-csg.js';
 
@@ -89,6 +91,7 @@ function createWorld(container) {
     }
 
     const pointerDownResponse = (event) => {
+        if(mainMenu.state == "active") { return; }
         audioHelper.resume();
         if(gameOver || inGameMenu.state != "closed") {
             return;
@@ -115,6 +118,7 @@ function createWorld(container) {
     let activelyControlling = false;
     let startPointerPos;
     const pointerUpResponse = (event) => {
+        if(mainMenu.state == "active") { return; }
         if(pointerControlsStrikePower && strikePower.getValue() != 0) {
             strikeBall();
         }
@@ -125,9 +129,8 @@ function createWorld(container) {
     }
 
     const pointerMoveResponse = (event) => {
-        if(!pointerControlsStrikePower) {
-            return;
-        }
+        if(mainMenu.state == "active") { return; }
+        if(!pointerControlsStrikePower) { return; }
 
         if(activelyControlling) {
             let newStrikePower = (startPointerPos.y - getPointerPos(event).y) * 1.25;
@@ -257,6 +260,8 @@ function createWorld(container) {
     };
 
     const processKeyEvent = (event) => {
+        if(gameOver || mainMenu.state == "active") { return; }
+
         let keyCode = event.which;
 
         //M Key
@@ -264,9 +269,6 @@ function createWorld(container) {
         //I key
         if (keyCode == 73) { debugScreen.toggleVisibility(); }
 
-        if(gameOver) {
-            return;
-        }
 
         //N key
         if( keyCode == 78) { 
@@ -346,7 +348,6 @@ function createWorld(container) {
     const world = {};
 
 
-
     const renderer = createRenderer();
     container.append(renderer.domElement);
     const camera = createCamera();
@@ -361,7 +362,24 @@ function createWorld(container) {
     const scoreCallout = createScoreCallout();
     const loadingScreen = createLoadingScreen();
     const continueButton = createContinueButton(); 
+    const mainMenu = createMainMenu();
     let gameOver = false;
+
+    mainMenu.playButton.onclick = () => {
+        mainMenu.setState("inactive");
+        course = loadCourse(1);
+    }
+
+    //skybox
+    const skyboxLoader = new RGBELoader();
+    
+    scene.background = skyboxLoader.load(
+        'assets/skybox/trees.hdr', 
+        //'assets/skybox/clouds.hdr', 
+        (texture) => {
+            texture.mapping = THREE.EquirectangularReflectionMapping;
+        }
+    );
 
     camera.add(audioHelper.audioListener);
 
@@ -421,9 +439,6 @@ function createWorld(container) {
 
                 ball.body.position.vadd(overshotCorrectionVector, ball.body.position);
                 ball.mesh.position.copy(ball.body.position);
-
-
-
             }
         }
     }
@@ -440,13 +455,18 @@ function createWorld(container) {
         return strikePower.percentPower();
     };
 
-    let course = loadCourse(1);
+    //let course = loadCourse(1);
+    let course = null;
 
     const inGameMenu = createInGameMenu();
     inGameMenu.restartButton.onclick = () => {
         course = loadCourse(course.number); 
         inGameMenu.setState("closed");
     };
+    inGameMenu.quitButton.onclick = () => {
+        inGameMenu.setState("closed");
+        mainMenu.setState("active");
+    }
 
     for(let i = 0; i < 9; i++) {
         inGameMenu.levelBoxes[i].onclick = () => {

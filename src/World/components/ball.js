@@ -14,6 +14,7 @@ function createBall() {
 
     //create ball
     const radius = 0.042; //meters
+    //const radius = 0.11;
     const widthSegments = 32;
     const heightSegments = 16;
     const geometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments);

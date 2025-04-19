@@ -4,6 +4,9 @@ function createInGameMenu() {
     const resumeButton = document.getElementById("resume-button");
     const restartButton = document.getElementById("restart-button");
     const levelsButton = document.getElementById("levels-button");
+    const optionsButton = document.getElementById("options-button");
+    const quitButton = document.getElementById("quit-button");
+
 
     const menuButton = document.getElementById("menu-button");
 
@@ -28,9 +31,8 @@ function createInGameMenu() {
         state: "closed",
         //expose buttons and divs to World.js
         restartButton: restartButton,
-
+        quitButton: quitButton,
         levelBoxes: levelBoxes,
-
     };
 
     inGameMenu.setState = (state) => {
@@ -71,7 +73,6 @@ function createInGameMenu() {
     resumeButton.onclick = inGameMenu.toggle;
     levelsButton.onclick = () => { inGameMenu.setState("levels-menu"); };
     levelsBackButton.onclick = () => { inGameMenu.setState("main-menu"); };
-
 
     return inGameMenu;
 }

@@ -7,7 +7,6 @@ function createSceneryGround(position) {
 
     const textureLoader = new THREE.TextureLoader();
     const createMaterial = () => {
-
         sceneryGround.mesh.material = new THREE.MeshStandardMaterial({ color: 0x005000});
         sceneryGround.mesh.material.map = textureLoader.load(
             'assets/scenery_grass.png',

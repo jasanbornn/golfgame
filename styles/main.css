@@ -10,6 +10,28 @@ body {
     font-family: Sans-Serif;
 }
 
+.main-menu {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: skyblue;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 3;
+}
+
+#menu-title {
+    font-size: 100px;
+    color: black;
+}
+
+#menu-title-nine {
+    color: red;
+    font-size: 120px;
+}
+
 .loading-screen {
     position: absolute;
     display: flex;
@@ -25,12 +47,14 @@ body {
 }
 
 .loading-screen p {
-   font-size: 90px; 
+    font-size: 100px; 
+    font-weight: bold;
 }
 
 #loading-title-nine {
     color: red;
     font-weight: bold;
+    font-size: 120px;
 }
 
 .loading-screen-fade-in-animation {
@@ -254,15 +278,15 @@ body {
 
 #strokes-number-text {
     font-size: 108px;
-    margin-top: -30px;
-    margin-bottom: -35px;
+    margin-top: -20px;
+    margin-bottom: -25px;
     margin-left: 40px;
     margin-right: 40px;
 }
 
 #strokes-label-text {
     margin-right: 0px;
-    align-self: flex-end;
+    align-self: center;
 }
 
 .strike-meter-container {

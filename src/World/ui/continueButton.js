@@ -40,7 +40,7 @@ function createContinueButton() {
         }
     }
 
-    continueButtonDiv.onclick = continueButton.onclick;
+    continueButtonDiv.onclick = () => {};
 
     return continueButton;
 }
