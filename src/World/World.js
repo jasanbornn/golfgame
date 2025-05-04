@@ -13,6 +13,7 @@ import { createScoreCallout } from './ui/scoreCallout.js';
 import { createLoadingScreen } from './ui/loadingScreen.js';
 import { createContinueButton } from './ui/continueButton.js';
 import { createMainMenu } from './ui/mainMenu.js';
+import { createEndScreen } from './ui/endScreen.js';
 
 import { createDebugScreen } from './systems/debugScreen.js';
 import { createControls } from './systems/controls.js';
@@ -55,7 +56,6 @@ function createWorld(container) {
 
         if(event.body === ball.body) {
             audioHelper.playSound('assets/sound/ball_into_hole.wav');
-            scorecard.setScore(course.number, strokes);
             scoreCallout.displayScore(course.par, strokes);
             continueButton.prompt();
         }
@@ -150,6 +150,7 @@ function createWorld(container) {
     const gameOverResponse = () => {
         gameOver = true;
         strikePower.setPercentPower(0);
+        endScreen.setState("active");
     }
 
     const loadCourse = (courseNum) => {
@@ -255,6 +256,7 @@ function createWorld(container) {
             camera.getWorldDirection(cameraDirection);
             ball.strike(cameraDirection, strikePower.getValue());
             strokes += 1;
+            scorecard.setScore(course.number, strokes);
             hud.setStrokesText(strokes);
         }
     };
@@ -435,10 +437,11 @@ function createWorld(container) {
                 const overshotCorrectionVector = ballVelocity
                     .clone()
                     .unit()
-                    .scale(-1.0*(ball.radius - 0.00001));
+                    .scale(-1.0*(ball.radius - 0.00000001));
 
                 ball.body.position.vadd(overshotCorrectionVector, ball.body.position);
                 ball.mesh.position.copy(ball.body.position);
+                console.log('collide: ' + overshotCorrectionVector);
             }
         }
     }
@@ -458,6 +461,7 @@ function createWorld(container) {
     //let course = loadCourse(1);
     let course = null;
 
+    //in game menu
     const inGameMenu = createInGameMenu();
     inGameMenu.restartButton.onclick = () => {
         course = loadCourse(course.number); 
@@ -474,6 +478,10 @@ function createWorld(container) {
             inGameMenu.setState("closed");
         };
     }
+
+    //end screen
+    const endScreen = createEndScreen();
+    endScreen.dbConnectTest();
 
     //adding updatable objects to updating loop
     loop.updatables.push(physWorld);

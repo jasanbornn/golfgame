@@ -32,6 +32,48 @@ body {
     font-size: 120px;
 }
 
+.end-screen {
+    pointer-events: none;
+    position: absolute;
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+.leaderboard {
+    display: flex;
+    background-color: white;
+    pointer-events: auto;
+    position: absolute;
+    min-width: 350px;
+    min-height: 550px;
+    right: 70%;
+    top: 50%;
+    transform: translate(0, -50%);
+    font-size: 30px;
+    border: 4px solid blue;
+    border-radius: 10px;
+    border-collapse: collapse;
+    padding: 10px;
+}
+
+.leaderboard td {
+    padding: 5px;
+}
+
+.leaderboard-rank-cell {
+    text-align: right;
+    min-width: 50px;
+}
+
+.leaderboard-name-cell {
+    min-width: 200px;
+}
+
+.leaderboard-score-cell {
+    min-width: 50px;
+}
+
 .loading-screen {
     position: absolute;
     display: flex;
@@ -216,7 +258,8 @@ body {
 .scorecard th, .scorecard td {
     padding: 4px;
     text-align: center;
-    border: 2px solid black;
+/*    border: 2px solid black;*/
+    border: none;
 }
 
 .scorecard-hide-animation {

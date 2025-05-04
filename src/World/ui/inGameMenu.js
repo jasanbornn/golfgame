@@ -54,12 +54,9 @@ function createInGameMenu() {
                 menuScreenDim.style.display = "none";
                 break;
             default:
-                inGameMenu.state = "closed";
-                levelsMenuDiv.style.display = "none";
-                mainMenuDiv.style.display = "none";
-                menuScreenDim.style.display = "none";
+                inGameMenu.setState("closed");
         }
-    }
+    };
 
     inGameMenu.toggle = () => {
         if(inGameMenu.state === "closed") {
@@ -67,7 +64,7 @@ function createInGameMenu() {
         } else {
             inGameMenu.setState("closed");
         }
-    }
+    };
 
     menuButton.onclick = inGameMenu.toggle;
     resumeButton.onclick = inGameMenu.toggle;
