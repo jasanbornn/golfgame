@@ -25,6 +25,14 @@ function createContinueButton() {
         }
     }
 
+    continueButton.disable = () => {
+        continueButtonDiv.disable = true;
+    }
+
+    continueButton.enable = () => {
+        continueButtonDiv.disable = false;
+    }
+
     //together with continueButton.tick:
     //displays the button after a set delay
     continueButton.prompt = () => {

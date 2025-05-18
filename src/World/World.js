@@ -28,7 +28,8 @@ import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 import { CSG } from '../../vendor/three-csg/three-csg.js';
 
 function createWorld(container) {
-    //event listeners
+
+//----event listeners and event responses---------------------------------------------------------
     const holeCollideResponse = (event) => {
         if (event.body === ball.body) {
             course.holeGroundSection.body.collisionFilterGroup = 2;
@@ -71,8 +72,6 @@ function createWorld(container) {
         //https://en.wikipedia.org/wiki/Vector_projection
         const contactSpeed = (ball.body.velocity.clone().dot(contactNormal))/contactNormal.length();
 
-        //console.log(contactSpeed);
-        
         let soundVolume = 1.0;
         if(contactSpeed > 0.1 && contactSpeed < 1.0) {
             soundVolume = contactSpeed;
@@ -80,14 +79,15 @@ function createWorld(container) {
             soundVolume = 0.0;
         }
 
-        if(soundVolume != 0.0 && event.body.material.restitution != undefined) {
-            if(event.body.material.restitution > 0.5) {
-               audioHelper.playSound('assets/sound/wood_thud.wav', soundVolume);
-            } else {
-               audioHelper.playSound('assets/sound/grass_thud.wav', soundVolume);
+        if(event.body.material != null) {
+            if(soundVolume != 0.0 && event.body.material.restitution != undefined) {
+                if(event.body.material.restitution > 0.5) {
+                   audioHelper.playSound('assets/sound/wood_thud.wav', soundVolume);
+                } else {
+                   audioHelper.playSound('assets/sound/grass_thud.wav', soundVolume);
+                }
             }
         }
-
     }
 
     const pointerDownResponse = (event) => {
@@ -123,6 +123,7 @@ function createWorld(container) {
             strikeBall();
         }
         activelyControlling = false;
+        hud.enableBottomButtons();
         pointerControlsStrikePower = false;
         controls.lockVertical(false);
         controls.invertHorizontal(false);
@@ -143,6 +144,7 @@ function createWorld(container) {
             strikePower.setPercentPower(newStrikePower);
         } else {
             activelyControlling = true;
+            hud.disableBottomButtons();
             startPointerPos = getPointerPos(event);
         }
     };
@@ -150,9 +152,62 @@ function createWorld(container) {
     const gameOverResponse = () => {
         gameOver = true;
         strikePower.setPercentPower(0);
-        endScreen.setState("active");
+        endScreen.setState("submit");
+        endScreen.setScore(scorecard.totalScore);
     }
 
+
+//----Helper functions------------------------------------------------------------------------------------------
+
+    //The ball touch sphere is a spherical area
+    //around the ball that scales depending on the
+    //camera zoom. If the cursor touches this sphere (raycast)
+    //the mouse will control striking the ball.
+    //Otherwise it will control the camera.
+    //Applies to touchscreens the same way.
+    const updateBallTouchSphere = (targetBall) => {
+        const distance = controls.getDistance();
+        const scale = Math.sqrt(distance / 3);
+        targetBall.touchSphere.mesh.scale.setScalar(scale);
+    }
+
+    const getPointerPos = (event) => {
+        //get pointer position on screen
+        //see https://threejs.org/docs/#api/en/core/Raycaster
+        const pointerPos = new THREE.Vector2();
+        if(event.type == 'mousedown' || event.type == 'mouseup' || event.type == 'mousemove') {
+            pointerPos.x = (event.clientX / window.innerWidth) * 2 - 1;
+            pointerPos.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        }
+        else if(event.type == 'touchstart' || event.type == 'touchend' || event.type == 'touchmove') {
+            pointerPos.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
+            pointerPos.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
+        }
+        return pointerPos;
+    };
+
+    const strikeBall = () => {
+        if (ball.isSettled()) {
+            if(strikePower.percentPower() < 0.3) {
+                audioHelper.playSound('assets/sound/strike_low_power.wav')
+                
+            } else if (strikePower.percentPower() < 0.6) {
+                audioHelper.playSound('assets/sound/strike_medium_power.wav')
+
+            } else {
+                audioHelper.playSound('assets/sound/strike_high_power.wav')
+            }
+            let cameraDirection = new THREE.Vector3(0, 0, 0);
+            camera.getWorldDirection(cameraDirection);
+            ball.strike(cameraDirection, strikePower.getValue());
+            strokes += 1;
+            scorecard.setScore(course.number, strokes);
+            hud.setStrokesText(strokes);
+        }
+    };
+
+
+//----Loading a course----------------------------------------------------------------------
     const loadCourse = (courseNum) => {
         holeFinished = false;
         continueButton.hide();
@@ -163,6 +218,7 @@ function createWorld(container) {
         ball.stop();
         ball.mesh.position.copy(newCourse.ballSpawnpoint);
         ball.body.position.copy(newCourse.ballSpawnpoint);
+        strikePower.resetPower();
         camera.position.copy(newCourse.cameraSpawnpoint);
         camera.reset();
 
@@ -220,46 +276,25 @@ function createWorld(container) {
         return newCourse;
     }
 
-    const updateBallTouchSphere = (targetBall) => {
-        const distance = controls.getDistance();
-        const scale = Math.sqrt(distance / 3);
-        targetBall.touchSphere.mesh.scale.setScalar(scale);
+//----Replay the game--------------------------------------------------------------------------
+    
+    const replayGame = () => {
+        gameOver = false;
+        course = loadCourse(1);
+        scorecard.clearScores();
+        strokes = 0;
+
+        mainMenu.setState("inactive");
+        endScreen.setState("inactive");
+        inGameMenu.setState("closed");
     }
 
-    const getPointerPos = (event) => {
-        //get pointer position on screen
-        //see https://threejs.org/docs/#api/en/core/Raycaster
-        const pointerPos = new THREE.Vector2();
-        if(event.type == 'mousedown' || event.type == 'mouseup' || event.type == 'mousemove') {
-            pointerPos.x = (event.clientX / window.innerWidth) * 2 - 1;
-            pointerPos.y = -(event.clientY / window.innerHeight) * 2 + 1;
-        }
-        else if(event.type == 'touchstart' || event.type == 'touchend' || event.type == 'touchmove') {
-            pointerPos.x = (event.touches[0].clientX / window.innerWidth) * 2 - 1;
-            pointerPos.y = -(event.touches[0].clientY / window.innerHeight) * 2 + 1;
-        }
-        return pointerPos;
-    };
+//----Keyboard input---------------------------------------------------------------------------
 
-    const strikeBall = () => {
-        if (ball.isSettled()) {
-            if(strikePower.percentPower() < 0.3) {
-                audioHelper.playSound('assets/sound/strike_low_power.wav')
-                
-            } else if (strikePower.percentPower() < 0.6) {
-                audioHelper.playSound('assets/sound/strike_medium_power.wav')
-
-            } else {
-                audioHelper.playSound('assets/sound/strike_high_power.wav')
-            }
-            let cameraDirection = new THREE.Vector3(0, 0, 0);
-            camera.getWorldDirection(cameraDirection);
-            ball.strike(cameraDirection, strikePower.getValue());
-            strokes += 1;
-            scorecard.setScore(course.number, strokes);
-            hud.setStrokesText(strokes);
-        }
-    };
+    //key press event listner
+    document.addEventListener("keydown", (event) => {
+        processKeyEvent(event);
+    }, false);
 
     const processKeyEvent = (event) => {
         if(gameOver || mainMenu.state == "active") { return; }
@@ -270,7 +305,6 @@ function createWorld(container) {
         if (keyCode == 77) { inGameMenu.toggle(); }
         //I key
         if (keyCode == 73) { debugScreen.toggleVisibility(); }
-
 
         //N key
         if( keyCode == 78) { 
@@ -288,6 +322,8 @@ function createWorld(container) {
         if (keyCode == 87) { strikePower.increasePower(); }
         //S key
         if (keyCode == 83) { strikePower.decreasePower(); }
+        //E
+        if (keyCode == 69) { gameOverResponse(); } 
         //1 key
         if (keyCode == 49) { course = loadCourse(1); }
         //2 key
@@ -309,6 +345,8 @@ function createWorld(container) {
 
     }
 
+
+//----Debug screen entries-------------------------------------------------------------------
     const addDebugEntries = () => {
         //debug screen entries
         debugScreen.addEntry("Ball speed: ", () => {
@@ -346,6 +384,9 @@ function createWorld(container) {
         });
 
     }
+
+
+//----Creating everything in the scene / world----------------------------------------
 
     const world = {};
 
@@ -392,16 +433,6 @@ function createWorld(container) {
     const ball = createBall();
     const pointer = createPointer(ball, camera, strikePower);
 
-    continueButton.setOnClick(() => {
-        continueButton.hide();
-        const maxCourse = 9; 
-
-        if(course.number < maxCourse) {
-            course = loadCourse(course.number + 1);
-        } else {
-            gameOverResponse(); 
-        }
-    });
 
     ball.updateTouchSphereScale = () => {
         const distance = controls.getDistance();
@@ -446,6 +477,8 @@ function createWorld(container) {
         }
     }
 
+    let course = null;
+
     //camera target
     controls.targetObj = ball.body;
     camera.targetObj = ball.body;
@@ -453,13 +486,25 @@ function createWorld(container) {
     let strokes = 0;
     let par;
 
+//----UI-------------------------------------------------------------------------------------------
+    addDebugEntries();
+    //contains the strike meter, scorecard, open-menu button, scorecard-toggle button
     const hud = createHud();
     hud.pullStrikePowerPercent = () => {
         return strikePower.percentPower();
     };
 
-    //let course = loadCourse(1);
-    let course = null;
+    //button for continuing after finishing a hole
+    continueButton.setOnClick(() => {
+        continueButton.hide();
+        const MAX_COURSE = 9; 
+
+        if(course.number < MAX_COURSE) {
+            course = loadCourse(course.number + 1);
+        } else {
+            gameOverResponse(); 
+        }
+    });
 
     //in game menu
     const inGameMenu = createInGameMenu();
@@ -469,6 +514,7 @@ function createWorld(container) {
     };
     inGameMenu.quitButton.onclick = () => {
         inGameMenu.setState("closed");
+        endScreen.setState("inactive");
         mainMenu.setState("active");
     }
 
@@ -481,9 +527,22 @@ function createWorld(container) {
 
     //end screen
     const endScreen = createEndScreen();
-    endScreen.dbConnectTest();
+    endScreen.queryLeaderboard();
 
-    //adding updatable objects to updating loop
+    endScreen.quitButton.onclick = () => {
+        inGameMenu.setState("closed");
+        endScreen.setState("inactive");
+        mainMenu.setState("active");
+    };
+
+    endScreen.replayButton.onclick = () => {
+        replayGame();
+    };
+
+//----Updatables--------------------------------------------------------------------------
+//----World objects and UI objects that need to update every
+//----tick will be added to the loop.updatables array.
+
     loop.updatables.push(physWorld);
     loop.updatables.push(ball);
     loop.updatables.push(camera);
@@ -496,12 +555,8 @@ function createWorld(container) {
     loop.updatables.push(continueButton);
     loop.targetCourse = course;
 
-    addDebugEntries();
 
-    //key press event listner
-    document.addEventListener("keydown", (event) => {
-        processKeyEvent(event);
-    }, false);
+//----Base operations---------------------------------------------------------------------
 
     world.render = () => {
         renderer.render(scene, camera);

@@ -5,19 +5,19 @@ function createScorecard() {
     const scorecardTable = document.getElementById("scorecard");
     const scorecardToggleButton = document.getElementById("scorecard-toggle-button");
 
-    let scoreSum  = 0;
+    scorecard.totalScore  = 0;
 
     const updateScorecard = (hole, scoreValue) => {
-        scoreSum = 0;
+        scorecard.totalScore = 0;
         for(let i=0;i<scorecard.length;i++) {
             if(scorecard[i] != null) {
-                scoreSum += scorecard[i];
+                scorecard.totalScore += scorecard[i];
             } else {
                 break;
             }
         }
         scorecardTable.rows[hole].cells[2].textContent = scoreValue;
-        scorecardTable.rows[scorecardTable.rows.length - 1].cells[2].textContent = scoreSum;
+        scorecardTable.rows[scorecardTable.rows.length - 1].cells[2].textContent = scorecard.totalScore;
     }
 
     scorecard.setScore = (hole, scoreValue) => {
@@ -25,6 +25,12 @@ function createScorecard() {
         updateScorecard(hole, scoreValue);
     };
 
+    scorecard.clearScores = () => {
+        for(let score of scorecard) {
+            score = null;
+        }
+    };
+    
     scorecard.toggle = () => {
         if( scorecardTable.classList.toggle('scorecard-show-animation') ) {
             scorecardTable.classList.remove('scorecard-hide-animation');

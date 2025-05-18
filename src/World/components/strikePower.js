@@ -4,11 +4,8 @@ function createStrikePower() {
     const minStrikePower = 1;
     const maxStrikePower = 90;
     const powerInterval = (maxStrikePower - minStrikePower) / intervals;
-    const startPower = (maxStrikePower + minStrikePower) / 4;
 
-    const strikePower = {
-        power: startPower,
-    };
+    const strikePower = {};
 
     strikePower.getValue = () => {
         return strikePower.power;
@@ -20,6 +17,10 @@ function createStrikePower() {
 
     strikePower.setPercentPower = (percent) => {
         strikePower.power = maxStrikePower * percent;
+    }
+
+    strikePower.resetPower = () => {
+        strikePower.power = (maxStrikePower + minStrikePower) / 4;
     }
 
     strikePower.increasePower = () => {
@@ -35,6 +36,8 @@ function createStrikePower() {
             strikePower.power = minStrikePower;
         }
     };
+
+    strikePower.resetPower();
 
     return strikePower;
 }

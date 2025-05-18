@@ -30,7 +30,7 @@ function createScoreCallout() {
                     scoreCalloutText.textContent = 'Bogey';
                     break;
                 case 2:
-                    scoreCalloutText.textContent = 'Double Bogey :(';
+                    scoreCalloutText.textContent = 'Double Bogey';
                     break;
                 default:
                     scoreCalloutText.textContent = strokes + ' strokes...';

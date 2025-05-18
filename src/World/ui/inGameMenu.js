@@ -5,10 +5,9 @@ function createInGameMenu() {
     const restartButton = document.getElementById("restart-button");
     const levelsButton = document.getElementById("levels-button");
     const optionsButton = document.getElementById("options-button");
-    const quitButton = document.getElementById("quit-button");
+    const quitButton = document.getElementById("menu-quit-button");
 
-
-    const menuButton = document.getElementById("menu-button");
+    const menuButton = document.getElementById("open-menu-button");
 
     const menuScreenDim = document.getElementById("menu-screen-dim");
 
