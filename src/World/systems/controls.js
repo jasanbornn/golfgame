@@ -9,7 +9,7 @@ function createControls(camera, canvas) {
     const MIN_POLAR_ANGLE = Math.PI / 4;
     const MAX_POLAR_ANGLE = Math.PI / 2;
     const MIN_DISTANCE = 0.3; //meters
-    const MAX_DISTANCE = 50.0; //meters
+    const MAX_DISTANCE = 10.0; //meters
 
     const controls = new OrbitControls(camera, canvas);
     controls.enablePan = false;

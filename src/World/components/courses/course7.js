@@ -19,14 +19,14 @@ function createCourse7(physMaterials) {
     const clearingRadius = 12.0;
     const groundHeight = -0.2;
 
-    const light = createLight(new THREE.Vector3(9, 6, 10));
+    const light = createLight(new THREE.Vector3(9.0, 6.0, 10.0));
     const sceneryGround = createSceneryGround(new THREE.Vector3(0.0, groundHeight, 0.0));
     const trees = createTrees(clearingPosition, clearingRadius, groundHeight);
 
     const hole = createHole(new THREE.Vector3(3.5, 1.0, -8.0));
     const flag = createFlag(hole.position);
     const ballSpawnpoint = new THREE.Vector3(0.0, 6.1, 8.0);
-    const cameraSpawnpoint = new THREE.Vector3(0.0, 7.0, 10.0);
+    const cameraSpawnpoint = new THREE.Vector3(0.0, 8.0, 12.0);
     const outOfBoundsYLevel = -0.1;
     const outOfBoundsPlane = createOutOfBoundsPlane(outOfBoundsYLevel);
 

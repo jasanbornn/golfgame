@@ -8,7 +8,7 @@ function createTrees(clearingPosition, clearingRadius, groundHeight) {
 
     let treeScene = null;
 
-    const NUM_TREES = 100;  
+    const NUM_TREES = 50;  
 
     const randBetween = (low, high) => {
         return (Math.random() * (high - low)) + low;

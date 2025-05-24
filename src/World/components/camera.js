@@ -18,7 +18,7 @@ function createCamera() {
 
     // move the camera back so we can view the scene
     camera.position.set(0, 2, 2);
-    camera.quaternion.setFromEuler(new THREE.Euler(-Math.PI / 16, 0, 0))
+    camera.quaternion.setFromEuler(new THREE.Euler(-Math.PI / 16, 0, 0));
 
     camera.targetObj = baseTarget;
 
@@ -39,7 +39,6 @@ function createCamera() {
         }
 
         camera.position.add(targetObjPosChange);
-        
         targetObjPrevPosition.copy(camera.targetObj.position);
     };
 

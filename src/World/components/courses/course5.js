@@ -26,7 +26,7 @@ function createCourse5(physMaterials) {
     const hole = createHole(new THREE.Vector3(0.0, 0.0, -6.0));
     const flag = createFlag(hole.position);
     const ballSpawnpoint = new THREE.Vector3(0.0, 0.1, 0.3);
-    const cameraSpawnpoint = new THREE.Vector3(0.0, 1.5, 3.0);
+    const cameraSpawnpoint = new THREE.Vector3(0.0, 2.0, 4.0);
     const outOfBoundsYLevel = -0.1;
     const outOfBoundsPlane = createOutOfBoundsPlane(outOfBoundsYLevel);
 

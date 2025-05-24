@@ -2,7 +2,7 @@
 <html>
 
     <head>
-        <title>Mini9 Javascript Mini-golf Game</title>
+        <title>Golf9 - Mini Golf Game</title>
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta charset="UTF-8" />
@@ -13,16 +13,15 @@
     </head>
 
     <body>
-        
         <div id="scene-container"> <!-- <canvas> will be inserted here --> </div>
 
         <div class="loading-screen" id="loading-screen">
-            <h1 id="loading-title">Mini<span id="loading-title-nine">9</span></h1>
+            <h1 id="loading-title">Golf<span id="loading-title-nine">9</span></h1>
             <span class="loading-spinner"></span>
         </div>
 
         <div class="main-menu" id="main-menu">
-            <h1 id="menu-title">Mini<span id="menu-title-nine">9</span></h1>
+            <h1 id="menu-title">Golf<span id="menu-title-nine">9</span></h1>
             <button type="button" class="button" id="play-button">Play</button>
         </div>
 
@@ -52,18 +51,18 @@
             <button type="button" class="button" id="continue-button">Continue</button>
         </div>
 
-        <div class="hole-info-container">
+        <div class="hole-info-container" id="hole-info-container">
             <p id="strokes-number-text">0</p>
             <p id="strokes-label-text">strokes</p>
             <p id="hole-full-text">Hole 0</span></p>
             <p id="par-full-text"> Par 0</span></p>
         </div>
 
-        <div class="strike-meter-container">
+        <div class="strike-meter-container" id="strike-meter-container">
             <div class="strike-meter-value" id="strike-meter-value"></div>
         </div>
 
-        <div class="scorecard-and-buttons-container">
+        <div class="scorecard-and-buttons-container" id="scorecard-and-buttons-container">
             <table class="scorecard" id="scorecard">
                 <tr>
                     <th>Hole</th>

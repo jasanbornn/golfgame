@@ -7,27 +7,31 @@ function createScorecard() {
 
     scorecard.totalScore  = 0;
 
-    const updateScorecard = (hole, scoreValue) => {
+    scorecard.setScore = (hole, scoreValue) => {
+        scorecard[hole - 1] = scoreValue;
         scorecard.totalScore = 0;
         for(let i=0;i<scorecard.length;i++) {
             if(scorecard[i] != null) {
                 scorecard.totalScore += scorecard[i];
-            } else {
-                break;
             }
         }
-        scorecardTable.rows[hole].cells[2].textContent = scoreValue;
-        scorecardTable.rows[scorecardTable.rows.length - 1].cells[2].textContent = scorecard.totalScore;
-    }
 
-    scorecard.setScore = (hole, scoreValue) => {
-        scorecard[hole - 1] = scoreValue;
-        updateScorecard(hole, scoreValue);
+        if(scoreValue == 0) {
+            scorecardTable.rows[hole].cells[2].textContent = "";
+        } else {
+            scorecardTable.rows[hole].cells[2].textContent = scoreValue;
+        }
+
+        if(scorecard.totalScore == 0) {
+            scorecardTable.rows[scorecardTable.rows.length - 1].cells[2].textContent = "";
+        } else {
+            scorecardTable.rows[scorecardTable.rows.length - 1].cells[2].textContent = scorecard.totalScore;
+        }
     };
 
     scorecard.clearScores = () => {
-        for(let score of scorecard) {
-            score = null;
+        for(let i=0; i<scorecard.length; i++) {
+            scorecard.setScore(i+1, 0);
         }
     };
     

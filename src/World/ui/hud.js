@@ -4,7 +4,11 @@ function createHud() {
     //autostart = false
     const clock = new THREE.Clock(false);
 
-    const strikePowerBar = document.getElementById("strike-meter-value");
+    const strikeMeterContainer = document.getElementById("strike-meter-container");
+    const strikeMeterValue = document.getElementById("strike-meter-value");
+    const holeInfoContainer = document.getElementById("hole-info-container");
+    const scorecardButtonsContainer = document.getElementById("scorecard-and-buttons-container");
+
     const strokesNumberText = document.getElementById("strokes-number-text");
     const strokesLabelText = document.getElementById("strokes-label-text");
     const holeNumberText = document.getElementById("hole-full-text");
@@ -13,11 +17,33 @@ function createHud() {
     const scorecardToggleButton = document.getElementById("scorecard-toggle-button");
     const openMenuButton = document.getElementById("open-menu-button");
 
-    const hud = {};
+    const hud = {
+        state: "inactive",
+    };
 
     const setStrikePowerBarValue = (value) => {
-        strikePowerBar.style.height = value.toFixed(0) + "%";
+        strikeMeterValue.style.height = value.toFixed(0) + "%";
     };
+
+    hud.setState = (state) => {
+        switch(state) {
+            case "active":
+                strikeMeterContainer.style.display = "inline";
+                holeInfoContainer.style.display = "flex";
+                scorecardButtonsContainer.style.display = "flex";
+                break;
+            case "inactive":
+                strikeMeterContainer.style.display = "none";
+                holeInfoContainer.style.display = "none";
+                scorecardButtonsContainer.style.display = "none";
+                break;
+            default:
+                strikeMeterContainer.style.display = "none";
+                holeInfoContainer.style.display = "none";
+                scorecardButtonsContainer.style.display = "none";
+                break;
+        }
+    }
 
     hud.setStrokesText = (value) => {
         strokesNumberText.textContent = value.toFixed(0); 

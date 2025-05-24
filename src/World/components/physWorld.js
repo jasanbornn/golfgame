@@ -10,7 +10,7 @@ function createPhysWorld() {
 
     const physWorld = new CANNON.World(options);
 
-    physWorld.solver.iterations = 50;
+    physWorld.solver.iterations = 20;
 
     physWorld.tick = (delta) => {
         physWorld.fixedStep(timeStep, 10);

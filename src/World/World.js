@@ -12,7 +12,7 @@ import { createScorecard } from './ui/scorecard.js';
 import { createScoreCallout } from './ui/scoreCallout.js';
 import { createLoadingScreen } from './ui/loadingScreen.js';
 import { createContinueButton } from './ui/continueButton.js';
-import { createMainMenu } from './ui/mainMenu.js';
+import { createMainMenu } from './ui/mainMenu/mainMenu.js';
 import { createEndScreen } from './ui/endScreen.js';
 
 import { createDebugScreen } from './systems/debugScreen.js';
@@ -154,6 +154,7 @@ function createWorld(container) {
         strikePower.setPercentPower(0);
         endScreen.setState("submit");
         endScreen.setScore(scorecard.totalScore);
+        hud.setState("inactive");
     }
 
 
@@ -276,15 +277,15 @@ function createWorld(container) {
         return newCourse;
     }
 
-//----Replay the game--------------------------------------------------------------------------
+//----Play or replay the game--------------------------------------------------------------------------
     
-    const replayGame = () => {
+    const startGame = () => {
         gameOver = false;
         course = loadCourse(1);
         scorecard.clearScores();
         strokes = 0;
 
-        mainMenu.setState("inactive");
+        closeMainMenu();
         endScreen.setState("inactive");
         inGameMenu.setState("closed");
     }
@@ -408,11 +409,6 @@ function createWorld(container) {
     const mainMenu = createMainMenu();
     let gameOver = false;
 
-    mainMenu.playButton.onclick = () => {
-        mainMenu.setState("inactive");
-        course = loadCourse(1);
-    }
-
     //skybox
     const skyboxLoader = new RGBELoader();
     
@@ -479,10 +475,6 @@ function createWorld(container) {
 
     let course = null;
 
-    //camera target
-    controls.targetObj = ball.body;
-    camera.targetObj = ball.body;
-
     let strokes = 0;
     let par;
 
@@ -506,8 +498,38 @@ function createWorld(container) {
         }
     });
 
+    //main menu
+    mainMenu.playButton.onclick = () => {
+        startGame();
+    }
+
+    const startMainMenu = () => {
+        mainMenu.setState("active");
+        hud.setState("inactive");
+        scene.clear();
+        for(const menuObject of mainMenu.menuObjects) {
+            if(menuObject.isLight) {
+                scene.add(menuObject);
+            } else if (menuObject.mesh != null) {
+                scene.add(menuObject.mesh);
+            }
+        }
+        camera.position.set(0.0, 0.0, 0.0);
+        camera.reset();
+        camera.targetObj = mainMenu.spinningBall.mesh;
+        controls.targetObj = mainMenu.spinningBall.mesh;
+    }
+
+    const closeMainMenu = () => {
+        mainMenu.setState("inactive");
+        hud.setState("active");
+        camera.targetObj = ball.body;
+        controls.targetObj = ball.body;
+    }
+
     //in game menu
     const inGameMenu = createInGameMenu();
+
     inGameMenu.restartButton.onclick = () => {
         course = loadCourse(course.number); 
         inGameMenu.setState("closed");
@@ -515,7 +537,7 @@ function createWorld(container) {
     inGameMenu.quitButton.onclick = () => {
         inGameMenu.setState("closed");
         endScreen.setState("inactive");
-        mainMenu.setState("active");
+        startMainMenu();
     }
 
     for(let i = 0; i < 9; i++) {
@@ -536,7 +558,7 @@ function createWorld(container) {
     };
 
     endScreen.replayButton.onclick = () => {
-        replayGame();
+        startGame();
     };
 
 //----Updatables--------------------------------------------------------------------------
@@ -554,6 +576,17 @@ function createWorld(container) {
     loop.updatables.push(loadingScreen);
     loop.updatables.push(continueButton);
     loop.targetCourse = course;
+
+    for(const menuObject of mainMenu.menuObjects) {
+        if(menuObject.tick != undefined && menuObject.tick != null) {
+            loop.updatables.push(menuObject);
+        }
+    }
+
+
+//----Start------------------------------------------------------------------------------
+
+    startMainMenu();
 
 
 //----Base operations---------------------------------------------------------------------
