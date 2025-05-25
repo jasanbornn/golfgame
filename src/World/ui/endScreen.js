@@ -7,6 +7,9 @@ function createEndScreen() {
     const leaderboardNameInput = document.getElementById("leaderboard-name-input");
     const leaderboardSubmitButton = document.getElementById("leaderboard-submit-button");
 
+    const invalidRunWarningBox = document.getElementById("end-screen-invalid-warning-box");
+    const invalidRunWarning = document.getElementById("end-screen-invalid-warning-text");
+
     const quitContainer = document.getElementById("end-screen-quit-container");
     const quitButton = document.getElementById("end-screen-quit-button");
     const replayButton = document.getElementById("replay-button");
@@ -39,6 +42,16 @@ function createEndScreen() {
                 endScreen.setState("inactive");
         }
     };
+
+    endScreen.setValidRun = (validRun, invalidRunReason) => {
+        endScreen.validRun = validRun;
+        if(endScreen.validRun == false) {
+            invalidRunWarning.textContent = "Invalid run: " + invalidRunReason;
+            endScreen.setState("quitting");
+        } else {
+            invalidRunWarningBox.style.display = "none";
+        }
+    }
 
     endScreen.setLeaderboardContent = (content) => {
         leaderboard.innerHTML = content;

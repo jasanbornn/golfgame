@@ -79,6 +79,23 @@ body {
     width: 50px;
 }
 
+.end-screen-invalid-warning-box {
+    background: rgb(255, 255, 255);
+    background: rgba(128, 128, 128, 0.75);
+    display: flex;
+    flex-wrap: wrap;
+    width: 20%;
+    font-size: 20px;
+    margin: 5px;
+    pointer-events: none;
+    border: 4px solid black;
+    border-radius: 10px;
+}
+
+.end-screen-invalid-warning p {
+    margin: 5px;
+}
+
 .end-screen-submission-container {
     display: flex;
     padding: 20px;
@@ -86,7 +103,7 @@ body {
 
 .end-screen-quit-container {
     display: none;
-    padding: 20px;
+    margin: 5px;
 }
 
 .leaderboard-name-input {
@@ -230,7 +247,7 @@ body {
 
 .scorecard-and-buttons-container {
     position: absolute;
-    display: flex;
+    display: none;
     right: 0px;
     overflow: hidden;
     flex-direction: column;
@@ -333,7 +350,7 @@ body {
     pointer-events: none;
     background: rgb(255, 255, 255);
     background: rgba(128, 128, 128, 0.5);
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: center;
     margin: 10px;
@@ -371,6 +388,7 @@ body {
 .strike-meter-container {
     pointer-events:none;
     position: absolute;
+    display: none;
     bottom: 10px;
     left: 0px;
     height: 50%;

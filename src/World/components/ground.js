@@ -3,7 +3,7 @@ import * as THREE from '../../../vendor/three/build/three.module.js';
 import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 
 
-function createGround(width, length, position, quaternion, hole) {
+function createGround(width, length, position, quaternion, hole, hideFaceNumber) {
     const textureLoader = new THREE.TextureLoader();
     const createMaterial = (width, length) => {
         ground.mesh.material = new THREE.MeshStandardMaterial({
@@ -78,29 +78,26 @@ function createGround(width, length, position, quaternion, hole) {
             );
         };
 
-        bottomMesh.material[0] = new THREE.MeshStandardMaterial({
-            clippingPlanes: [bottomGeoClipPlane],
-        });
-        bottomMesh.material[1] = new THREE.MeshStandardMaterial({
-            clippingPlanes: [bottomGeoClipPlane],
-        });
-        bottomMesh.material[4] = new THREE.MeshStandardMaterial({
-            clippingPlanes: [bottomGeoClipPlane],
-        });
-        bottomMesh.material[5] = new THREE.MeshStandardMaterial({
-            clippingPlanes: [bottomGeoClipPlane],
-        });
+        //apply textures to the sides of the ground
+        for(const faceNum of [0, 1, 4, 5]) {
 
-        bottomMesh.material[0].map = loadSideTexture(length);
-        bottomMesh.material[1].map = loadSideTexture(length);
-        bottomMesh.material[4].map = loadSideTexture(width);
-        bottomMesh.material[5].map = loadSideTexture(width);
+            bottomMesh.material[faceNum] = new THREE.MeshStandardMaterial({
+                clippingPlanes: [bottomGeoClipPlane],
+            });
 
-        bottomMesh.material[0].normalMap = loadSideNormalMap(length);
-        bottomMesh.material[1].normalMap = loadSideNormalMap(length);
-        bottomMesh.material[4].normalMap = loadSideNormalMap(width);
-        bottomMesh.material[5].normalMap = loadSideNormalMap(width);
+            if(faceNum == 0 || faceNum == 1) {
+                bottomMesh.material[faceNum].map = loadSideTexture(length);
+                bottomMesh.material[faceNum].normalMap = loadSideNormalMap(length);
+            } else if (faceNum == 4 || faceNum == 5) {
+                bottomMesh.material[faceNum].map = loadSideTexture(width);
+                bottomMesh.material[faceNum].normalMap = loadSideNormalMap(width);
+            }
 
+            if(faceNum == hideFaceNumber) {
+                bottomMesh.material[faceNum].transparent = true;
+                bottomMesh.material[faceNum].opacity = 0.0;
+            }
+        }
     }
 
     //geometry of the top surface of the ground
@@ -138,7 +135,7 @@ function createGround(width, length, position, quaternion, hole) {
     //the flat bottom portion will be smaller
     //in hindsight I should have made the slope length be calculated
     //based off a given bottom length. maybe todo but would need a lot
-    //of refactoring for course 1-9 data
+    //of refactoring for hole 1-9 data
     const bottomLength = length * Math.cos(axisAngle);
     const bottomGeometry = new THREE.BoxGeometry(width, 16, bottomLength);
 
@@ -200,7 +197,6 @@ function createGround(width, length, position, quaternion, hole) {
         }),
     };
 
-
     ground.mesh.add(bottomMesh);
     ground.body.addShape(groundShape, new CANNON.Vec3(0.0, 0.0, 0.0));
 
@@ -221,7 +217,7 @@ function createGround(width, length, position, quaternion, hole) {
 
 //cuts hole into the top surface
 function clipSurface(surfacePreMesh, hole) {
-    if(hole === undefined) {
+    if(hole === null || hole === undefined) {
         return surfacePreMesh;
     }
     const clipGeometry = new THREE.CylinderGeometry(0.112, 0.112, 0.4, 32);

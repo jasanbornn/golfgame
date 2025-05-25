@@ -93,8 +93,8 @@ function createBall() {
             ball.stop();
         }
 
-        if (ball.body.velocity.length() < 0.2) {
-            ball.body.angularDamping = 0.9;
+        if (ball.body.velocity.length() < 0.25) {
+            ball.body.angularDamping = 0.99;
         } else {
             ball.body.angularDamping = 0.7; 
         }

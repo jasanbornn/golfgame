@@ -1,7 +1,7 @@
 import { createCamera } from './components/camera.js';
 import { createBall } from './components/ball.js';
 import { createPointer } from './components/pointer.js';
-import { createCourse } from './components/course.js';
+import { createHole } from './components/hole.js';
 import { createScene } from './components/scene.js';
 import { createPhysWorld } from './components/physWorld.js';
 import { createStrikePower } from './components/strikePower.js';
@@ -30,34 +30,34 @@ import { CSG } from '../../vendor/three-csg/three-csg.js';
 function createWorld(container) {
 
 //----event listeners and event responses---------------------------------------------------------
-    const holeCollideResponse = (event) => {
+    const cupCollideResponse = (event) => {
         if (event.body === ball.body) {
-            course.holeGroundSection.body.collisionFilterGroup = 2;
+            hole.cupGroundSection.body.collisionFilterGroup = 2;
             ball.body.collisionFilterMask = 1;
         }
     };
 
-    const holeCollideEndResponse = (event) => {
+    const cupCollideEndResponse = (event) => {
         if (
-            (event.bodyA === ball.body && event.bodyB === course.hole.collideTrigger.body) ||
-            (event.bodyA === course.hole.collideTrigger.body && event.bodyB === ball.body)
+            (event.bodyA === ball.body && event.bodyB === hole.cup.collideTrigger.body) ||
+            (event.bodyA === hole.cup.collideTrigger.body && event.bodyB === ball.body)
         ) {
-            course.holeGroundSection.body.collisionFilterGroup = 1;
+            hole.cupGroundSection.body.collisionFilterGroup = 1;
             ball.body.collisionFilterMask = -1;
         }
 
     };
 
     let holeFinished = false;
-    const holeInResponse = (event) => {
+    const cupInResponse = (event) => {
         if(holeFinished || gameOver) {
             return;
         }
         holeFinished = true;
 
         if(event.body === ball.body) {
-            audioHelper.playSound('assets/sound/ball_into_hole.wav');
-            scoreCallout.displayScore(course.par, strokes);
+            audioHelper.playSound('assets/sound/ball_into_cup.wav');
+            scoreCallout.displayScore(hole.par, strokes);
             continueButton.prompt();
         }
     }
@@ -154,6 +154,7 @@ function createWorld(container) {
         strikePower.setPercentPower(0);
         endScreen.setState("submit");
         endScreen.setScore(scorecard.totalScore);
+        endScreen.setValidRun(validRun, invalidRunReason);
         hud.setState("inactive");
     }
 
@@ -202,35 +203,35 @@ function createWorld(container) {
             camera.getWorldDirection(cameraDirection);
             ball.strike(cameraDirection, strikePower.getValue());
             strokes += 1;
-            scorecard.setScore(course.number, strokes);
+            scorecard.setScore(hole.number, strokes);
             hud.setStrokesText(strokes);
         }
     };
 
 
-//----Loading a course----------------------------------------------------------------------
-    const loadCourse = (courseNum) => {
+//----Loading a hole----------------------------------------------------------------------
+    const loadHole = (holeNum) => {
         holeFinished = false;
         continueButton.hide();
 
         loadingScreen.show();
 
-        const newCourse = createCourse(courseNum);
+        const newHole = createHole(holeNum);
         ball.stop();
-        ball.mesh.position.copy(newCourse.ballSpawnpoint);
-        ball.body.position.copy(newCourse.ballSpawnpoint);
+        ball.mesh.position.copy(newHole.ballSpawnpoint);
+        ball.body.position.copy(newHole.ballSpawnpoint);
         strikePower.resetPower();
-        camera.position.copy(newCourse.cameraSpawnpoint);
+        camera.position.copy(newHole.cameraSpawnpoint);
         camera.reset();
 
         scene.clear();
         physWorld.bodies = [];
 
         strokes = 0;
-        par = newCourse.par;
+        par = newHole.par;
         hud.setStrokesText(strokes);
         hud.setParText(par);
-        hud.setHoleNumberText(courseNum);
+        hud.setHoleNumberText(holeNum);
 
         //add game objects to the world
         scene.add(ball.mesh); 
@@ -242,7 +243,7 @@ function createWorld(container) {
         scene.add(ambientLight);
 
         physWorld.addBody(ball.body);
-        for (const o of newCourse.objects) {
+        for (const o of newHole.objects) {
             if(o.isLight) { scene.add(o); }
             if(o.mesh != null) { scene.add(o.mesh); }
             if(o.body != null) { physWorld.addBody(o.body); }
@@ -252,17 +253,17 @@ function createWorld(container) {
             scene.add(sound.audio);
         }
 
-        newCourse.hole.collideTrigger.body.removeEventListener('collide', holeCollideResponse);
-        newCourse.hole.collideTrigger.body.addEventListener('collide', holeCollideResponse);
+        newHole.cup.collideTrigger.body.removeEventListener('collide', cupCollideResponse);
+        newHole.cup.collideTrigger.body.addEventListener('collide', cupCollideResponse);
 
-        newCourse.hole.inTrigger.body.removeEventListener('collide', holeInResponse);
-        newCourse.hole.inTrigger.body.addEventListener('collide', holeInResponse);
+        newHole.cup.inTrigger.body.removeEventListener('collide', cupInResponse);
+        newHole.cup.inTrigger.body.addEventListener('collide', cupInResponse);
 
         ball.body.removeEventListener('collide', ballCollideResponse);
         ball.body.addEventListener('collide', ballCollideResponse);
 
-        physWorld.removeEventListener('endContact', holeCollideEndResponse);
-        physWorld.addEventListener('endContact', holeCollideEndResponse);
+        physWorld.removeEventListener('endContact', cupCollideEndResponse);
+        physWorld.addEventListener('endContact', cupCollideEndResponse);
 
         window.addEventListener('mousedown', pointerDownResponse);
         window.addEventListener('mouseup', pointerUpResponse);
@@ -272,16 +273,17 @@ function createWorld(container) {
         window.addEventListener('touchend', pointerUpResponse);
         window.addEventListener('touchmove', pointerMoveResponse);
 
-        loop.targetCourse = newCourse;
+        loop.targetHole = newHole;
 
-        return newCourse;
+        return newHole;
     }
 
 //----Play or replay the game--------------------------------------------------------------------------
     
     const startGame = () => {
+        validRun = true;
         gameOver = false;
-        course = loadCourse(1);
+        hole = loadHole(1);
         scorecard.clearScores();
         strokes = 0;
 
@@ -326,23 +328,23 @@ function createWorld(container) {
         //E
         if (keyCode == 69) { gameOverResponse(); } 
         //1 key
-        if (keyCode == 49) { course = loadCourse(1); }
+        if (keyCode == 49) { hole = loadHole(1); }
         //2 key
-        if (keyCode == 50) { course = loadCourse(2); }
+        if (keyCode == 50) { hole = loadHole(2); }
         //3 key
-        if (keyCode == 51) { course = loadCourse(3); }
+        if (keyCode == 51) { hole = loadHole(3); }
         //4 key
-        if (keyCode == 52) { course = loadCourse(4); }
+        if (keyCode == 52) { hole = loadHole(4); }
         //5 key
-        if (keyCode == 53) { course = loadCourse(5); }
+        if (keyCode == 53) { hole = loadHole(5); }
         //6 key
-        if (keyCode == 54) { course = loadCourse(6); }
+        if (keyCode == 54) { hole = loadHole(6); }
         //7 key
-        if (keyCode == 55) { course = loadCourse(7); }
+        if (keyCode == 55) { hole = loadHole(7); }
         //8 key
-        if (keyCode == 56) { course = loadCourse(8); }
+        if (keyCode == 56) { hole = loadHole(8); }
         //9 key
-        if (keyCode == 57) { course = loadCourse(9); }
+        if (keyCode == 57) { hole = loadHole(9); }
 
     }
 
@@ -375,8 +377,8 @@ function createWorld(container) {
                 pointer.mesh.quaternion.z.toFixed(2) + ", " +  
                 pointer.mesh.quaternion.w.toFixed(2);
         });
-        debugScreen.addEntry("Course number: ", () => {
-            return course.number;
+        debugScreen.addEntry("Hole number: ", () => {
+            return hole.number;
         });
         debugScreen.addEntry("Camera pos: ", () => {
             return camera.position.x.toFixed(2) + ", " +
@@ -408,6 +410,8 @@ function createWorld(container) {
     const continueButton = createContinueButton(); 
     const mainMenu = createMainMenu();
     let gameOver = false;
+    let validRun = true;
+    let invalidRunReason = "";
 
     //skybox
     const skyboxLoader = new RGBELoader();
@@ -437,7 +441,7 @@ function createWorld(container) {
     };
 
     ball.onSettling = () => {
-        if(ball.body.position.y < course.outOfBoundsYLevel) {
+        if(ball.body.position.y < hole.outOfBoundsYLevel) {
             ball.toLastPosition();
         } else  {
             ball.recordPosition();
@@ -473,7 +477,7 @@ function createWorld(container) {
         }
     }
 
-    let course = null;
+    let hole = null;
 
     let strokes = 0;
     let par;
@@ -489,10 +493,10 @@ function createWorld(container) {
     //button for continuing after finishing a hole
     continueButton.setOnClick(() => {
         continueButton.hide();
-        const MAX_COURSE = 9; 
+        const MAX_HOLE = 9; 
 
-        if(course.number < MAX_COURSE) {
-            course = loadCourse(course.number + 1);
+        if(hole.number < MAX_HOLE) {
+            hole = loadHole(hole.number + 1);
         } else {
             gameOverResponse(); 
         }
@@ -506,6 +510,7 @@ function createWorld(container) {
     const startMainMenu = () => {
         mainMenu.setState("active");
         hud.setState("inactive");
+        continueButton.hide();
         scene.clear();
         for(const menuObject of mainMenu.menuObjects) {
             if(menuObject.isLight) {
@@ -531,7 +536,7 @@ function createWorld(container) {
     const inGameMenu = createInGameMenu();
 
     inGameMenu.restartButton.onclick = () => {
-        course = loadCourse(course.number); 
+        hole = loadHole(hole.number); 
         inGameMenu.setState("closed");
     };
     inGameMenu.quitButton.onclick = () => {
@@ -542,8 +547,10 @@ function createWorld(container) {
 
     for(let i = 0; i < 9; i++) {
         inGameMenu.levelBoxes[i].onclick = () => {
-            course = loadCourse(i + 1);
+            hole = loadHole(i + 1);
             inGameMenu.setState("closed");
+            validRun = false;
+            invalidRunReason = "switched holes mid play-through"
         };
     }
 
@@ -554,7 +561,7 @@ function createWorld(container) {
     endScreen.quitButton.onclick = () => {
         inGameMenu.setState("closed");
         endScreen.setState("inactive");
-        mainMenu.setState("active");
+        startMainMenu();
     };
 
     endScreen.replayButton.onclick = () => {
@@ -575,7 +582,7 @@ function createWorld(container) {
     loop.updatables.push(scoreCallout);
     loop.updatables.push(loadingScreen);
     loop.updatables.push(continueButton);
-    loop.targetCourse = course;
+    loop.targetHole = hole;
 
     for(const menuObject of mainMenu.menuObjects) {
         if(menuObject.tick != undefined && menuObject.tick != null) {

@@ -1,7 +1,7 @@
 import { createLight } from '../light.js';
 import { createBarrier } from '../obstacles/barrier.js';
 import { createGround } from '../ground.js';
-import { createHole } from '../hole.js';
+import { createCup } from '../cup.js';
 import { createFlag } from '../flag.js';
 
 import { createOutOfBoundsPlane } from '../debug/outOfBoundsPlane.js';
@@ -12,7 +12,7 @@ import { createTrees } from '../scenery/trees.js';
 import * as THREE from '../../../../vendor/three/build/three.module.js';
 import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 
-function createCourse3(physMaterials) {
+function createHole3(physMaterials) {
 
     const clearingPosition = new THREE.Vector3(0.0, 0.0, 0.0);
     const clearingRadius = 10.0;
@@ -22,14 +22,14 @@ function createCourse3(physMaterials) {
     const sceneryGround = createSceneryGround(new THREE.Vector3(0.0, groundHeight, 0.0));
     const trees = createTrees(clearingPosition, clearingRadius, groundHeight);
 
-    const hole = createHole(new THREE.Vector3(-6.0, -2.0, 6.0));
-    const flag = createFlag(hole.position);
+    const cup = createCup(new THREE.Vector3(-6.0, -2.0, 6.0));
+    const flag = createFlag(cup.position);
     const ballSpawnpoint = new THREE.Vector3(0.0, 0.1, 0.0);
     const cameraSpawnpoint = new THREE.Vector3(0.0, 1.5, -2.0);
     const outOfBoundsYLevel = -2.3;
     const outOfBoundsPlane = createOutOfBoundsPlane(outOfBoundsYLevel);
 
-    const holeGroundSection = createGround(
+    const cupGroundSection = createGround(
             1,
             1,
             new THREE.Vector3(-6.0, -2.0, 6.0),
@@ -37,12 +37,12 @@ function createCourse3(physMaterials) {
                 new THREE.Vector3(0.0, 1.0, 0.0),
                 0,
             ),
-            hole,
+            cup,
         );
 
     const groundSections = [
         //final landing
-        holeGroundSection,
+        cupGroundSection,
         //starting landing
         createGround(
             1.0,
@@ -209,42 +209,42 @@ function createCourse3(physMaterials) {
         ),
     ];
 
-    const course = {
+    const hole = {
         ballSpawnpoint: new THREE.Vector3(0.0, 0.1, 0.0),
         cameraSpawnpoint: cameraSpawnpoint,
-        hole: hole,
+        cup: cup,
         par: 3,
-        holeGroundSection: holeGroundSection,
+        cupGroundSection: cupGroundSection,
         groundSections: groundSections,
         barriers: barriers,
         outOfBoundsYLevel: outOfBoundsYLevel,
     };
 
-    course.objects = [
+    hole.objects = [
         light,
-        course.hole,
-        course.hole.collideTrigger,
-        course.hole.inTrigger,
+        hole.cup,
+        hole.cup.collideTrigger,
+        hole.cup.inTrigger,
         flag,
         sceneryGround,
         outOfBoundsPlane,
     ];
 
-    course.tick = (delta) => {};
+    hole.tick = (delta) => {};
 
     for(let groundSection of groundSections) {
-        course.objects.push(groundSection);
+        hole.objects.push(groundSection);
     }
 
     for(let barrier of barriers) {
-        course.objects.push(barrier); 
+        hole.objects.push(barrier); 
     }
 
     for(const tree of trees) {
-        course.objects.push(tree);
+        hole.objects.push(tree);
     }
 
-    return course;
+    return hole;
 }
 
-export { createCourse3 };
+export { createHole3 };

@@ -7,7 +7,7 @@ function createAudioHelper() {
 
     const sounds = [
         {url: 'assets/sound/birds.wav', audio: new THREE.Audio(audioListener), loop: true, autoplay: true},
-        {url: 'assets/sound/ball_into_hole.wav', audio: new THREE.Audio(audioListener)},
+        {url: 'assets/sound/ball_into_cup.wav', audio: new THREE.Audio(audioListener)},
         {url: 'assets/sound/clap.wav', audio: new THREE.Audio(audioListener)},
         {url: 'assets/sound/wood_thud.wav', audio: new THREE.Audio(audioListener)},
         {url: 'assets/sound/grass_thud.wav', audio: new THREE.Audio(audioListener)},
