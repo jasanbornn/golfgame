@@ -26,6 +26,7 @@ function createHud() {
     };
 
     hud.setState = (state) => {
+        hud.state = state;
         switch(state) {
             case "active":
                 strikeMeterContainer.style.display = "inline";
@@ -42,6 +43,14 @@ function createHud() {
                 holeInfoContainer.style.display = "none";
                 scorecardButtonsContainer.style.display = "none";
                 break;
+        }
+    }
+
+    hud.toggle = () => {
+        if(hud.state == "active") {
+            hud.setState("inactive");
+        } else {
+            hud.setState("active");
         }
     }
 

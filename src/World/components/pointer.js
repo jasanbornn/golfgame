@@ -48,6 +48,16 @@ function createPointer(ball, camera, strikePower) {
 
     //position pointer slightly below the ball's center line
     pointer.mesh.position.y -= 0.03;
+
+
+    pointer.toggle = () => {
+        if(pointer.mesh.material.visible == true) {
+            pointer.mesh.material.setValues({visible: false});
+        } else {
+            pointer.mesh.material.setValues({visible: true});
+        }
+    }
+
     pointer.tick = () => {
 
         //copy camera quaternion into pointer's quaternion
@@ -80,9 +90,6 @@ function createPointer(ball, camera, strikePower) {
         //pointer.mesh.scale.set(1.0, 1.0, 0.3);
         //scale the pointer based on strike power
         pointer.mesh.scale.set(1.0, 1.0, 0.5*strikePower.percentPower());
-
-
-        
 
     };
 

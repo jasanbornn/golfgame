@@ -3,16 +3,29 @@ import * as CANNON from 'https://cdn.skypack.dev/cannon-es@0.20.0';
 
 function createWindmillBase(position, quaternion) {
 
-    const BOTTOM_PIECE_WIDTH = 0.3;
-    const BOTTOM_PIECE_HEIGHT = 0.3;
+    const BOTTOM_PIECE_WIDTH = 0.25;
+    const BOTTOM_PIECE_HEIGHT = 0.1;
     const TOP_PIECE_BOTTOM_WIDTH = BOTTOM_PIECE_WIDTH*3;
     const BOTTOM_PIECE_DEPTH = TOP_PIECE_BOTTOM_WIDTH;
-    const TOP_PIECE_TOP_WIDTH = 0.4 * TOP_PIECE_BOTTOM_WIDTH;
-    const TOP_PIECE_HEIGHT = 2.0;
+    const TOP_PIECE_TOP_WIDTH = 0.60 * TOP_PIECE_BOTTOM_WIDTH;
+    const TOP_PIECE_HEIGHT = 1.8;
+    const TOP_PIECE_RADIAL_SEGMENTS = 4;
 
-    const material = new THREE.MeshStandardMaterial({
-        color: 'red',
-    });
+    const textureLoader = new THREE.TextureLoader();
+    const createMaterial = () => {
+        const material = new THREE.MeshStandardMaterial({
+            color: 'red',
+            roughness: 1.0,
+            metalness: 0.25,
+            flatShading: true,
+        });
+        material.map = textureLoader.load('assets/windmill/rubber.jpg');
+        material.normalMap = textureLoader.load('assets/windmill/rubber_norm.jpg');
+
+        return material;
+    };
+
+    const material = createMaterial();
 
     const botLeftGeometry = new THREE.BoxGeometry(
         BOTTOM_PIECE_WIDTH,
@@ -31,10 +44,10 @@ function createWindmillBase(position, quaternion) {
     const botRightMesh = new THREE.Mesh(botRightGeometry, material);
 
     const topGeometry = new THREE.CylinderGeometry(
-        TOP_PIECE_TOP_WIDTH / 1.41,
-        TOP_PIECE_BOTTOM_WIDTH / 1.41,
+        TOP_PIECE_TOP_WIDTH / Math.sqrt(2),
+        TOP_PIECE_BOTTOM_WIDTH / Math.sqrt(2),
         TOP_PIECE_HEIGHT,
-        4, //radial segments - square base
+        TOP_PIECE_RADIAL_SEGMENTS,
     );
     topGeometry.rotateY(Math.PI / 4);
 
@@ -103,9 +116,14 @@ function createWindmillBase(position, quaternion) {
 
 function createWindmillBlades(windmillBasePosition, windmillBaseQuaternion) {
 
-    const BLADE_WIDTH = 0.33;
-    const BLADE_LENGTH = 2.6;
-    const BLADE_THICKNESS = 0.1;
+    const BLADE_WIDTH = 0.15;
+    const BLADE_LENGTH = 1.95;
+    const BLADE_THICKNESS = 0.01;
+    const BLADE_OFFSET = 0.4;
+
+    const SHAFT_WIDTH = 0.1;
+    const SHAFT_LENGTH = 0.3;
+    const SHAFT_RADIAL_SEGMENTS = 8;
 
     const bladeGeometry1 = new THREE.BoxGeometry(
         BLADE_WIDTH,
@@ -119,17 +137,43 @@ function createWindmillBlades(windmillBasePosition, windmillBaseQuaternion) {
         BLADE_THICKNESS,
     );
 
-    const bladeMaterial = new THREE.MeshStandardMaterial({
-        color: 'white',
-    });
+    const bladeShaftGeometry = new THREE.CylinderGeometry(
+        SHAFT_WIDTH / 2,
+        SHAFT_WIDTH / 2,
+        SHAFT_LENGTH,
+        SHAFT_RADIAL_SEGMENTS,
+    );
+    bladeShaftGeometry.rotateX(Math.PI / 2);
 
-    const bladesMesh = new THREE.Mesh(bladeGeometry1, bladeMaterial);
+    const textureLoader = new THREE.TextureLoader();
+    const createBladeMaterial = () => {
+        const material = new THREE.MeshStandardMaterial({
+            color: 'white',
+            roughness: 1.0,
+            metalness: 0.25,
+            flatShading: true,
+        });
+        material.map = textureLoader.load('assets/windmill/metal.jpg');
+        material.normalMap = textureLoader.load('assets/windmill/metal_norm.jpg');
+
+        return material;
+    };
+
+    const bladeMaterial = createBladeMaterial();
+
+    const bladesMesh = new THREE.Mesh();
+    const bladeMesh1 = new THREE.Mesh(bladeGeometry1, bladeMaterial);
     const bladeMesh2 = new THREE.Mesh(bladeGeometry2, bladeMaterial);
 
+    const bladeShaftMesh = new THREE.Mesh(bladeShaftGeometry, bladeMaterial);
+    bladeShaftMesh.translateZ(-(SHAFT_LENGTH / 2 + BLADE_THICKNESS + 0.00001));
+
+    bladesMesh.add(bladeMesh1);
     bladesMesh.add(bladeMesh2);
+    bladesMesh.add(bladeShaftMesh);
     bladesMesh.position.copy(windmillBasePosition);
     bladesMesh.quaternion.copy(windmillBaseQuaternion);
-    bladesMesh.translateZ(0.5);
+    bladesMesh.translateZ(BLADE_OFFSET);
 
     const bladesBody = new CANNON.Body({
         type: CANNON.Body.KINEMATIC,
@@ -151,7 +195,8 @@ function createWindmillBlades(windmillBasePosition, windmillBaseQuaternion) {
     bladesBody.position.copy(bladesMesh.getWorldPosition(new THREE.Vector3()));
     bladesBody.quaternion.copy(bladesMesh.getWorldQuaternion(new THREE.Quaternion()));
 
-    bladesBody.angularVelocity = new CANNON.Vec3(0.0, 0.0, 1.0*Math.PI);
+    
+    bladesBody.angularVelocity = new CANNON.Vec3(0.0, 0.0, 0.75*Math.PI);
 
     const windmillBlades = {
         mesh: bladesMesh,

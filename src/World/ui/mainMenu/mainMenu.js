@@ -1,6 +1,7 @@
 import * as THREE from '../../../../vendor/three/build/three.module.js';
 
 import { createLight } from '../../components/light.js';
+import { createGround } from '../../components/ground.js';
 
 import { createSpinningBall } from './createSpinningBall.js';
 
@@ -17,11 +18,21 @@ function createMainMenu() {
     const spinningBall = createSpinningBall(new THREE.Vector3(0.0, 0.0, 2.75));
     const menuDirectLighting = createLight(new THREE.Vector3(-0.0, 5.0, -4.0));
     const menuAmbientLighting = new THREE.AmbientLight(0x809080, 1.0);
+    const ground = createGround(
+        50,
+        50,
+        new THREE.Vector3(0.0, -1.0, 0.0),
+        new THREE.Quaternion().setFromAxisAngle(
+            new THREE.Vector3(0.0, 0.0, 0.0),
+            0,
+        ),
+    );
 
     mainMenu.menuObjects = [
         spinningBall, 
         menuDirectLighting,
         menuAmbientLighting,
+        ground,
     ];
 
     mainMenu.spinningBall = spinningBall;

@@ -19,7 +19,7 @@ function createHole5(physMaterials) {
     const clearingRadius = 10.0;
     const groundHeight = -0.33;
 
-    const light = createLight(new THREE.Vector3(9, 5, 2));
+    const light = createLight(new THREE.Vector3(3, 5, 2));
     const sceneryGround = createSceneryGround(new THREE.Vector3(0.0, groundHeight, 0.0));
     const trees = createTrees(clearingPosition, clearingRadius, groundHeight);
 

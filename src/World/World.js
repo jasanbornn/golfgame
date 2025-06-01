@@ -310,8 +310,13 @@ function createWorld(container) {
         if (keyCode == 73) { debugScreen.toggleVisibility(); }
 
         //N key
-        if( keyCode == 78) { 
+        if(keyCode == 78) { 
             scorecard.toggle();
+        }
+        //H key
+        if(keyCode == 72) {
+            hud.toggle();
+            pointer.toggle();
         }
         ////P key
         //if( keyCode == 80) {
