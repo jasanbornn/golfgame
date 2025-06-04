@@ -179,6 +179,7 @@ function createHole6(physMaterials) {
         ballSpawnpoint: ballSpawnpoint,
         cameraSpawnpoint: cameraSpawnpoint,
         cup: cup,
+        trees: trees,
         par: 3,
         cupGroundSection: cupGroundSection,
         groundSections: groundSections,
@@ -207,7 +208,7 @@ function createHole6(physMaterials) {
         hole.objects.push(barrier); 
     }
 
-    for(const tree of trees) {
+    for(const tree of trees.treeObjects) {
         hole.objects.push(tree);
     }
 

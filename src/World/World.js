@@ -216,7 +216,18 @@ function createWorld(container) {
 
         loadingScreen.show();
 
+        //persist settings
         const newHole = createHole(holeNum);
+        if(hole != null) {
+            if(hole.trees != null) {
+                if(hole.trees.state == "enabled") {
+                    newHole.trees.enable();
+                } else {
+                    newHole.trees.disable();
+                }
+            }
+        }
+
         ball.stop();
         ball.mesh.position.copy(newHole.ballSpawnpoint);
         ball.body.position.copy(newHole.ballSpawnpoint);
@@ -308,7 +319,6 @@ function createWorld(container) {
         if (keyCode == 77) { inGameMenu.toggle(); }
         //I key
         if (keyCode == 73) { debugScreen.toggleVisibility(); }
-
         //N key
         if(keyCode == 78) { 
             scorecard.toggle();
@@ -540,16 +550,28 @@ function createWorld(container) {
     //in game menu
     const inGameMenu = createInGameMenu();
 
-    inGameMenu.restartButton.onclick = () => {
-        hole = loadHole(hole.number); 
-        inGameMenu.setState("closed");
-    };
     inGameMenu.quitButton.onclick = () => {
         inGameMenu.setState("closed");
         endScreen.setState("inactive");
         startMainMenu();
     }
 
+    //options menu
+    inGameMenu.changeOption = (option, value) => {
+        switch(option) {
+            case "trees":
+                if(value) { 
+                    hole.trees.disable();
+                } else {
+                    hole.trees.enable();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    //hole selection
     for(let i = 0; i < 9; i++) {
         inGameMenu.levelBoxes[i].onclick = () => {
             hole = loadHole(i + 1);

@@ -31,7 +31,7 @@ function createTrees(clearingPosition, clearingRadius, groundHeight) {
         }
     }
 
-    const trees = [];
+    const treeObjects = [];
 
     for(const treePosition of treePoints) {
         const treeQuaternion = new THREE.Quaternion().setFromAxisAngle(
@@ -39,8 +39,13 @@ function createTrees(clearingPosition, clearingRadius, groundHeight) {
             randBetween(0, 2*Math.PI),
         );
 
-        trees.push(createTree(treePosition, treeQuaternion));
+        treeObjects.push(createTree(treePosition, treeQuaternion));
 
+    }
+
+    const trees = {
+        state: "enabled",
+        treeObjects: treeObjects,
     }
 
     const gltfLoader = new GLTFLoader();
@@ -48,21 +53,38 @@ function createTrees(clearingPosition, clearingRadius, groundHeight) {
     //gltfLoader.setPath('putt/');
     gltfLoader.load(url, (gltf) => {
         const treeScene = gltf.scene;
-        for(const tree of trees) {
+        for(const tree of treeObjects) {
             const treeChoice = Math.round(randBetween(0, 2));
             const treePosition = tree.mesh.position.clone();
             const treeQuaternion = tree.mesh.quaternion.clone();
+            const treeVisible = tree.mesh.visible;
             tree.mesh.copy(treeScene.children[treeChoice].clone(), true);
+            tree.mesh.visible = treeVisible;
             
-            //tree is a group and has children instead of
-            //a mesh itself. not setting this to false causes an error
-            //during rendering when looking for the tree's mesh's geometry
+            //tree is a group of meshes and has children instead of
+            //a having mesh of its own.
+            //setting this to false tells the renderer not to look
+            //for a mesh for the tree parent object
             tree.mesh.isMesh = false;
 
             tree.mesh.position.copy(treePosition);
             tree.mesh.quaternion.copy(treeQuaternion);
         }
     });
+
+    trees.disable = () => {
+        trees.state = "disabled";
+        for(const tree of treeObjects) {
+            tree.mesh.visible = false;
+        }
+    }
+
+    trees.enable = () => {
+        trees.state = "enabled";
+        for(const tree of treeObjects) {
+            tree.mesh.visible = true;
+        }
+    }
 
     return trees;
 }

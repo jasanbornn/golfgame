@@ -213,6 +213,7 @@ function createHole3(physMaterials) {
         ballSpawnpoint: new THREE.Vector3(0.0, 0.1, 0.0),
         cameraSpawnpoint: cameraSpawnpoint,
         cup: cup,
+        trees: trees,
         par: 3,
         cupGroundSection: cupGroundSection,
         groundSections: groundSections,
@@ -240,7 +241,7 @@ function createHole3(physMaterials) {
         hole.objects.push(barrier); 
     }
 
-    for(const tree of trees) {
+    for(const tree of trees.treeObjects) {
         hole.objects.push(tree);
     }
 
