@@ -6,6 +6,7 @@ function createEndScreen() {
     const submissionContainer = document.getElementById("end-screen-submission-container");
     const leaderboardNameInput = document.getElementById("leaderboard-name-input");
     const leaderboardSubmitButton = document.getElementById("leaderboard-submit-button");
+    const leaderboardCancelButton = document.getElementById("leaderboard-cancel-button");
 
     const invalidRunWarningBox = document.getElementById("end-screen-invalid-warning-box");
     const invalidRunWarning = document.getElementById("end-screen-invalid-warning-text");
@@ -101,6 +102,7 @@ function createEndScreen() {
     }
 
     leaderboardSubmitButton.onclick = () => { submitScore(endScreen.score); };
+    leaderboardCancelButton.onclick = () => { endScreen.setState("quitting"); };
 
     return endScreen;
 }

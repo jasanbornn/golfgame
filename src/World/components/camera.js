@@ -10,7 +10,7 @@ function createCamera() {
     const camera = new THREE.PerspectiveCamera(
         75, //fov
         1, //aspect ratio (dummy value to be resized later)
-        0.1, // near clipping plane
+        0.038, // near clipping plane
         100, // far clipping plane
     );
 
@@ -40,6 +40,26 @@ function createCamera() {
 
         camera.position.add(targetObjPosChange);
         targetObjPrevPosition.copy(camera.targetObj.position);
+
+        //todo
+        //check all collisions between the targetObj (ball) and camera
+        //find the first collsion from the ball's perspective
+        //then move the camera to that collision point
+        //so the camera doesn't get stuck in or behind objects
+        
+        //const raycastDirection = new THREE.Vector3();
+        //camera.getWorldDirection(raycastDirection).negate().normalize();
+
+        //const raycaster = new THREE.Raycaster(
+        //    camera.targetObj.position,
+        //    raycastDirection,
+        //);
+
+        //const intersections = raycaster.intersectObject(camera, false);
+
+        //if(intersections.length) {
+        //    camera.position.copy(intersections[0].point);
+        //}
     };
 
     return camera;

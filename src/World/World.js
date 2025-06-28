@@ -328,10 +328,10 @@ function createWorld(container) {
             hud.toggle();
             pointer.toggle();
         }
-        ////P key
-        //if( keyCode == 80) {
-        //    scoreCallout.displayScore(par, strokes);
-        //}
+        //P key
+        if( keyCode == 80) {
+            camera.position.copy(camera.targetObj.position);
+        }
         //Up Arrow
         if (keyCode == 38) { strikeBall(); }
         //Down Arrow
