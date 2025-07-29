@@ -2,9 +2,10 @@
 A browser based 9-hole minigolf game written in Javascript.
 
 <img src="demo/main_screen.png" alt="golf 9 main menu" style="width:600px;"/>
-<img src="demo/hole2.png" alt="golf 9 main menu" style="width:600px;"/>
-<img src="demo/hole8.png" alt="golf 9 main menu" style="width:600px;"/>
-<img src="demo/levels_menu.png" alt="golf 9 main menu" style="width:600px;"/>
+<img src="demo/hole2.png" alt="hole 2" style="width:600px;"/>
+<img src="demo/hole8.png" alt="hole 8" style="width:600px;"/>
+<img src="demo/levels_menu.png" alt="levels menu" style="width:600px;"/>
+<img src="demo/leaderboard.png" alt="leaderboard" style="width:600px;"/>
 
 ## Play
 
