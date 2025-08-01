@@ -28,6 +28,16 @@ body {
     text-shadow: 3px 3px black;
     color: black;
     margin: 0px;
+    margin-bottom: -20px;
+}
+
+#menu-sub-title {
+    -webkit-user-select: none; /* safari */
+    user-select: none;
+    font-size: 30px;
+    color: black;
+    margin: 0px;
+
 }
 
 #menu-title-nine {
