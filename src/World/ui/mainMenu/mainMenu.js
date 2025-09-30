@@ -8,11 +8,13 @@ import { createSpinningBall } from './createSpinningBall.js';
 function createMainMenu() {
 
     const mainMenuDiv = document.getElementById("main-menu");
-    const playButton = document.getElementById("play-button");
+    const playButton = document.getElementById("main-menu-play-button");
+    const githubButton = document.getElementById("main-menu-github-button");
 
     const mainMenu = {
         state: "active",
         playButton: playButton,
+        githubButton: githubButton,
     };
 
     const spinningBall = createSpinningBall(new THREE.Vector3(0.0, 0.0, 2.75));

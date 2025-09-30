@@ -6,6 +6,7 @@ function createInGameMenu() {
     const optionsBackButton = document.getElementById("options-back-button");
     const levelsButton = document.getElementById("levels-button");
     const levelsBackButton = document.getElementById("levels-back-button");
+    const githubButton = document.getElementById("github-button");
     const quitButton = document.getElementById("menu-quit-button");
 
     const menuButton = document.getElementById("open-menu-button");
@@ -80,6 +81,7 @@ function createInGameMenu() {
     optionsBackButton.onclick = () => { inGameMenu.setState("main"); };
     levelsButton.onclick = () => { inGameMenu.setState("levels-menu"); };
     levelsBackButton.onclick = () => { inGameMenu.setState("main"); };
+    githubButton.onclick = () => { window.open("https://github.com/jasanbornn/golfgame"); };
 
     treesCheckbox.addEventListener("change", (event) => { 
         if(event.currentTarget.checked) {

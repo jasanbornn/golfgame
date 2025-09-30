@@ -522,6 +522,10 @@ function createWorld(container) {
         startGame();
     }
 
+    mainMenu.githubButton.onclick = () => {
+        window.open("https://www.github.com/jasanbornn/golfgame");
+    }
+
     const startMainMenu = () => {
         mainMenu.setState("active");
         hud.setState("inactive");
