@@ -58,7 +58,7 @@ function createEndScreen() {
         leaderboard.innerHTML = content;
     };
 
-    //https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest_API
+   //https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest_API
     endScreen.queryLeaderboard = () => {
         xhr.open("POST", "../php/leaderboard_report.php");
         xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -91,7 +91,7 @@ function createEndScreen() {
                     console.log("Other XHR response: " + xhr.responseText);
                 }
             } else {
-                console.log("Error fetching end screen data. status: " + xhr.status);
+                console.log("Error fetching scores. status: " + xhr.status);
             }
         }
     };

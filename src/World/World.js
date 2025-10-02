@@ -518,6 +518,7 @@ function createWorld(container) {
     });
 
     //main menu
+    mainMenu.queryLeaderboard();
     mainMenu.playButton.onclick = () => {
         startGame();
     }

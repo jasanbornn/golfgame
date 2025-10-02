@@ -11,6 +11,10 @@ function createMainMenu() {
     const playButton = document.getElementById("main-menu-play-button");
     const githubButton = document.getElementById("main-menu-github-button");
 
+    const leaderboard = document.getElementById("main-menu-leaderboard");
+
+    const xhr = new XMLHttpRequest();
+
     const mainMenu = {
         state: "active",
         playButton: playButton,
@@ -38,6 +42,40 @@ function createMainMenu() {
     ];
 
     mainMenu.spinningBall = spinningBall;
+
+    mainMenu.setLeaderboardContent = (content) => {
+        leaderboard.innerHTML = content;
+    };
+
+    //https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest_API
+    mainMenu.queryLeaderboard = () => {
+        xhr.open("POST", "../php/leaderboard_report.php");
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhr.send();
+    }
+
+    const DONE = 4;
+    const HTTP_OK = 200;
+    xhr.onreadystatechange = () => {
+        if(xhr.readyState == DONE) {
+            if(xhr.status == HTTP_OK) {
+                if(xhr.responseText[0] == '<') {
+                    mainMenu.setLeaderboardContent(xhr.responseText);
+                } else if(xhr.responseText[0] == '\n') {
+                    console.log("Submit response: " + xhr.responseText);
+                    mainMenu.setState("quitting");
+                    mainMenu.queryLeaderboard();
+                } else if(xhr.responseText == "") {
+                    console.log("Null XHR response");
+                    mainMenu.setLeaderboardContent("<p>no scores</p>");
+                } else {
+                    console.log("Other XHR response: " + xhr.responseText);
+                }
+            } else {
+                console.log("Error fetching scores. status: " + xhr.status);
+            }
+        }
+    };
 
     mainMenu.setState = (state) => {
         mainMenu.state = state;
