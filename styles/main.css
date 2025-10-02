@@ -12,6 +12,7 @@ body {
 
 .main-menu {
     position: absolute;
+    overflow: hidden;
     height: 100%;
     width: 100%;
     display: flex;
@@ -49,14 +50,21 @@ body {
     position: absolute;
     height: 100%;
     width: 30%;
-    right: 0px;
+    left: 70%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
+@media (max-width: 900px) {
+    .main-menu-leaderboard-container {
+        display: none;
+    }
+}
+
 #main-menu-leaderboard-title {
+    text-align: center;
     font-size: 40px; 
     font-weight: bold;
     margin: 10px 0px;
