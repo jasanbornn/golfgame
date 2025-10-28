@@ -329,37 +329,37 @@ function createWorld(container) {
             pointer.toggle();
         }
         //P key
-        if( keyCode == 80) {
-            camera.position.copy(camera.targetObj.position);
-        }
+        //if( keyCode == 80) {
+        //    camera.position.copy(camera.targetObj.position);
+        //}
         //Up Arrow
-        if (keyCode == 38) { strikeBall(); }
+        //if (keyCode == 38) { strikeBall(); }
         //Down Arrow
-        if (keyCode == 40) { ball.body.velocity = new CANNON.Vec3(0, 0, 0); }
+        //if (keyCode == 40) { ball.body.velocity = new CANNON.Vec3(0, 0, 0); }
         //W key
-        if (keyCode == 87) { strikePower.increasePower(); }
+        //if (keyCode == 87) { strikePower.increasePower(); }
         //S key
-        if (keyCode == 83) { strikePower.decreasePower(); }
-        //E
-        if (keyCode == 69) { gameOverResponse(); } 
+        //if (keyCode == 83) { strikePower.decreasePower(); }
+        //E key
+        //if (keyCode == 69) { gameOverResponse(); } 
         //1 key
-        if (keyCode == 49) { hole = loadHole(1); }
+        //if (keyCode == 49) { hole = loadHole(1); }
         //2 key
-        if (keyCode == 50) { hole = loadHole(2); }
+        //if (keyCode == 50) { hole = loadHole(2); }
         //3 key
-        if (keyCode == 51) { hole = loadHole(3); }
+        //if (keyCode == 51) { hole = loadHole(3); }
         //4 key
-        if (keyCode == 52) { hole = loadHole(4); }
+        //if (keyCode == 52) { hole = loadHole(4); }
         //5 key
-        if (keyCode == 53) { hole = loadHole(5); }
+        //if (keyCode == 53) { hole = loadHole(5); }
         //6 key
-        if (keyCode == 54) { hole = loadHole(6); }
+        //if (keyCode == 54) { hole = loadHole(6); }
         //7 key
-        if (keyCode == 55) { hole = loadHole(7); }
+        //if (keyCode == 55) { hole = loadHole(7); }
         //8 key
-        if (keyCode == 56) { hole = loadHole(8); }
+        //if (keyCode == 56) { hole = loadHole(8); }
         //9 key
-        if (keyCode == 57) { hole = loadHole(9); }
+        //if (keyCode == 57) { hole = loadHole(9); }
 
     }
 
